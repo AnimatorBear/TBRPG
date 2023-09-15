@@ -2,9 +2,13 @@
 {
     internal class Program
     {
+        static generalClass genClass = new generalClass();
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello, World! again V4 ");
+            Console.Title = "TBRPG";
+            genClass.Roll();
+            Console.ReadKey();
+            
         }
     }
 }
