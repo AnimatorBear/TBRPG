@@ -4,7 +4,9 @@
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello, World!");
+            Console.Title = "TBRPG";
+            Console.WriteLine("KYS");
+            Console.ReadKey();
         }
     }
 }
