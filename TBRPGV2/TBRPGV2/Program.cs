@@ -2,6 +2,8 @@
 {
     internal class Program
     {
+        //Note to self: Race is cancelled
+        //Another note to self: Enums for everything.
         static generalClass genClass;
         static player currentPlayer = new player();
         static generalClass.allClasses testingClass = generalClass.allClasses.Class1;
@@ -9,8 +11,6 @@
         {
             Console.Title = "TBRPG";
             genClass = new generalClass(testingClass,currentPlayer);
-            Console.WriteLine(currentPlayer.health);
-            Console.WriteLine(genClass.Upgrades()[0]);
             StartBattle();
             Console.ReadKey();
         }
@@ -23,7 +23,7 @@
             bool activeBattle = true;
             while (activeBattle)
             {
-                //inser actual battle shit
+                //insert actual battle shit
                 enemy.health -= currentPlayer.Attack();
                 currentPlayer.health -= enemy.Attack();
                 Console.WriteLine($"Player hp: {currentPlayer.health}");
