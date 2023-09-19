@@ -26,6 +26,11 @@
         public enum allSkills { None, Health, Speed, Damage, Test1, Test2, Test3, Test4 };
         public allSkills[] skills = { allSkills.None, allSkills.None, allSkills.None };
         #endregion
+        public enum attacks { None,Class_Ability,Heavy_Hit,Light_Hit};
+        public attacks attack1 = attacks.Light_Hit;
+        public attacks attack2 = attacks.None;
+        public attacks attack3 = attacks.None;
+        public attacks attack4 = attacks.None;
 
         public player(allClasses newClass, int startingLevel = 0)
         {
@@ -49,7 +54,7 @@
             switch (currentClass)
             {
                 case allClasses.Class0:
-                    maxHealth = 1000;
+                    maxHealth = 100;
                     classAbilityRecharge = 3;
                     break;
                 case allClasses.Class1:
@@ -100,30 +105,62 @@
             }
             return result;
         }
-        public int Attack()
+        public int Attack(int attack = 0)
         {
-            //Needs to be reworked.
-            int attackDamage = (int)(damage * damageMultiplier);
-            if(roundsUntilAbilityRecharge <= 0)
+            attacks currentAttack = attacks.None;
+            switch (attack)
             {
-                switch (currentClass)
-                {
-                    case allClasses.Class0:
-                        attackDamage = (int)((damage * damageMultiplier) * 1.5f);
-                        Console.WriteLine("Class 0 Ability!");
-                        break;
-                    case allClasses.Class1:
-                        health = health + 50;
-                        Console.WriteLine("Class 1 Ability!");
-                        break;
-                }
-                roundsUntilAbilityRecharge = classAbilityRecharge;
+                case 1:
+                    currentAttack = attack1;
+                    break;
+                case 2:
+                    currentAttack = attack2;
+                    break;
+                case 3:
+                    currentAttack = attack3;
+                    break;
+                case 4:
+                    currentAttack = attack4;
+                    break;
+                case 5:
+                    currentAttack = attacks.Class_Ability;
+                    break;
             }
-            else
+            switch (currentAttack)
             {
-                roundsUntilAbilityRecharge -= 1;
+                case attacks.None:
+                    Console.WriteLine("ERROR, No attack");
+                    roundsUntilAbilityRecharge -= 1;
+                    return 0;
+
+                case attacks.Light_Hit:
+                    Console.WriteLine("Light Attack");
+                    roundsUntilAbilityRecharge -= 1;
+                    return 10;
+                case attacks.Class_Ability:
+                    if(roundsUntilAbilityRecharge <= 0)
+                    {
+                        Console.WriteLine("Class Ability!");
+                        roundsUntilAbilityRecharge = classAbilityRecharge;
+                        switch (currentClass)
+                        {
+                            case allClasses.Class0:
+                                int attackDamage = (int)((damage * damageMultiplier) * 1.5f);
+                                return attackDamage;
+                                break;
+                            case allClasses.Class1:
+                                health = health + 50;
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Cant use ability rn");
+                        Console.ReadKey();
+                    }
+                    break;
             }
-            return attackDamage;
+            return 0;
         }
         public allSkills randomSkill()
         {

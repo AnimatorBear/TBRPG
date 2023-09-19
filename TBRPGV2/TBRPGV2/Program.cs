@@ -22,10 +22,9 @@
             {
                 //Does automatic battle stuff that needs to be redone
                 Console.WriteLine("-----");
-                Console.WriteLine($"Player hp: {currentPlayer.health}");
-                Console.WriteLine($"Enemy hp: {enemy.health}");
-                enemy.health -= currentPlayer.Attack();
-                currentPlayer.health -= enemy.Attack();
+                Console.WriteLine($"Player hp: {currentPlayer.health} , Enemy hp: {enemy.health}");
+                enemy.health -= currentPlayer.Attack(5);
+                currentPlayer.health -= enemy.Attack(5);
                 if (currentPlayer.health < 1 || enemy.health < 1)
                 {
                     activeBattle = false;
