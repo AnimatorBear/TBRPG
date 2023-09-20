@@ -15,7 +15,7 @@
         #endregion
         #region Class
         //What Class
-        public enum allClasses { Class0, Class1, Class2 }
+        public enum allClasses { Class_None,Class0, Class1, Class2,Class3, Class4 }
         public allClasses currentClass = allClasses.Class1;
         //Every class has its own class ability they can use after a few rounds
         public int classAbilityRecharge = 100;
@@ -28,7 +28,7 @@
         #endregion
         public enum attacks { None,Class_Ability,Heavy_Hit,Light_Hit};
         public attacks attack1 = attacks.Light_Hit;
-        public attacks attack2 = attacks.None;
+        public attacks attack2 = attacks.Heavy_Hit;
         public attacks attack3 = attacks.None;
         public attacks attack4 = attacks.None;
 
@@ -135,6 +135,10 @@
 
                 case attacks.Light_Hit:
                     Console.WriteLine("Light Attack");
+                    roundsUntilAbilityRecharge -= 2;
+                    return 10;
+                case attacks.Heavy_Hit:
+                    Console.WriteLine("Heavy Attack");
                     roundsUntilAbilityRecharge -= 1;
                     return 10;
                 case attacks.Class_Ability:
