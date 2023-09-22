@@ -14,7 +14,7 @@
             {
                 SelectClass();
             }
-            currentPlayer.RecalculateStats(false);
+            currentPlayer.RecalculateStats();
             Console.WriteLine($"Class: {currentPlayer.currentClass}");
             StartBattle();
             Console.ReadKey();
@@ -24,10 +24,9 @@
         {
             //Makes the enemy
             player enemy = new player(testingEnemyClass,50);
-            enemy.RecalculateStats(true);
-            Console.WriteLine("Stats Recalculated:");
-            currentPlayer.RecalculateStats(true) ;
-            enemy.RecalculateStats(true);
+            enemy.RecalculateStats();
+            currentPlayer.RecalculateStats() ;
+            enemy.RecalculateStats();
             currentPlayer.health = currentPlayer.maxHealth;
             enemy.health = enemy.maxHealth;
             bool activeBattle = true;
