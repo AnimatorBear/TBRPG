@@ -23,14 +23,11 @@
         #endregion
         #region Skills
         //Skills are small buffs , you starts with 3 and can unlock 1 later on
-        public enum allSkills { None, Health, Speed, Damage, Test1, Test2, Test3, Test4 };
+        public enum allSkills { None, Health, Speed, Damage};
         public allSkills[] skills = { allSkills.None, allSkills.None, allSkills.None };
         #endregion
         public enum attacks { None,Class_Ability,Heavy_Hit,Light_Hit};
-        public attacks attack1 = attacks.Light_Hit;
-        public attacks attack2 = attacks.Heavy_Hit;
-        public attacks attack3 = attacks.None;
-        public attacks attack4 = attacks.None;
+        public attacks[] characterAttacks = { attacks.Light_Hit,attacks.Heavy_Hit,attacks.None,attacks.None};
 
         public player(allClasses newClass, int startingLevel = 0)
         {
@@ -40,7 +37,6 @@
             skills[0] = randomSkill();
             skills[1] = randomSkill();
             skills[2] = randomSkill();
-            RecalculateStats(true);
             health = maxHealth;
         }
         public void RecalculateStats(bool showCalculation = false)
@@ -55,10 +51,12 @@
             {
                 case allClasses.Class0:
                     maxHealth = 100;
+                    damage = 10;
                     classAbilityRecharge = 3;
                     break;
                 case allClasses.Class1:
                     maxHealth = 100;
+                    damage = 10;
                     classAbilityRecharge = 2;
                     break;
             }
@@ -81,18 +79,18 @@
             {
                 if (skills[i] == allSkills.Health)
                 {
-                    maxHealth = maxHealth + 50;
-                    healthSources[2] = 50;
+                    maxHealth = maxHealth + 25;
+                    healthSources[2] = 25;
                 } else if (skills[i] == allSkills.Damage)
                 {
-                    damage = damage + 15;
-                    damageSources[2] = 15;
+                    damage = damage + 5;
+                    damageSources[2] = 5;
                 }
             }
             //Math if I wanna see it
             if (showCalculation)
             {
-                Console.WriteLine($"=====\r\nMaxHealth: {maxHealth}\r\nDamage: {damage}\r\n  Health Sources: \r\nBase Health: {healthSources[0]}\r\nHealth from Levels: {healthSources[1]}\r\nHealth from Skills: {healthSources[2]}\r\n  Damage Sources: \r\nBase Damage: {damageSources[0]}\r\nDamage from Levels: {damageSources[1]}\r\nDamage from Skills: {damageSources[2]}\r\n=====");
+                Console.WriteLine($"=====\r\nMaxHealth: {maxHealth}\r\nDamage: {damage}\r\nCurrent Level: {currentLevel}\r\n  Health Sources: \r\nBase Health: {healthSources[0]}\r\nHealth from Levels: {healthSources[1]}\r\nHealth from Skills: {healthSources[2]}\r\n  Damage Sources: \r\nBase Damage: {damageSources[0]}\r\nDamage from Levels: {damageSources[1]}\r\nDamage from Skills: {damageSources[2]}\r\n=====");
             }
         }
         public bool[] Upgrades()
@@ -111,20 +109,22 @@
             switch (attack)
             {
                 case 1:
-                    currentAttack = attack1;
+                    currentAttack = characterAttacks[0];
                     break;
                 case 2:
-                    currentAttack = attack2;
+                    currentAttack = characterAttacks[1];
                     break;
                 case 3:
-                    currentAttack = attack3;
+                    currentAttack = characterAttacks[2];
                     break;
                 case 4:
-                    currentAttack = attack4;
+                    currentAttack = characterAttacks[3];
                     break;
                 case 5:
                     currentAttack = attacks.Class_Ability;
                     break;
+                case -1:
+                    return 0;
             }
             switch (currentAttack)
             {
@@ -136,11 +136,11 @@
                 case attacks.Light_Hit:
                     Console.WriteLine("Light Attack");
                     roundsUntilAbilityRecharge -= 2;
-                    return 10;
+                    return (int)(damage);
                 case attacks.Heavy_Hit:
                     Console.WriteLine("Heavy Attack");
                     roundsUntilAbilityRecharge -= 1;
-                    return 10;
+                    return (int)(damage * 1.5f);
                 case attacks.Class_Ability:
                     if(roundsUntilAbilityRecharge <= 0)
                     {
@@ -150,17 +150,16 @@
                         {
                             case allClasses.Class0:
                                 int attackDamage = (int)((damage * damageMultiplier) * 1.5f);
+                                Console.WriteLine(attackDamage);
                                 return attackDamage;
-                                break;
                             case allClasses.Class1:
-                                health = health + 50;
-                                break;
+                                health = health + ((maxHealth/10));
+                                return 0;
                         }
                     }
                     else
                     {
                         Console.WriteLine("Cant use ability rn");
-                        Console.ReadKey();
                     }
                     break;
             }
