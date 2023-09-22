@@ -15,11 +15,14 @@
         #endregion
         #region Class
         //What Class
-        public enum allClasses { Class_None,Class0, Class1, Class2,Class3, Class4 }
-        public allClasses currentClass = allClasses.Class1;
+        public enum allClasses { Class_None, DamageDealer, Tank, Healer, FireGuy, Charger }
+        public allClasses currentClass = allClasses.DamageDealer;
         //Every class has its own class ability they can use after a few rounds
         public int classAbilityRecharge = 100;
         public int roundsUntilAbilityRecharge = 0;
+        public int chargerCharge = 1;
+        public int maxClassAbilityUses = 100;
+        public int classAbilityUses = 0;
         #endregion
         #region Skills
         //Skills are small buffs , you starts with 3 and can unlock 1 later on
@@ -49,15 +52,31 @@
             //Base Stats
             switch (currentClass)
             {
-                case allClasses.Class0:
+                case allClasses.DamageDealer:
+                    maxHealth = 90;
+                    damage = 17;
+                    classAbilityRecharge = 4;
+                    break;
+                case allClasses.Tank:
+                    maxHealth = 130;
+                    damage = 10;
+                    classAbilityRecharge = 3;
+                    break;
+                case allClasses.Healer:
+                    maxHealth = 115;
+                    damage = 7;
+                    classAbilityRecharge = 5;
+                    maxClassAbilityUses = 2;
+                    break;
+                case allClasses.FireGuy:
                     maxHealth = 100;
                     damage = 10;
                     classAbilityRecharge = 3;
                     break;
-                case allClasses.Class1:
-                    maxHealth = 100;
-                    damage = 10;
-                    classAbilityRecharge = 2;
+                case allClasses.Charger:
+                    maxHealth = 90;
+                    damage = 13;
+                    classAbilityRecharge = 0;
                     break;
             }
             healthSources[0] = maxHealth;
@@ -87,6 +106,7 @@
                     damageSources[2] = 5;
                 }
             }
+            damage = (float)Math.Round(damage,1);
             //Math if I wanna see it
             if (showCalculation)
             {
@@ -142,19 +162,32 @@
                     roundsUntilAbilityRecharge -= 1;
                     return (int)(damage * 1.5f);
                 case attacks.Class_Ability:
-                    if(roundsUntilAbilityRecharge <= 0)
+                    if(roundsUntilAbilityRecharge <= 0 && classAbilityUses < maxClassAbilityUses)
                     {
                         Console.WriteLine("Class Ability!");
                         roundsUntilAbilityRecharge = classAbilityRecharge;
+                        classAbilityUses++;
                         switch (currentClass)
                         {
-                            case allClasses.Class0:
+                            case allClasses.DamageDealer:
                                 int attackDamage = (int)((damage * damageMultiplier) * 1.5f);
                                 Console.WriteLine(attackDamage);
                                 return attackDamage;
-                            case allClasses.Class1:
+                            case allClasses.Tank:
                                 health = health + ((maxHealth/10));
+                                return (int)((damage * damageMultiplier) * 0.5f);
+                            case allClasses.Healer:
+                                health = health + ((maxHealth / 2));
+                                Console.WriteLine("Heals: " + maxHealth / 2);
                                 return 0;
+                            case allClasses.FireGuy:
+                                Console.WriteLine("Unfortunately FireGuy doesnt have an ability yet");
+                                return 0;
+                            case allClasses.Charger:
+                                attackDamage = (int)((damage *0.5f)*chargerCharge );
+                                Console.WriteLine(chargerCharge + " Damage: " + attackDamage);
+                                chargerCharge = 1;
+                                return attackDamage;
                         }
                     }
                     else
