@@ -1,6 +1,6 @@
 ﻿namespace TBRPGV2
 {
-    internal class player
+    internal class Creature
     {
         #region Stats
         //  All stats
@@ -32,7 +32,7 @@
         public enum attacks { None,Class_Ability,Heavy_Hit,Light_Hit};
         public attacks[] characterAttacks = { attacks.Light_Hit,attacks.Heavy_Hit,attacks.None,attacks.None};
 
-        public player(allClasses newClass, int startingLevel = 0)
+        public Creature(allClasses newClass, int startingLevel = 0)
         {
             //Adds starting stats and stuff
             currentClass = newClass;

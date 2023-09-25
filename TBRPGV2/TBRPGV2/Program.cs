@@ -3,13 +3,13 @@
     internal class Program
     {
         //Player and starting class
-        static player currentPlayer = new player(player.allClasses.Class_None, 10);
-        static player.allClasses testingEnemyClass = player.allClasses.Healer;
+        static Creature currentPlayer = new Creature(Creature.allClasses.Class_None, 10);
+        static Creature.allClasses testingEnemyClass = Creature.allClasses.Healer;
         static int classSelection = 0;
         static void Main(string[] args)
         {
             Console.Title = "TBRPG";
-            while(currentPlayer.currentClass == player.allClasses.Class_None)
+            while(currentPlayer.currentClass == Creature.allClasses.Class_None)
             {
                 SelectClass();
             }
@@ -22,7 +22,7 @@
         static void StartBattle()
         {
             //Makes the enemy
-            player enemy = new player(testingEnemyClass,10);
+            Creature enemy = new Creature(testingEnemyClass,10);
             Console.WriteLine($"Enemy Class: {enemy.currentClass}");
             enemy.RecalculateStats();
             currentPlayer.RecalculateStats() ;
@@ -97,13 +97,13 @@
                 }
             }
         }
-        static void AddChargerCharge(player enemy,bool remove = false)
+        static void AddChargerCharge(Creature enemy,bool remove = false)
         {
-            if(currentPlayer.currentClass == player.allClasses.Charger)
+            if(currentPlayer.currentClass == Creature.allClasses.Charger)
             {
                 currentPlayer.chargerCharge++;
             }
-            if (enemy.currentClass == player.allClasses.Charger)
+            if (enemy.currentClass == Creature.allClasses.Charger)
             {
                 enemy.chargerCharge++;
             }
@@ -272,19 +272,19 @@
                     switch (classSelection)
                     {
                         case 0:
-                            currentPlayer.currentClass = player.allClasses.DamageDealer;
+                            currentPlayer.currentClass = Creature.allClasses.DamageDealer;
                             break;
                         case 1:
-                            currentPlayer.currentClass = player.allClasses.Tank;
+                            currentPlayer.currentClass = Creature.allClasses.Tank;
                             break;
                         case 2:
-                            currentPlayer.currentClass = player.allClasses.Healer;
+                            currentPlayer.currentClass = Creature.allClasses.Healer;
                             break;
                         case 3:
-                            currentPlayer.currentClass = player.allClasses.FireGuy;
+                            currentPlayer.currentClass = Creature.allClasses.FireGuy;
                             break;
                         case 4:
-                            currentPlayer.currentClass = player.allClasses.Charger;
+                            currentPlayer.currentClass = Creature.allClasses.Charger;
                             break;
                     }
                     Console.Clear();
