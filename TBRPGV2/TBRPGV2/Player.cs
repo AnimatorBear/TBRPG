@@ -76,7 +76,7 @@
                 case allClasses.Charger:
                     maxHealth = 90;
                     damage = 13;
-                    classAbilityRecharge = 0;
+                    classAbilityRecharge = 1;
                     break;
             }
             healthSources[0] = maxHealth;
@@ -184,9 +184,9 @@
                                 Console.WriteLine("Unfortunately FireGuy doesnt have an ability yet");
                                 return 0;
                             case allClasses.Charger:
-                                attackDamage = (int)((damage *0.5f)*chargerCharge );
+                                attackDamage = (int)((damage *0.75f)*chargerCharge );
                                 Console.WriteLine(chargerCharge + " Damage: " + attackDamage);
-                                chargerCharge = 1;
+                                chargerCharge = 0;
                                 return attackDamage;
                         }
                     }
