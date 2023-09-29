@@ -2,6 +2,7 @@
 {
     internal class Program
     {
+        //Change so no empty
         //Player and starting class
         static Creature currentPlayer = new Creature(Creature.allClasses.Class_None, 0);
         static Creature.allClasses testingEnemyClass = Creature.allClasses.Healer;
