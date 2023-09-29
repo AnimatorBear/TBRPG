@@ -2,6 +2,7 @@
 {
     internal class Creature
     {
+        public int[,] classStats = { {90,17,4, 999, 100} , { 130, 10, 3, 999, 100 }, { 115, 7, 5, 3, 100 }, { 100, 10, 3, 999, 100 }, { 90, 13, 1, 999, 100 } };
         #region Stats
         //  All stats
         //Health-Type stats
@@ -53,9 +54,9 @@
             switch (currentClass)
             {
                 case allClasses.DamageDealer:
-                    maxHealth = 90;
-                    damage = 17;
-                    classAbilityRecharge = 4;
+                    maxHealth = classStats[0,0];
+                    damage = (float)classStats[0,1];
+                    classAbilityRecharge = classStats[0, 2];
                     break;
                 case allClasses.Tank:
                     maxHealth = 130;

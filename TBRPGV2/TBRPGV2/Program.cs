@@ -3,7 +3,7 @@
     internal class Program
     {
         //Player and starting class
-        static Creature currentPlayer = new Creature(Creature.allClasses.Class_None, 10);
+        static Creature currentPlayer = new Creature(Creature.allClasses.Class_None, 0);
         static Creature.allClasses testingEnemyClass = Creature.allClasses.Healer;
         static int classSelection = 0;
         static void Main(string[] args)
@@ -22,10 +22,10 @@
         static void StartBattle()
         {
             //Makes the enemy
-            Creature enemy = new Creature(testingEnemyClass,10);
+            Creature enemy = new Creature(testingEnemyClass,0);
             Console.WriteLine($"Enemy Class: {enemy.currentClass}");
             enemy.RecalculateStats();
-            currentPlayer.RecalculateStats() ;
+            currentPlayer.RecalculateStats(true) ;
             enemy.RecalculateStats();
             currentPlayer.health = currentPlayer.maxHealth;
             enemy.health = enemy.maxHealth;
@@ -117,6 +117,7 @@
             ConsoleColor selectionTextColor = ConsoleColor.Black;
             Console.ForegroundColor = ConsoleColor.DarkGray;
             Console.WriteLine("========================================================================\r\n\r\n\r\n\r\n\r\n\r\n");
+            Console.WriteLine("========================================================================\r\n\r\n\r\n\r\n\r\n\r\n");
             Console.WriteLine("========================================================================\r\n");
             Console.ForegroundColor = ConsoleColor.White;
             string[] classNames = { "Damage Dealer", "Tank","Healer", "REMOVED", "Charger" };
@@ -173,15 +174,56 @@
             };
             for (int i = 0; i < amountOfClasses; i++)
             {
-                Console.CursorVisible = false;
+                Console.CursorVisible = true;
                 int center = classNames[classSelection].Length / 2;
-                Console.SetCursorPosition(Console.CursorLeft + 35 - center, Console.CursorTop - 8);
+                Console.SetCursorPosition(Console.CursorLeft + 35 - center, Console.CursorTop - 15);
                 Console.WriteLine(classNames[classSelection]);
-                for(int j = 0; j < 5; j++)
+                for(int j = 0; j < 1; ++j)
+                {
+                    Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop);
+                }
+                for (int j = 0; j < 5; j++)
                 {
                     center = classDescriptions[classSelection][j].Length / 2;
                     Console.SetCursorPosition(Console.CursorLeft + 35 - center, Console.CursorTop);
                     Console.WriteLine(classDescriptions[classSelection][j]);
+                }
+                Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop + 1);
+                for (int j = 0; j < 6; j++)
+                {
+                    string word = "prob";
+                    switch (j)
+                    {
+                        case 0:
+                            word = "Base max HP: " + currentPlayer.classStats[classSelection,0];
+                            break;
+                        case 1:
+                            word = "Base damage: " + currentPlayer.classStats[classSelection, 1];
+                            break;
+                        case 2:
+                            word = "Rounds until ability recharge: " + currentPlayer.classStats[classSelection, 2];
+                            break;
+                        case 3:
+                            if (currentPlayer.classStats[classSelection,3] != 999)
+                            {
+                                word = "Class ability uses: " + currentPlayer.classStats[classSelection, 3];
+                            }
+                            else
+                            {
+                                word = "Class ability uses: Infinite";
+                            }
+                            break;
+                        case 4:
+                            word = "Speed: " + currentPlayer.classStats[classSelection, 4];
+                            break;
+                        case 5:
+                            word = "special";
+                            break;
+
+                    }
+                    center = word.Length / 2;
+                    Console.SetCursorPosition(Console.CursorLeft + 35 - center, Console.CursorTop);
+                    Console.WriteLine(word);
                 }
                 Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop + 2);
                 Console.SetCursorPosition(Console.CursorLeft + (15 * i), Console.CursorTop);
