@@ -175,7 +175,7 @@
             };
             for (int i = 0; i < amountOfClasses; i++)
             {
-                Console.CursorVisible = true;
+                Console.CursorVisible = false;
                 int center = classNames[classSelection].Length / 2;
                 Console.SetCursorPosition(Console.CursorLeft + 35 - center, Console.CursorTop - 15);
                 Console.WriteLine(classNames[classSelection]);
