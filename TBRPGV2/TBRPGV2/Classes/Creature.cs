@@ -13,6 +13,7 @@
         public float damageMultiplier = 1;
         //Misc Stats
         public int currentLevel = 0;
+        public int speed = 0;
         #endregion
         #region Class
         //What Class
@@ -27,8 +28,8 @@
         #endregion
         #region Skills
         //Skills are small buffs , you starts with 3 and can unlock 1 later on
-        public enum allSkills { None, Health, Speed, Damage};
-        public allSkills[] skills = { allSkills.None, allSkills.None, allSkills.None };
+        public enum allSkills { None, Healthy, Fast, Violent, Heavy_Hitter, Light_Hitter, Fast_Learner,Lucky};
+        public allSkills[] skills = { allSkills.None, allSkills.None, allSkills.None,allSkills.None };
         #endregion
         public enum attacks { None,Class_Ability,Heavy_Hit,Light_Hit};
         public attacks[] characterAttacks = { attacks.Light_Hit,attacks.Heavy_Hit,attacks.None,attacks.None};
@@ -58,27 +59,35 @@
                     damage = (float)classStats[0,1];
                     classAbilityRecharge = classStats[0, 2];
                     maxClassAbilityUses = classStats[0, 3];
+                    speed = classStats[0, 4];
                     break;
                 case allClasses.Tank:
-                    maxHealth = 130;
-                    damage = 10;
-                    classAbilityRecharge = 3;
+                    maxHealth = classStats[1, 0];
+                    damage = (float)classStats[1, 1];
+                    classAbilityRecharge = classStats[1, 2];
+                    maxClassAbilityUses = classStats[1, 3];
+                    speed = classStats[1, 4];
                     break;
                 case allClasses.Healer:
-                    maxHealth = 115;
-                    damage = 7;
-                    classAbilityRecharge = 5;
-                    maxClassAbilityUses = 2;
+                    maxHealth = classStats[2, 0];
+                    damage = (float)classStats[2, 1];
+                    classAbilityRecharge = classStats[2, 2];
+                    maxClassAbilityUses = classStats[2, 3];
+                    speed = classStats[2, 4];
                     break;
                 case allClasses.FireGuy:
-                    maxHealth = 100;
-                    damage = 10;
-                    classAbilityRecharge = 3;
+                    maxHealth = classStats[3, 0];
+                    damage = (float)classStats[3, 1];
+                    classAbilityRecharge = classStats[3, 2];
+                    maxClassAbilityUses = classStats[3, 3];
+                    speed = classStats[3, 4];
                     break;
                 case allClasses.Charger:
-                    maxHealth = 90;
-                    damage = 13;
-                    classAbilityRecharge = 1;
+                    maxHealth = classStats[4, 0];
+                    damage = (float)classStats[4, 1];
+                    classAbilityRecharge = classStats[4, 2];
+                    maxClassAbilityUses = classStats[4, 3];
+                    speed = classStats[4, 4];
                     break;
             }
             healthSources[0] = maxHealth;
@@ -98,21 +107,24 @@
             //Skills stats
             for(int i = 0;i < skills.Length; i++)
             {
-                if (skills[i] == allSkills.Health)
+                if (skills[i] == allSkills.Healthy)
                 {
                     maxHealth = maxHealth + 25;
                     healthSources[2] = 25;
-                } else if (skills[i] == allSkills.Damage)
+                } else if (skills[i] == allSkills.Violent)
                 {
                     damage = damage + 5;
                     damageSources[2] = 5;
+                }else if (skills[i] == allSkills.Fast)
+                {
+                    speed = speed + 5;
                 }
             }
             damage = (float)Math.Round(damage,1);
             //Math if I wanna see it
             if (showCalculation)
             {
-                Console.WriteLine($"=====\r\nMaxHealth: {maxHealth}\r\nDamage: {damage}\r\nCurrent Level: {currentLevel}\r\n  Health Sources: \r\nBase Health: {healthSources[0]}\r\nHealth from Levels: {healthSources[1]}\r\nHealth from Skills: {healthSources[2]}\r\n  Damage Sources: \r\nBase Damage: {damageSources[0]}\r\nDamage from Levels: {damageSources[1]}\r\nDamage from Skills: {damageSources[2]}\r\n=====");
+                Console.WriteLine($"=====\r\nMaxHealth: {maxHealth}\r\nDamage: {damage}\r\nCurrent Level: {currentLevel} \r\n Skills: {skills[0]}, {skills[1]}, {skills[2]} and {skills[3]}\r\n  Health Sources: \r\nBase Health: {healthSources[0]}\r\nHealth from Levels: {healthSources[1]}\r\nHealth from Skills: {healthSources[2]}\r\n  Damage Sources: \r\nBase Damage: {damageSources[0]}\r\nDamage from Levels: {damageSources[1]}\r\nDamage from Skills: {damageSources[2]}\r\n=====");
             }
         }
         public bool[] Upgrades()
@@ -158,11 +170,27 @@
                 case attacks.Light_Hit:
                     Console.WriteLine("Light Attack");
                     roundsUntilAbilityRecharge -= 2;
-                    return (int)(damage);
+                    float extraDamage = 0;
+                    for (int i = 0; i < skills.Length; i++)
+                    {
+                        if (skills[i] == allSkills.Light_Hitter)
+                        {
+                            extraDamage = extraDamage + (damage * 1.2f);
+                        } 
+                    }
+                    return (int)(damage + extraDamage);
                 case attacks.Heavy_Hit:
                     Console.WriteLine("Heavy Attack");
+                    extraDamage = 0;
+                    for (int i = 0; i < skills.Length; i++)
+                    {
+                        if (skills[i] == allSkills.Heavy_Hitter)
+                        {
+                            extraDamage = extraDamage + (damage * 1.2f);
+                        }
+                    }
                     roundsUntilAbilityRecharge -= 1;
-                    return (int)(damage * 1.5f);
+                    return (int)((damage * 1.5f) + extraDamage);
                 case attacks.Class_Ability:
                     if(roundsUntilAbilityRecharge <= 0 && classAbilityUses < maxClassAbilityUses)
                     {

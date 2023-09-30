@@ -25,7 +25,7 @@
             //Makes the enemy
             Creature enemy = new Creature(testingEnemyClass,0);
             Console.WriteLine($"Enemy Class: {enemy.currentClass}");
-            enemy.RecalculateStats();
+            enemy.RecalculateStats(true);
             currentPlayer.RecalculateStats(true) ;
             enemy.RecalculateStats();
             currentPlayer.health = currentPlayer.maxHealth;
