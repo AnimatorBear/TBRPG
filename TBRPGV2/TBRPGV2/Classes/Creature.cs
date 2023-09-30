@@ -57,6 +57,7 @@
                     maxHealth = classStats[0,0];
                     damage = (float)classStats[0,1];
                     classAbilityRecharge = classStats[0, 2];
+                    maxClassAbilityUses = classStats[0, 3];
                     break;
                 case allClasses.Tank:
                     maxHealth = 130;
