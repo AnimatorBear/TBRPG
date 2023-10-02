@@ -2,7 +2,7 @@
 {
     internal class Creature
     {
-        public int[,] classStats = { {90,17,4, 999, 100} , { 130, 10, 3, 999, 100 }, { 115, 7, 5, 3, 100 }, { 100, 10, 3, 999, 100 }, { 90, 13, 1, 999, 100 } };
+        public int[,] classStats = { {90,17,4, 999, 100} , { 130, 10, 3, 999, 100 }, { 115, 9, 5, 3, 100 }, { 999, 999, 0, 999, 100 }, { 90, 13, 1, 999, 100 } };
         #region Stats
         //  All stats
         //Health-Type stats
