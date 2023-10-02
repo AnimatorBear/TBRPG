@@ -211,7 +211,7 @@
                                 Console.WriteLine("Heals: " + maxHealth / 2);
                                 return 0;
                             case allClasses.FireGuy:
-                                Console.WriteLine("Unfortunately FireGuy doesnt have an ability yet");
+                                Console.WriteLine("Unfortunately REMOVED doesnt have an ability yet");
                                 return 0;
                             case allClasses.Charger:
                                 attackDamage = (int)((damage *0.75f)*chargerCharge );

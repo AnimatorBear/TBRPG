@@ -14,21 +14,23 @@
             {
                 SelectClass();
             }
+            ShowRandomSkills();
+            Console.ReadKey();
+            Console.Clear();
             currentPlayer.RecalculateStats();
+            currentPlayer.health = currentPlayer.maxHealth;
             Console.WriteLine($"Class: {currentPlayer.currentClass}");
-            StartBattle();
+            StartBattle(true);
             Console.ReadKey();
         }
 
-        static void StartBattle()
+        static void StartBattle(bool showStatsAtStart)
         {
             //Makes the enemy
             Creature enemy = new Creature(testingEnemyClass,0);
             Console.WriteLine($"Enemy Class: {enemy.currentClass}");
-            enemy.RecalculateStats(true);
-            currentPlayer.RecalculateStats(true) ;
-            enemy.RecalculateStats();
-            currentPlayer.health = currentPlayer.maxHealth;
+            enemy.RecalculateStats(showStatsAtStart);
+            currentPlayer.RecalculateStats(showStatsAtStart) ;
             enemy.health = enemy.maxHealth;
             bool activeBattle = true;
             while (activeBattle)
@@ -77,6 +79,16 @@
                     }
                 }
                 enemy.health -= currentPlayer.Attack(attack);
+
+                if (enemy.health < 1)
+                {
+                    Console.WriteLine($"Enemy died! Player HP: {currentPlayer.health}\r\nEnemy HP: {enemy.health}");
+                    activeBattle = false;
+                }
+                else if (enemy.health > enemy.maxHealth)
+                {
+                    enemy.health = enemy.maxHealth;
+                }
                 currentPlayer.health -= enemy.Attack(attack);
                 if (currentPlayer.health < 1)
                 {
@@ -85,16 +97,6 @@
                 } else if(currentPlayer.health > currentPlayer.maxHealth)
                 {
                     currentPlayer.health = currentPlayer.maxHealth;
-                }
-
-                if(enemy.health < 1)
-                {
-                    Console.WriteLine($"Enemy died! Player HP: {currentPlayer.health}\r\nEnemy HP: {enemy.health}");
-                    activeBattle = false;
-                }
-                else if(enemy.health > enemy.maxHealth)
-                {
-                    enemy.health = enemy.maxHealth;
                 }
             }
         }
@@ -342,6 +344,130 @@
                 }
             }
 
+        }
+
+        static void ShowRandomSkills()
+        {
+            Console.ForegroundColor = ConsoleColor.White;
+            string[] skillNames = { "", "", ""};
+            string[][] skillDescriptions = new string[3][]
+            {
+                new string[5]
+                {
+                    " descriptions (1) "," descriptions 2"," descriptions 3"," descriptions 4"," descriptions 5"
+                },
+                    new string[5]
+                {
+                    " descriptions (2)"," descriptions 2"," descriptions 3"," descriptions 4"," descriptions 5"
+                },
+                    new string[5]
+                {
+                    " descriptions (3) "," descriptions 2"," descriptions 3"," descriptions 4"," descriptions 5"
+                }
+            };
+            string[][] iconArray = new string[5][]{
+                new string[4]{
+                    "     /\\   ",
+                    "    / /   ",
+                    "   / /   ",
+                    "  / /     "},
+                new string[4]{
+                    "   _  _   ",
+                    "  | \\/ |  ",
+                    "   \\  /   ",
+                    "    \\/    "},
+                new string[4]{
+                    "    ||    ",
+                    "----╝╚----",
+                    "----╗╔----",
+                    "    ||    "},
+                new string[4]{
+                    "          ",
+                    "   w.i.p  ",
+                    "   w.i.p  ",
+                    "          " },
+                new string[4]{
+                    " ======== ",
+                    " |████  | ",
+                    " |██    | ",
+                    " ======== "} };
+            string[][] activeSkillsIconArray = new string[3][]{
+                new string[4]{
+                    "     /\\   ",
+                    "    / /   ",
+                    "   / /    ",
+                    "  / /     "},
+                new string[4]{
+                    "  /----\\  ",
+                    "  | -- |  ",
+                    "  |    |  ",
+                    "  \\----/  " },
+                new string[4]{
+                    "    ||    ",
+                    "----╝╚----",
+                    "----╗╔----",
+                    "    ||    "} };
+            for(int i = 0; i < 3; i++)
+            {
+                //Turns everything to unknown because default case was crying
+                skillNames[i] = "Unknown";
+                skillDescriptions[i][0] = "Unknown";
+                skillDescriptions[i][1] = "Unknown";
+                for (int j = 0; j < 4; j++)
+                {
+                    activeSkillsIconArray[i][j] = iconArray[3][j];
+                }
+                //Changes things based on the skills
+                switch (currentPlayer.skills[i])
+                {
+                    case Creature.allSkills.Healthy:
+                        for(int j = 0;j < 4; j++)
+                        {
+                            activeSkillsIconArray[i][j] = iconArray[1][j];
+                        }
+                        skillNames[i] = "Healthy";
+                        skillDescriptions[i][0] = "+25 HP";
+                        skillDescriptions[i][1] = "";
+                        break;
+                    case Creature.allSkills.Violent:
+                        for (int j = 0; j < 4; j++)
+                        {
+                            activeSkillsIconArray[i][j] = iconArray[3][j];
+                        }
+                        skillNames[i] = "Violent";
+                        skillDescriptions[i][0] = "+5 Damage";
+                        skillDescriptions[i][1] = "";
+                        break;
+                }
+            }
+            Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop + 10);
+            for (int i = 0; i < 3; i++)
+            {
+                int cursorMoveAmount = 20 * (i + 1);
+                cursorMoveAmount = cursorMoveAmount - 10;
+                Console.CursorVisible = false;
+                int center = skillNames[i].Length / 2;
+                Console.SetCursorPosition(Console.CursorLeft + ((cursorMoveAmount + 6) - center), Console.CursorTop - 5);
+                Console.WriteLine(skillNames[i] + "\r\n");
+                center = skillDescriptions[i][0].Length / 2;
+                Console.SetCursorPosition(Console.CursorLeft + ((cursorMoveAmount + 6) - center), Console.CursorTop);
+                Console.WriteLine(skillDescriptions[i][0]);
+                center = skillDescriptions[i][1].Length / 2;
+                Console.SetCursorPosition(Console.CursorLeft + ((cursorMoveAmount + 6) - center), Console.CursorTop);
+                Console.WriteLine(skillDescriptions[i][1] + "\r\n");
+                Console.SetCursorPosition(Console.CursorLeft + cursorMoveAmount, Console.CursorTop);
+                Console.WriteLine("|----------|  ");
+                Console.SetCursorPosition(Console.CursorLeft + cursorMoveAmount, Console.CursorTop);
+                for(int j = 0; j < 4; j++)
+                {
+                    Console.Write("|");
+                    Console.Write(activeSkillsIconArray[i][j]);
+                    Console.WriteLine("|  ");
+                    Console.SetCursorPosition(Console.CursorLeft + cursorMoveAmount, Console.CursorTop);
+                }
+                Console.WriteLine("|----------|  ");
+                Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop - 6);
+            }
         }
     }
 }
