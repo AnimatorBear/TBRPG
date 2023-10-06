@@ -5,7 +5,7 @@
         //Change so no empty
         //Player and starting class
         static Creature currentPlayer = new Creature(Creature.allClasses.Class_None, 0);
-        static Creature.allClasses testingEnemyClass = Creature.allClasses.Healer;
+        static Creature.allClasses testingEnemyClass = Creature.allClasses.FireGuy;
         static int classSelection = 0;
         static void Main(string[] args)
         {
@@ -36,50 +36,61 @@
             while (activeBattle)
             {
                 Console.Title = "TBRPG";
-                //Does automatic battle stuff that needs to be redone
                 Console.WriteLine("-----");
                 Console.WriteLine($"Player hp: {currentPlayer.health} , Enemy hp: {enemy.health}");
                 Console.WriteLine($"Player dmg: {currentPlayer.damage} , Enemy dmg: {enemy.damage}");
                 bool selectingAttack = true;
-                int attack = 0;
+
+                int selectedAttack = 0;
+                int damage = 0;
+                int dodge = 0;
+                bool dodged;
+
                 while (selectingAttack)
                 {
                     ConsoleKey key = Console.ReadKey(true).Key;
+                    AddChargerCharge(enemy);
                     switch (key)
                     {
                         case ConsoleKey.D1:
-                            attack = 1;
-                            AddChargerCharge(enemy);
-                            selectingAttack = false;
+                            selectedAttack = 1;
                             break;
                         case ConsoleKey.D2:
-                            attack = 2;
-                            AddChargerCharge(enemy);
-                            selectingAttack = false;
+                            selectedAttack = 2;
                             break;
                         case ConsoleKey.D3:
-                            attack = 3;
-                            AddChargerCharge(enemy);
-                            selectingAttack = false;
+                            selectedAttack = 3;
                             break;
                         case ConsoleKey.D4:
-                            attack = 4;
-                            AddChargerCharge(enemy);
-                            selectingAttack = false;
+                            selectedAttack = 4;
                             break;
                         case ConsoleKey.D5:
-                            attack = 5;
-                            selectingAttack = false;
+                            selectedAttack = 5;
+                            AddChargerCharge(enemy,true);
                             break;
                         case ConsoleKey.D0:
                             currentPlayer.health = 0;
-                            attack = -1;
-                            selectingAttack = false;
+                            selectedAttack = -1;
                             break;
                     }
+                    damage = currentPlayer.Attack(out dodge, selectedAttack);
+                    if (damage != -100)
+                    {
+                        selectingAttack = false;
+                    }
                 }
-                enemy.health -= currentPlayer.Attack(attack);
-
+                #region Enemy Dodge
+                dodged = CalculateDodge(enemy, currentPlayer, dodge);
+                if(!dodged)
+                {
+                    enemy.health -= damage;
+                }
+                else
+                {
+                    Console.WriteLine("Dodge!");
+                    enemy.health += 5;
+                }
+                #endregion
                 if (enemy.health < 1)
                 {
                     Console.WriteLine($"Enemy died! Player HP: {currentPlayer.health}\r\nEnemy HP: {enemy.health}");
@@ -89,7 +100,19 @@
                 {
                     enemy.health = enemy.maxHealth;
                 }
-                currentPlayer.health -= enemy.Attack(attack);
+                damage = enemy.Attack(out dodge, selectedAttack);
+                #region Player Dodge
+                dodged = CalculateDodge(currentPlayer,enemy, dodge);
+                if (!dodged)
+                {
+                    currentPlayer.health -= damage;
+                }
+                else
+                {
+                    Console.WriteLine("Dodge!");
+                    currentPlayer.health += 5;
+                }
+                #endregion
                 if (currentPlayer.health < 1)
                 {
                     Console.WriteLine($"Player died! Player HP: {currentPlayer.health}\r\nEnemy HP: {enemy.health}");
@@ -99,6 +122,30 @@
                     currentPlayer.health = currentPlayer.maxHealth;
                 }
             }
+        }
+        static bool CalculateDodge(Creature creature, Creature creature2,int startingDodge)
+        {
+            int totalDodge = startingDodge;
+            for(int i = 0; i < creature.skills.Length; i++)
+            {
+                if (creature.skills[i] == Creature.allSkills.Fast)
+                {
+                    totalDodge += 5;
+                }
+            }
+            for (int i = 0; i < creature2.skills.Length; i++)
+            {
+                //Accurate Skill
+            }
+
+
+            Random rnd = new Random();
+            int rand = rnd.Next(0, 100);
+            if (rand < totalDodge)
+            {
+                return true;
+            }
+            return false;
         }
         static void AddChargerCharge(Creature enemy,bool remove = false)
         {
@@ -345,7 +392,6 @@
             }
 
         }
-
         static void ShowRandomSkills()
         {
             Console.ForegroundColor = ConsoleColor.White;

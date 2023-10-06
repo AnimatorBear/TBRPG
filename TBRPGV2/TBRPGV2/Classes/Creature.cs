@@ -2,7 +2,7 @@
 {
     internal class Creature
     {
-        public int[,] classStats = { {90,17,4, 999, 100} , { 130, 10, 3, 999, 100 }, { 115, 9, 5, 3, 100 }, { 999, 999, 0, 999, 100 }, { 90, 13, 1, 999, 100 } };
+        public int[,] classStats = { {90,14,4, 999, 100} , { 130, 7, 3, 999, 100 }, { 115, 6, 5, 3, 100 }, { 999, -100, 0, 999, 100 }, { 90, 10, 1, 999, 100 } };
         #region Stats
         //  All stats
         //Health-Type stats
@@ -113,11 +113,8 @@
                     healthSources[2] = 25;
                 } else if (skills[i] == allSkills.Violent)
                 {
-                    damage = damage + 5;
-                    damageSources[2] = 5;
-                }else if (skills[i] == allSkills.Fast)
-                {
-                    speed = speed + 5;
+                    damage = damage + 3;
+                    damageSources[2] = 3;
                 }
             }
             damage = (float)Math.Round(damage,1);
@@ -137,9 +134,10 @@
             }
             return result;
         }
-        public int Attack(int attack = 0)
+        public int Attack(out int dodge,int attack = 0)
         {
             attacks currentAttack = attacks.None;
+            dodge = 0;
             switch (attack)
             {
                 case 1:
@@ -165,7 +163,7 @@
                 case attacks.None:
                     Console.WriteLine("ERROR, No attack");
                     roundsUntilAbilityRecharge -= 1;
-                    return 0;
+                    return -100;
 
                 case attacks.Light_Hit:
                     Console.WriteLine("Light Attack");
@@ -176,12 +174,14 @@
                         if (skills[i] == allSkills.Light_Hitter)
                         {
                             extraDamage = extraDamage + (damage * 1.2f);
-                        } 
+                        }
                     }
+                    dodge = 5;
                     return (int)(damage + extraDamage);
                 case attacks.Heavy_Hit:
                     Console.WriteLine("Heavy Attack");
                     extraDamage = 0;
+                    dodge = 15;
                     for (int i = 0; i < skills.Length; i++)
                     {
                         if (skills[i] == allSkills.Heavy_Hitter)
@@ -211,10 +211,11 @@
                                 Console.WriteLine("Heals: " + maxHealth / 2);
                                 return 0;
                             case allClasses.FireGuy:
+                                health = health + 100000000;
                                 Console.WriteLine("Unfortunately REMOVED doesnt have an ability yet");
                                 return 0;
                             case allClasses.Charger:
-                                attackDamage = (int)((damage *0.75f)*chargerCharge );
+                                attackDamage = (int)(((damage *0.75f)+chargerCharge)*chargerCharge );
                                 Console.WriteLine(chargerCharge + " Damage: " + attackDamage);
                                 chargerCharge = 0;
                                 return attackDamage;
