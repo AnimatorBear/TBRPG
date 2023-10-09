@@ -88,7 +88,6 @@
                 else
                 {
                     Console.WriteLine("Dodge!");
-                    enemy.health += 5;
                 }
                 #endregion
                 if (enemy.health < 1)
@@ -110,7 +109,6 @@
                 else
                 {
                     Console.WriteLine("Dodge!");
-                    currentPlayer.health += 5;
                 }
                 #endregion
                 if (currentPlayer.health < 1)
@@ -137,7 +135,6 @@
             {
                 //Accurate Skill
             }
-
 
             Random rnd = new Random();
             int rand = rnd.Next(0, 100);
