@@ -2,14 +2,14 @@
 {
     internal class Program
     {
-        //Change so no empty
-        //Player and starting class
         static Creature currentPlayer = new Creature(Creature.allClasses.Class_None, 0);
-        static Creature.allClasses testingEnemyClass = Creature.allClasses.FireGuy;
+        static Creature.allClasses testingEnemyClass = Creature.allClasses.Bag;
         static int classSelection = 0;
         static void Main(string[] args)
         {
             Console.Title = "TBRPG";
+
+            //Sets up the player
             while(currentPlayer.currentClass == Creature.allClasses.Class_None)
             {
                 SelectClass();
@@ -17,9 +17,13 @@
             ShowRandomSkills();
             Console.ReadKey();
             Console.Clear();
+
+            //Makes the player stats
             currentPlayer.RecalculateStats();
             currentPlayer.health = currentPlayer.maxHealth;
             Console.WriteLine($"Class: {currentPlayer.currentClass}");
+
+            //Makes a battle
             StartBattle(true);
             Console.ReadKey();
         }
@@ -29,9 +33,12 @@
             //Makes the enemy
             Creature enemy = new Creature(testingEnemyClass,0);
             Console.WriteLine($"Enemy Class: {enemy.currentClass}");
+
+            //Recalculate Stats
             enemy.RecalculateStats(showStatsAtStart);
             currentPlayer.RecalculateStats(showStatsAtStart) ;
             enemy.health = enemy.maxHealth;
+
             bool activeBattle = true;
             while (activeBattle)
             {
@@ -41,6 +48,7 @@
                 Console.WriteLine($"Player dmg: {currentPlayer.damage} , Enemy dmg: {enemy.damage}");
                 bool selectingAttack = true;
 
+                //Makes some ints
                 int selectedAttack = 0;
                 int damage = 0;
                 int dodge = 0;
@@ -79,6 +87,8 @@
                         selectingAttack = false;
                     }
                 }
+
+                //Enemy Dodging
                 #region Enemy Dodge
                 dodged = CalculateDodge(enemy, currentPlayer, dodge);
                 if(!dodged)
@@ -90,6 +100,7 @@
                     Console.WriteLine("Dodge!");
                 }
                 #endregion
+                //Death check
                 if (enemy.health < 1)
                 {
                     Console.WriteLine($"Enemy died! Player HP: {currentPlayer.health}\r\nEnemy HP: {enemy.health}");
@@ -100,6 +111,7 @@
                     enemy.health = enemy.maxHealth;
                 }
                 damage = enemy.Attack(out dodge, selectedAttack);
+                //Player Dodging
                 #region Player Dodge
                 dodged = CalculateDodge(currentPlayer,enemy, dodge);
                 if (!dodged)
@@ -111,6 +123,7 @@
                     Console.WriteLine("Dodge!");
                 }
                 #endregion
+                //Death check
                 if (currentPlayer.health < 1)
                 {
                     Console.WriteLine($"Player died! Player HP: {currentPlayer.health}\r\nEnemy HP: {enemy.health}");
@@ -123,7 +136,10 @@
         }
         static bool CalculateDodge(Creature creature, Creature creature2,int startingDodge)
         {
+            //Creature is defending , Creature2 is attacking,
             int totalDodge = startingDodge;
+
+            //Adds or removes dodge based on skills
             for(int i = 0; i < creature.skills.Length; i++)
             {
                 if (creature.skills[i] == Creature.allSkills.Fast)
@@ -133,9 +149,16 @@
             }
             for (int i = 0; i < creature2.skills.Length; i++)
             {
-                //Accurate Skill
+                if (creature2.skills[i] == Creature.allSkills.Accurate)
+                {
+                    totalDodge -= 5;
+                }
             }
 
+            //Speed
+            totalDodge += creature.speed - creature2.speed;
+
+            //The Random
             Random rnd = new Random();
             int rand = rnd.Next(0, 100);
             if (rand < totalDodge)
@@ -157,41 +180,44 @@
         }
         static void SelectClass()
         {
-            int startingSelection = classSelection;
-            const int amountOfClasses = 5;
             Console.Clear();
+
+            //Few stats, Put amountOfClasses to 6 for Bag class
+            const int amountOfClasses = 5;
+            int startingSelection = classSelection;
             ConsoleColor selectionColor = ConsoleColor.White;
             ConsoleColor selectionTextColor = ConsoleColor.Black;
-            Console.ForegroundColor = ConsoleColor.DarkGray;
-            Console.WriteLine("========================================================================\r\n\r\n\r\n\r\n\r\n\r\n");
-            Console.WriteLine("========================================================================\r\n\r\n\r\n\r\n\r\n\r\n");
-            Console.WriteLine("========================================================================\r\n");
-            Console.ForegroundColor = ConsoleColor.White;
-            string[] classNames = { "Damage Dealer", "Tank","Healer", "REMOVED", "Charger" };
-            string[][] classDescriptions = new string[amountOfClasses][]
+
+            //Class Icons,Names and Descriptions
+            string[] classNames = { "Damage Dealer", "Tank","Healer", "Randomizer", "Charger","Bag" };
+            string[][] classDescriptions = new string[6][]
             {
                 new string[5]
                 {
-                    "Well arent descriptions cool","More Description","maybe some stats","Do an attack that does like 1.5x your damage","Recharges after 4 attacks"
+                    "Well arent descriptions cool","More Description","maybe some stats","Do an attack that does 1.5x your damage",""
                 },
                     new string[5]
                 {
-                    "Well arent descriptions cool","More Description","maybe some stats","Heal 10% of your max health , Still do a light attack afterwards","Recharges after 3 attacks"
+                    "Well arent descriptions cool","More Description","maybe some stats","Heal 10% of your max health","Still do half a light attack afterwards"
                 },
                     new string[5]
                 {
-                    "Well arent descriptions cool","More Description","maybe some stats","Heal 20% of your health","Recharges after 3 attacks"
+                    "Well arent descriptions cool","More Description","maybe some stats","Heal 50% of your health",""
                 },
                     new string[5]
                 {
-                    "Well arent descriptions cool","More Description","maybe some stats","No Class Ability","Recharges after 3 attacks , Even tho it doesnt exist"
+                    "Well arent descriptions cool","More Description","maybe some stats","Use a random selected attack",""
                 },
                     new string[5]
                 {
                     "Well arent descriptions cool","More Description","maybe some stats","Every time you dont use your class ability ","your class ability will attack more times when you use it"
+                },
+                    new string[5]
+                {
+                    "Well arent descriptions cool","More Description","maybe some stats","Bag",""
                 }
             };
-            string[][] iconArray = new string[amountOfClasses][]{
+            string[][] iconArray = new string[6][]{
                 new string[4]{
                     "     /\\   ",
                     "    / /   ",
@@ -216,11 +242,28 @@
                     " ======== ",
                     " |████  | ",
                     " |██    | ",
-                    " ======== "}
+                    " ======== "},
+                new string[4]{
+                    "  ======  ",
+                    "    ||    ",
+                    "    ||    ",
+                    "    ||    "}
+
 
             };
+
+            //Places most of the lines
+            Console.ForegroundColor = ConsoleColor.DarkGray;
+            Console.WriteLine("========================================================================\r\n\r\n\r\n\r\n\r\n\r\n");
+            Console.WriteLine("========================================================================\r\n\r\n\r\n\r\n\r\n\r\n");
+            Console.WriteLine("========================================================================\r\n");
+            Console.ForegroundColor = ConsoleColor.White;
+
+            //Places all class info and icons
             for (int i = 0; i < amountOfClasses; i++)
             {
+                //Class info
+                #region Class Info
                 Console.CursorVisible = false;
                 int center = classNames[classSelection].Length / 2;
                 Console.SetCursorPosition(Console.CursorLeft + 35 - center, Console.CursorTop - 15);
@@ -272,6 +315,9 @@
                     Console.SetCursorPosition(Console.CursorLeft + 35 - center, Console.CursorTop);
                     Console.WriteLine(word);
                 }
+                #endregion
+                //Places all class boxes and put their icons in there
+                #region PlaceBoxes
                 Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop + 2);
                 Console.SetCursorPosition(Console.CursorLeft + (15 * i), Console.CursorTop);
                 Console.WriteLine("|----------|  ");
@@ -334,17 +380,22 @@
                 Console.SetCursorPosition(Console.CursorLeft + (15 * i), Console.CursorTop);
                 Console.WriteLine("|----------|  ");
                 Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop - 6);
-                //Thread.Sleep(100);
+                #endregion
             }
+            //The last line
             Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop + 7);
             Console.ForegroundColor = ConsoleColor.DarkGray;
             Console.WriteLine("========================================================================");
+
+
             string sentence = "Press ENTER to select a class";
             int center2 = sentence.Length / 2;
             Console.SetCursorPosition(Console.CursorLeft + 35 - center2, Console.CursorTop + 1);
             Console.ForegroundColor = ConsoleColor.Blue;
             Console.WriteLine(sentence);
             Console.ForegroundColor = ConsoleColor.White;
+
+            //Move in UI and Select Class
             while (startingSelection == classSelection)
             {
                 ConsoleKey key = Console.ReadKey(true).Key;
@@ -370,10 +421,13 @@
                             currentPlayer.currentClass = Creature.allClasses.Healer;
                             break;
                         case 3:
-                            currentPlayer.currentClass = Creature.allClasses.FireGuy;
+                            currentPlayer.currentClass = Creature.allClasses.RNG;
                             break;
                         case 4:
                             currentPlayer.currentClass = Creature.allClasses.Charger;
+                            break;
+                        case 5:
+                            currentPlayer.currentClass = Creature.allClasses.Bag;
                             break;
                     }
                     Console.Clear();
@@ -389,8 +443,11 @@
             }
 
         }
+
+        //Shows what skills you got at the start of the game
         static void ShowRandomSkills()
         {
+            
             Console.ForegroundColor = ConsoleColor.White;
             string[] skillNames = { "", "", ""};
             string[][] skillDescriptions = new string[3][]
@@ -408,6 +465,7 @@
                     " descriptions (3) "," descriptions 2"," descriptions 3"," descriptions 4"," descriptions 5"
                 }
             };
+            //Icons for all skills
             string[][] iconArray = new string[5][]{
                 new string[4]{
                     "     /\\   ",
@@ -434,6 +492,7 @@
                     " |████  | ",
                     " |██    | ",
                     " ======== "} };
+            //Icons for the skills you have
             string[][] activeSkillsIconArray = new string[3][]{
                 new string[4]{
                     "     /\\   ",
@@ -475,7 +534,7 @@
                     case Creature.allSkills.Violent:
                         for (int j = 0; j < 4; j++)
                         {
-                            activeSkillsIconArray[i][j] = iconArray[3][j];
+                            activeSkillsIconArray[i][j] = iconArray[0][j];
                         }
                         skillNames[i] = "Violent";
                         skillDescriptions[i][0] = "+5 Damage";
@@ -484,6 +543,7 @@
                 }
             }
             Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop + 10);
+            //Makes the box and puts the icon in it
             for (int i = 0; i < 3; i++)
             {
                 int cursorMoveAmount = 20 * (i + 1);

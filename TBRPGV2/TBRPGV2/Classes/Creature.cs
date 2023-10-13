@@ -2,7 +2,7 @@
 {
     internal class Creature
     {
-        public int[,] classStats = { {90,14,4, 999, 100} , { 130, 7, 3, 999, 100 }, { 115, 6, 5, 3, 100 }, { 999, -100, 0, 999, 100 }, { 90, 10, 1, 999, 100 } };
+        public int[,] classStats = { {90,14,4, 999, 8} , { 130, 7, 3, 999, 7 }, { 115, 6, 5, 3, 9 }, { 100, 10, 0, 999, 7 }, { 90, 10, 1, 999, 7 }, { 999, -100, 0, 999, 0 } };
         #region Stats
         //  All stats
         //Health-Type stats
@@ -17,7 +17,7 @@
         #endregion
         #region Class
         //What Class
-        public enum allClasses { Class_None, DamageDealer, Tank, Healer, FireGuy, Charger }
+        public enum allClasses { Class_None, DamageDealer, Tank, Healer, RNG, Charger,Bag }
         public allClasses currentClass = allClasses.DamageDealer;
         //Every class has its own class ability they can use after a few rounds
         public int classAbilityRecharge = 100;
@@ -28,10 +28,10 @@
         #endregion
         #region Skills
         //Skills are small buffs , you starts with 3 and can unlock 1 later on
-        public enum allSkills { None, Healthy, Fast, Violent, Heavy_Hitter, Light_Hitter, Fast_Learner,Lucky};
+        public enum allSkills { None, Healthy, Fast, Violent, Heavy_Hitter, Light_Hitter, Fast_Learner,Lucky,Accurate};
         public allSkills[] skills = { allSkills.None, allSkills.None, allSkills.None,allSkills.None };
         #endregion
-        public enum attacks { None,Class_Ability,Heavy_Hit,Light_Hit};
+        public enum attacks { None,Class_Ability,Heavy_Hit,Light_Hit, RNG_Stats };
         public attacks[] characterAttacks = { attacks.Light_Hit,attacks.Heavy_Hit,attacks.None,attacks.None};
 
         public Creature(allClasses newClass, int startingLevel = 0)
@@ -60,6 +60,7 @@
                     classAbilityRecharge = classStats[0, 2];
                     maxClassAbilityUses = classStats[0, 3];
                     speed = classStats[0, 4];
+                    characterAttacks[2] = attacks.Light_Hit;
                     break;
                 case allClasses.Tank:
                     maxHealth = classStats[1, 0];
@@ -75,12 +76,13 @@
                     maxClassAbilityUses = classStats[2, 3];
                     speed = classStats[2, 4];
                     break;
-                case allClasses.FireGuy:
+                case allClasses.RNG:
                     maxHealth = classStats[3, 0];
                     damage = (float)classStats[3, 1];
                     classAbilityRecharge = classStats[3, 2];
                     maxClassAbilityUses = classStats[3, 3];
                     speed = classStats[3, 4];
+                    characterAttacks[2] = attacks.RNG_Stats;
                     break;
                 case allClasses.Charger:
                     maxHealth = classStats[4, 0];
@@ -88,6 +90,13 @@
                     classAbilityRecharge = classStats[4, 2];
                     maxClassAbilityUses = classStats[4, 3];
                     speed = classStats[4, 4];
+                    break;
+                case allClasses.Bag:
+                    maxHealth = classStats[5, 0];
+                    damage = (float)classStats[5, 1];
+                    classAbilityRecharge = classStats[5, 2];
+                    maxClassAbilityUses = classStats[5, 3];
+                    speed = classStats[5, 4];
                     break;
             }
             healthSources[0] = maxHealth;
@@ -115,6 +124,9 @@
                 {
                     damage = damage + 3;
                     damageSources[2] = 3;
+                }else if (skills[i] == allSkills.Fast)
+                {
+                    speed = speed + 3;
                 }
             }
             damage = (float)Math.Round(damage,1);
@@ -138,6 +150,7 @@
         {
             attacks currentAttack = attacks.None;
             dodge = 0;
+            RandomAttack:
             switch (attack)
             {
                 case 1:
@@ -158,26 +171,81 @@
                 case -1:
                     return 0;
             }
+            float attackDamage = damage;
+            if(currentClass == allClasses.RNG)
+            {
+                Random rnd = new Random();
+                int rand = rnd.Next(-5, 5);
+                attackDamage += rand;
+            }
             switch (currentAttack)
             {
+                //The actual attacks
+                #region AllClasses
                 case attacks.None:
                     Console.WriteLine("ERROR, No attack");
                     roundsUntilAbilityRecharge -= 1;
                     return -100;
+                
+                case attacks.Class_Ability:
+                    if (roundsUntilAbilityRecharge <= 0 && classAbilityUses < maxClassAbilityUses)
+                    {
+                        Console.WriteLine("Class Ability!");
+                        roundsUntilAbilityRecharge = classAbilityRecharge;
+                        classAbilityUses++;
+                        switch (currentClass)
+                        {
+                            case allClasses.DamageDealer:
+                                int classDamage = (int)((attackDamage * damageMultiplier) * 1.5f);
+                                Console.WriteLine(classDamage);
+                                return classDamage;
+                            case allClasses.Tank:
+                                health = health + ((maxHealth / 10));
+                                return (int)((damage * damageMultiplier) * 0.5f);
+                            case allClasses.Healer:
+                                health = health + ((maxHealth / 2));
+                                Console.WriteLine("Heals: " + maxHealth / 2);
+                                return 0;
+                            case allClasses.RNG:
+                                bool gotRND = false;
+                                while (!gotRND)
+                                {
+                                    Random rnd2 = new Random();
+                                    int rand2 = rnd2.Next(1, 5);
+                                    if (characterAttacks[rand2 - 1] != attacks.None)
+                                    {
+                                        attack = rand2;
+                                        gotRND = true;
+                                    }
+                                }
+                                goto RandomAttack;
+                            case allClasses.Charger:
+                                classDamage = (int)(((attackDamage * 0.75f) + chargerCharge) * chargerCharge);
+                                Console.WriteLine(chargerCharge + " Damage: " + classDamage);
+                                chargerCharge = 0;
+                                return classDamage;
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Cant use ability rn");
+                    }
+                    break;
 
                 case attacks.Light_Hit:
                     Console.WriteLine("Light Attack");
+                    dodge = 5;
                     roundsUntilAbilityRecharge -= 2;
                     float extraDamage = 0;
                     for (int i = 0; i < skills.Length; i++)
                     {
                         if (skills[i] == allSkills.Light_Hitter)
                         {
-                            extraDamage = extraDamage + (damage * 1.2f);
+                            extraDamage = extraDamage + (attackDamage * 1.2f);
                         }
                     }
-                    dodge = 5;
-                    return (int)(damage + extraDamage);
+                    return (int)(attackDamage + extraDamage);
+
                 case attacks.Heavy_Hit:
                     Console.WriteLine("Heavy Attack");
                     extraDamage = 0;
@@ -186,46 +254,29 @@
                     {
                         if (skills[i] == allSkills.Heavy_Hitter)
                         {
-                            extraDamage = extraDamage + (damage * 1.2f);
+                            extraDamage = extraDamage + (attackDamage * 1.2f);
                         }
                     }
                     roundsUntilAbilityRecharge -= 1;
-                    return (int)((damage * 1.5f) + extraDamage);
-                case attacks.Class_Ability:
-                    if(roundsUntilAbilityRecharge <= 0 && classAbilityUses < maxClassAbilityUses)
+                    return (int)((attackDamage * 1.5f) + extraDamage);
+                #endregion
+                #region RNG
+                case attacks.RNG_Stats:
+                    Random rnd = new Random();
+                    int rand = rnd.Next(5, 15);
+                    dodge = rand;
+                    Console.WriteLine(dodge + "dodge");
+                    rand = rnd.Next(-5, 10);
+                    Console.WriteLine(rand + "HP");
+                    health += rand;
+                    rand = rnd.Next(5,20);
+                    if(rand >= 18)
                     {
-                        Console.WriteLine("Class Ability!");
-                        roundsUntilAbilityRecharge = classAbilityRecharge;
-                        classAbilityUses++;
-                        switch (currentClass)
-                        {
-                            case allClasses.DamageDealer:
-                                int attackDamage = (int)((damage * damageMultiplier) * 1.5f);
-                                Console.WriteLine(attackDamage);
-                                return attackDamage;
-                            case allClasses.Tank:
-                                health = health + ((maxHealth/10));
-                                return (int)((damage * damageMultiplier) * 0.5f);
-                            case allClasses.Healer:
-                                health = health + ((maxHealth / 2));
-                                Console.WriteLine("Heals: " + maxHealth / 2);
-                                return 0;
-                            case allClasses.FireGuy:
-                                health = health + 100000000;
-                                Console.WriteLine("Unfortunately REMOVED doesnt have an ability yet");
-                                return 0;
-                            case allClasses.Charger:
-                                attackDamage = (int)(((damage *0.75f)+chargerCharge)*chargerCharge );
-                                Console.WriteLine(chargerCharge + " Damage: " + attackDamage);
-                                chargerCharge = 0;
-                                return attackDamage;
-                        }
-                    }
-                    else
-                    {
-                        Console.WriteLine("Cant use ability rn");
-                    }
-                    break;
+                        rand = rnd.Next(18, 30);
+                    } 
+                    Console.WriteLine(rand+"dmg");
+                    return rand;
+                #endregion
             }
             return 0;
         }
