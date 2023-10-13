@@ -223,12 +223,10 @@
                     "Well arent descriptions cool","More Description","maybe some stats","Bag",""
                 }
             };
-                    
-
             string[][] iconArray = new string[6][]{
                 new string[4]{
                     "     /\\   ",
-                    "    / /  ℻ ",
+                    "    / /   ",
                     "   / /    ",
                     "  / /     "},
                 new string[4]{
