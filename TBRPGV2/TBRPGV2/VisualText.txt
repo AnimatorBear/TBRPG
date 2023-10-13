@@ -2,6 +2,10 @@
 
 This file is for me to make Icons.
 
+Working Icons:
+
+↧ ‾ ║ ═ ╝╚ ╗╔ ✞ ☐ ⚞ ⚟ ☭ ◠ ␥ ⏟ ⏞   ⏜ ⏝  ⌒ ⌁ ⌂ ⏣
+
 Classes: 
 
 |      /\  |

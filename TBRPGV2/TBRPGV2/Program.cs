@@ -7,6 +7,8 @@
         static int classSelection = 0;
         static void Main(string[] args)
         {
+            Console.OutputEncoding = System.Text.Encoding.Unicode;
+
             Console.Title = "TBRPG";
 
             //Sets up the player
@@ -107,7 +109,7 @@
                 //Death check
                 if (enemy.health < 1)
                 {
-                    Console.WriteLine($"Enemy died! Player HP: {currentPlayer.health}\r\nEnemy HP: {enemy.health}");
+                    Console.WriteLine($"☠ Enemy died! Player HP: {currentPlayer.health}\r\nEnemy HP: {enemy.health}");
                     currentPlayer.currentLevel += 1;
                     activeBattle = false;
                 }
@@ -131,7 +133,7 @@
                 //Death check
                 if (currentPlayer.health < 1)
                 {
-                    Console.WriteLine($"Player died! Player HP: {currentPlayer.health}\r\nEnemy HP: {enemy.health}");
+                    Console.WriteLine($"☠ Player died! Player HP: {currentPlayer.health}\r\nEnemy HP: {enemy.health}");
                     activeBattle = false;
                 } else if(currentPlayer.health > currentPlayer.maxHealth)
                 {
@@ -192,7 +194,6 @@
             int startingSelection = classSelection;
             ConsoleColor selectionColor = ConsoleColor.White;
             ConsoleColor selectionTextColor = ConsoleColor.Black;
-
             //Class Icons,Names and Descriptions
             string[] classNames = { "Damage Dealer", "Tank","Healer", "Randomizer", "Charger","Bag" };
             string[][] classDescriptions = new string[6][]
@@ -222,10 +223,12 @@
                     "Well arent descriptions cool","More Description","maybe some stats","Bag",""
                 }
             };
+                    
+
             string[][] iconArray = new string[6][]{
                 new string[4]{
                     "     /\\   ",
-                    "    / /   ",
+                    "    / /  ℻ ",
                     "   / /    ",
                     "  / /     "},
                 new string[4]{
