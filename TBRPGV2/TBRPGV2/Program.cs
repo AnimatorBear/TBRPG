@@ -239,11 +239,11 @@
                     "----╝╚----",
                     "----╗╔----",
                     "    ||    "},
-                new string[4]{ 
-                    "          ",
-                    "   w.i.p  ",
-                    "   w.i.p  ",
-                    "          " },
+                new string[4]{
+                    "  ╔----╗  ",
+                    "  |  ()|  ",
+                    "  |()  |  ",
+                    "  ╚----╝  "},
                 new string[4]{
                     " ======== ",
                     " |████  | ",
@@ -483,10 +483,10 @@
                     "   \\  /   ",
                     "    \\/    "},
                 new string[4]{
-                    "    ||    ",
-                    "----╝╚----",
-                    "----╗╔----",
-                    "    ||    "},
+                    "   - ---/\\",
+                    " - ----/ /",
+                    "- ----/ / ",
+                    "-- --/ /  "},
                 new string[4]{
                     "          ",
                     "   w.i.p  ",
@@ -544,6 +544,15 @@
                         skillNames[i] = "Violent";
                         skillDescriptions[i][0] = "+5 Damage";
                         skillDescriptions[i][1] = "";
+                        break;
+                    case Creature.allSkills.Accurate:
+                        for (int j = 0; j < 4; j++)
+                        {
+                            activeSkillsIconArray[i][j] = iconArray[2][j];
+                        }
+                        skillNames[i] = "Accurate";
+                        skillDescriptions[i][0] = "-5 chance ";
+                        skillDescriptions[i][1] = "for an enemy to dodge";
                         break;
                 }
             }
