@@ -10,6 +10,7 @@
             Console.Title = "TBRPG";
 
             //Sets up the player
+            currentPlayer.damageMultiplier = 500;
             while(currentPlayer.currentClass == Creature.allClasses.Class_None)
             {
                 SelectClass();
@@ -24,14 +25,17 @@
             Console.WriteLine($"Class: {currentPlayer.currentClass}");
 
             //Makes a battle
-            StartBattle(true);
+            while (true)
+            {
+                StartBattle(true);
+            }
             Console.ReadKey();
         }
 
         static void StartBattle(bool showStatsAtStart)
         {
             //Makes the enemy
-            Creature enemy = new Creature(testingEnemyClass,0);
+            Creature enemy = new Creature(testingEnemyClass,currentPlayer.currentLevel);
             Console.WriteLine($"Enemy Class: {enemy.currentClass}");
 
             //Recalculate Stats
@@ -104,6 +108,7 @@
                 if (enemy.health < 1)
                 {
                     Console.WriteLine($"Enemy died! Player HP: {currentPlayer.health}\r\nEnemy HP: {enemy.health}");
+                    currentPlayer.currentLevel += 1;
                     activeBattle = false;
                 }
                 else if (enemy.health > enemy.maxHealth)
@@ -258,7 +263,6 @@
             Console.WriteLine("========================================================================\r\n\r\n\r\n\r\n\r\n\r\n");
             Console.WriteLine("========================================================================\r\n");
             Console.ForegroundColor = ConsoleColor.White;
-
             //Places all class info and icons
             for (int i = 0; i < amountOfClasses; i++)
             {
@@ -470,7 +474,7 @@
                 new string[4]{
                     "     /\\   ",
                     "    / /   ",
-                    "   / /   ",
+                    "   / /    ",
                     "  / /     "},
                 new string[4]{
                     "   _  _   ",

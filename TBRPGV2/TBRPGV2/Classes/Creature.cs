@@ -2,7 +2,9 @@
 {
     internal class Creature
     {
-        public int[,] classStats = { {90,14,4, 999, 8} , { 130, 7, 3, 999, 7 }, { 115, 6, 5, 3, 9 }, { 100, 10, 0, 999, 7 }, { 90, 10, 1, 999, 7 }, { 999, -100, 0, 999, 0 } };
+        public int[,] classStats = { {90,14,4, 999, 8} , { 130, 7, 3, 999, 7 }, { 115, 6, 5, 3, 9 }, { 100, 10, 0, 999, 7 }, { 90, 10, 1, 999, 7 }, 
+            //Bag Stats, For testing
+            { 35, -100, 0, 999, 0 } };
         #region Stats
         //  All stats
         //Health-Type stats
@@ -36,6 +38,8 @@
 
         public Creature(allClasses newClass, int startingLevel = 0)
         {
+
+
             //Adds starting stats and stuff
             currentClass = newClass;
             currentLevel = startingLevel;
@@ -55,6 +59,7 @@
             switch (currentClass)
             {
                 case allClasses.DamageDealer:
+
                     maxHealth = classStats[0,0];
                     damage = (float)classStats[0,1];
                     classAbilityRecharge = classStats[0, 2];
@@ -220,7 +225,7 @@
                                 }
                                 goto RandomAttack;
                             case allClasses.Charger:
-                                classDamage = (int)(((attackDamage * 0.75f) + chargerCharge) * chargerCharge);
+                                classDamage = (int)((((attackDamage * 0.75f) + chargerCharge) * chargerCharge)*damageMultiplier);
                                 Console.WriteLine(chargerCharge + " Damage: " + classDamage);
                                 chargerCharge = 0;
                                 return classDamage;
@@ -244,7 +249,7 @@
                             extraDamage = extraDamage + (attackDamage * 1.2f);
                         }
                     }
-                    return (int)(attackDamage + extraDamage);
+                    return (int)((attackDamage + extraDamage) * damageMultiplier);
 
                 case attacks.Heavy_Hit:
                     Console.WriteLine("Heavy Attack");
@@ -258,7 +263,7 @@
                         }
                     }
                     roundsUntilAbilityRecharge -= 1;
-                    return (int)((attackDamage * 1.5f) + extraDamage);
+                    return (int)(((attackDamage * 1.5f) + extraDamage) * damageMultiplier);
                 #endregion
                 #region RNG
                 case attacks.RNG_Stats:
