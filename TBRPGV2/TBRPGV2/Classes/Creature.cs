@@ -33,7 +33,13 @@
         public enum allSkills { None, Healthy, Fast, Violent, Heavy_Hitter, Light_Hitter, Fast_Learner,Lucky,Accurate};
         public allSkills[] skills = { allSkills.None, allSkills.None, allSkills.None,allSkills.None };
         #endregion
-        public enum attacks { None,Class_Ability,Heavy_Hit,Light_Hit, RNG_Stats };
+
+        //DD = DamageDealer
+        //TK = Tank
+        //HL = Healer
+        //RG = RNG
+        //CH = Charger
+        public enum attacks { None,Class_Ability,Heavy_Hit,Light_Hit, RG_Stats,HL_LifeSteal };
         public attacks[] characterAttacks = { attacks.Light_Hit,attacks.Heavy_Hit,attacks.None,attacks.None};
 
         public Creature(allClasses newClass, int startingLevel = 0)
@@ -87,7 +93,7 @@
                     classAbilityRecharge = classStats[3, 2];
                     maxClassAbilityUses = classStats[3, 3];
                     speed = classStats[3, 4];
-                    characterAttacks[2] = attacks.RNG_Stats;
+                    characterAttacks[2] = attacks.RG_Stats;
                     break;
                 case allClasses.Charger:
                     maxHealth = classStats[4, 0];
@@ -183,6 +189,7 @@
                 int rand = rnd.Next(-5, 5);
                 attackDamage += rand;
             }
+            Console.WriteLine(currentAttack);
             switch (currentAttack)
             {
                 //The actual attacks
@@ -241,7 +248,6 @@
                     break;
 
                 case attacks.Light_Hit:
-                    Console.WriteLine("Light Attack");
                     dodge = 5;
                     roundsUntilAbilityRecharge -= 2;
                     float extraDamage = 0;
@@ -255,7 +261,6 @@
                     return (int)((attackDamage + extraDamage) * damageMultiplier);
 
                 case attacks.Heavy_Hit:
-                    Console.WriteLine("Heavy Attack");
                     extraDamage = 0;
                     dodge = 15;
                     for (int i = 0; i < skills.Length; i++)
@@ -268,8 +273,28 @@
                     roundsUntilAbilityRecharge -= 1;
                     return (int)(((attackDamage * 1.5f) + extraDamage) * damageMultiplier);
                 #endregion
+
+                #region ClassSpecificAttacks
+                #region Damage Dealer
+                #endregion
+                #region Tank
+                #endregion
+                #region Healer
+                case attacks.HL_LifeSteal:
+                    dodge = 5;
+                    roundsUntilAbilityRecharge -= 2;
+                    extraDamage = 0;
+                    for (int i = 0; i < skills.Length; i++)
+                    {
+                        if (skills[i] == allSkills.Light_Hitter)
+                        {
+                            extraDamage = extraDamage + (attackDamage * 1.2f);
+                        }
+                    }
+                    return (int)((attackDamage + extraDamage) * damageMultiplier);
+                #endregion
                 #region RNG
-                case attacks.RNG_Stats:
+                case attacks.RG_Stats:
                     Random rnd = new Random();
                     int rand = rnd.Next(5, 15);
                     dodge = rand;
@@ -284,6 +309,9 @@
                     } 
                     Console.WriteLine(rand+"dmg");
                     return rand;
+                    #endregion
+                #region Charger
+                    #endregion
                 #endregion
             }
             return 0;

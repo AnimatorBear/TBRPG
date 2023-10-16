@@ -9,13 +9,20 @@
         public static int amountOfClasses = 5;
         static void Main(string[] args)
         {
+            //Some Misc things
             Console.OutputEncoding = System.Text.Encoding.Unicode;
-
             Console.Title = "TBRPG";
 
+            NewCharacter();
+
+            Console.ReadKey();
+        }
+        static void NewCharacter()
+        {
+            currentPlayer = new Creature(Creature.allClasses.Class_None, 0);
             //Sets up the player
             //currentPlayer.damageMultiplier = 500;
-            while(currentPlayer.currentClass == Creature.allClasses.Class_None)
+            while (currentPlayer.currentClass == Creature.allClasses.Class_None)
             {
                 SelectClass();
             }
@@ -30,19 +37,7 @@
 
             //Makes a battle
             StartBattle(true);
-
-            currentPlayer = new Creature(Creature.allClasses.Class_None, 0);
-            while (currentPlayer.currentClass == Creature.allClasses.Class_None)
-            {
-                SelectClass();
-            }
-            currentPlayer.RecalculateStats(true);
-            currentPlayer.health = currentPlayer.maxHealth;
-            StartBattle(true);
-
-            Console.ReadKey();
         }
-
         static void StartBattle(bool showStatsAtStart)
         {
             //Makes the enemy
