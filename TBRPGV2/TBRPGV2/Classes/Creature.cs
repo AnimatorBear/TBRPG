@@ -4,7 +4,7 @@
     {
         public int[,] classStats = { {90,14,4, 999, 8} , { 130, 7, 3, 999, 7 }, { 115, 6, 5, 3, 9 }, { 100, 10, 0, 999, 7 }, { 90, 10, 1, 999, 7 }, 
             //Bag Stats, For testing
-            { 35, -100, 0, 999, 0 } };
+            { 9999, -5, 0, 999, 0 } };
         #region Stats
         //  All stats
         //Health-Type stats
@@ -219,6 +219,7 @@
                                     int rand2 = rnd2.Next(1, 5);
                                     if (characterAttacks[rand2 - 1] != attacks.None)
                                     {
+                                        Program.amountOfClasses = 6;
                                         attack = rand2;
                                         gotRND = true;
                                     }
@@ -229,6 +230,8 @@
                                 Console.WriteLine(chargerCharge + " Damage: " + classDamage);
                                 chargerCharge = 0;
                                 return classDamage;
+                            case allClasses.Bag:
+                                return 1;
                         }
                     }
                     else

@@ -3,8 +3,10 @@
     internal class Program
     {
         static Creature currentPlayer = new Creature(Creature.allClasses.Class_None, 0);
-        static Creature.allClasses testingEnemyClass = Creature.allClasses.Bag;
+        static Creature.allClasses testingEnemyClass = Creature.allClasses.DamageDealer;
         static int classSelection = 0;
+        //Few stats, Put amountOfClasses to 6 for Bag class
+        public static int amountOfClasses = 5;
         static void Main(string[] args)
         {
             Console.OutputEncoding = System.Text.Encoding.Unicode;
@@ -12,7 +14,7 @@
             Console.Title = "TBRPG";
 
             //Sets up the player
-            currentPlayer.damageMultiplier = 500;
+            //currentPlayer.damageMultiplier = 500;
             while(currentPlayer.currentClass == Creature.allClasses.Class_None)
             {
                 SelectClass();
@@ -27,10 +29,17 @@
             Console.WriteLine($"Class: {currentPlayer.currentClass}");
 
             //Makes a battle
-            while (true)
+            StartBattle(true);
+
+            currentPlayer = new Creature(Creature.allClasses.Class_None, 0);
+            while (currentPlayer.currentClass == Creature.allClasses.Class_None)
             {
-                StartBattle(true);
+                SelectClass();
             }
+            currentPlayer.RecalculateStats(true);
+            currentPlayer.health = currentPlayer.maxHealth;
+            StartBattle(true);
+
             Console.ReadKey();
         }
 
@@ -189,8 +198,6 @@
         {
             Console.Clear();
 
-            //Few stats, Put amountOfClasses to 6 for Bag class
-            const int amountOfClasses = 5;
             int startingSelection = classSelection;
             ConsoleColor selectionColor = ConsoleColor.White;
             ConsoleColor selectionTextColor = ConsoleColor.Black;
@@ -200,27 +207,27 @@
             {
                 new string[5]
                 {
-                    "Well arent descriptions cool","More Description","maybe some stats","Do an attack that does 1.5x your damage",""
+                    "The damage dealer is a class based around damage","This class lacks in defence","Class Ability:","Do an attack that does 1.5x your damage",""
                 },
                     new string[5]
                 {
-                    "Well arent descriptions cool","More Description","maybe some stats","Heal 10% of your max health","Still do half a light attack afterwards"
+                    "The tank is a class based around damage and health","It is a mix of healer and damage dealer","Class Ability:","Heal 10% of your max health","Still do half a light attack afterwards"
                 },
                     new string[5]
                 {
-                    "Well arent descriptions cool","More Description","maybe some stats","Heal 50% of your health",""
+                    "The healer is a class based around health","This class lacks in damage","Class Ability:","Heal 50% of your health",""
                 },
                     new string[5]
                 {
-                    "Well arent descriptions cool","More Description","maybe some stats","Use a random selected attack",""
+                    "The RNG_CLASS is based around randomness","It's strength is based around your luck","Class Ability:","Use a random selected attack",""
                 },
                     new string[5]
                 {
-                    "Well arent descriptions cool","More Description","maybe some stats","Every time you dont use your class ability ","your class ability will attack more times when you use it"
+                    "The charger is based around charging your attacks","Your attacks deal more damage the more you use them","Class Ability:","Every time you dont use your class ability ","your class ability will attack more times when you use it"
                 },
                     new string[5]
                 {
-                    "Well arent descriptions cool","More Description","maybe some stats","Bag",""
+                    "Punching Bag","Testing Class","Class Ability:","Bag","Icon is a beaker"
                 }
             };
             string[][] iconArray = new string[6][]{
@@ -250,10 +257,10 @@
                     " |██    | ",
                     " ======== "},
                 new string[4]{
-                    "  ======  ",
-                    "    ||    ",
-                    "    ||    ",
-                    "    ||    "}
+                    "   |  |   ",
+                    "   |‾-|   ",
+                    "  /    \\  ",
+                    " /______\\ "}
 
 
             };
