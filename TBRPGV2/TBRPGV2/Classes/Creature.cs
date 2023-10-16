@@ -4,7 +4,7 @@
     {
         public int[,] classStats = { {90,13,4, 999, 8} , { 130, 9, 3, 999, 7 }, { 115, 7, 5, 3, 9 }, { 100, 10, 0, 999, 7 }, { 90, 10, 1, 999, 7 }, 
             //Bag Stats, For testing
-            { 9999, -5, 0, 999, 0 } };
+            { 999, -5, 0, 999, 0 } };
         #region Stats
         //  All stats
         //Health-Type stats
@@ -30,7 +30,7 @@
         #endregion
         #region Skills
         //Skills are small buffs , you starts with 3 and can unlock 1 later on
-        public enum allSkills { None, Healthy, Fast, Violent, Heavy_Hitter, Light_Hitter, Fast_Learner,Lucky,Accurate};
+        public enum allSkills { None, Healthy, Fast, Violent, Heavy_Hitter, Light_Hitter, Fast_Learner,Accurate,Glass_Cannon};
         public allSkills[] skills = { allSkills.None, allSkills.None, allSkills.None,allSkills.None };
         #endregion
 
@@ -129,6 +129,7 @@
                 damageSources[1] = damageSources[1] + (startingDamage / 20);
             }
             //Skills stats
+            bool glassCannon = false;
             for(int i = 0;i < skills.Length; i++)
             {
                 if (skills[i] == allSkills.Healthy)
@@ -142,7 +143,15 @@
                 }else if (skills[i] == allSkills.Fast)
                 {
                     speed = speed + 3;
+                }else if (skills[i] == allSkills.Glass_Cannon)
+                {
+                    glassCannon = true;
                 }
+            }
+            if (glassCannon)
+            {
+                maxHealth = maxHealth / 2;
+                damage = damage * 2;
             }
             damage = (float)Math.Round(damage,1);
             //Math if I wanna see it

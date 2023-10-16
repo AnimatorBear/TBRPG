@@ -3,7 +3,7 @@
     internal class Program
     {
         static Creature currentPlayer = new Creature(Creature.allClasses.Class_None, 0);
-        static Creature.allClasses testingEnemyClass = Creature.allClasses.Bag;
+        static Creature.allClasses testingEnemyClass = Creature.allClasses.Tank;
         static int classSelection = 0;
         //Few stats, Put amountOfClasses to 6 for Bag class
         public static int amountOfClasses = 5;
@@ -14,6 +14,12 @@
             Console.Title = "TBRPG";
 
             NewCharacter();
+
+            while (true)
+            {
+                currentPlayer.health = currentPlayer.maxHealth;
+                StartBattle(false);
+            }
 
             NewCharacter();
 
@@ -557,6 +563,51 @@
                         skillNames[i] = "Accurate";
                         skillDescriptions[i][0] = "-5 chance ";
                         skillDescriptions[i][1] = "for an enemy to dodge";
+                        break;
+                    case Creature.allSkills.Fast:
+                        for (int j = 0; j < 4; j++)
+                        {
+                            activeSkillsIconArray[i][j] = iconArray[3][j];
+                        }
+                        skillNames[i] = "Fast";
+                        skillDescriptions[i][0] = "+3 Speed";
+                        skillDescriptions[i][1] = "";
+                        break;
+                    case Creature.allSkills.Fast_Learner:
+                        for (int j = 0; j < 4; j++)
+                        {
+                            activeSkillsIconArray[i][j] = iconArray[3][j];
+                        }
+                        skillNames[i] = "Fast Learner";
+                        skillDescriptions[i][0] = "Useless";
+                        skillDescriptions[i][1] = "";
+                        break;
+                    case Creature.allSkills.Light_Hitter:
+                        for (int j = 0; j < 4; j++)
+                        {
+                            activeSkillsIconArray[i][j] = iconArray[3][j];
+                        }
+                        skillNames[i] = "Light Hitter";
+                        skillDescriptions[i][0] = "More ";
+                        skillDescriptions[i][1] = "light hit damage";
+                        break;
+                    case Creature.allSkills.Heavy_Hitter:
+                        for (int j = 0; j < 4; j++)
+                        {
+                            activeSkillsIconArray[i][j] = iconArray[3][j];
+                        }
+                        skillNames[i] = "Heavy Hitter";
+                        skillDescriptions[i][0] = "More ";
+                        skillDescriptions[i][1] = "heavy hit damage";
+                        break;
+                    case Creature.allSkills.Glass_Cannon:
+                        for (int j = 0; j < 4; j++)
+                        {
+                            activeSkillsIconArray[i][j] = iconArray[3][j];
+                        }
+                        skillNames[i] = "Glass Cannon";
+                        skillDescriptions[i][0] = "2x Damage";
+                        skillDescriptions[i][1] = "50% max HP";
                         break;
                 }
             }
