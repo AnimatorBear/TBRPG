@@ -2,7 +2,7 @@
 {
     internal class Creature
     {
-        public int[,] classStats = { {90,14,4, 999, 8} , { 130, 7, 3, 999, 7 }, { 115, 6, 5, 3, 9 }, { 100, 10, 0, 999, 7 }, { 90, 10, 1, 999, 7 }, 
+        public int[,] classStats = { {90,13,4, 999, 8} , { 130, 9, 3, 999, 7 }, { 115, 7, 5, 3, 9 }, { 100, 10, 0, 999, 7 }, { 90, 10, 1, 999, 7 }, 
             //Bag Stats, For testing
             { 9999, -5, 0, 999, 0 } };
         #region Stats
@@ -35,11 +35,12 @@
         #endregion
 
         //DD = DamageDealer
-        //TK = Tank
+        //TK = Tank 
         //HL = Healer
-        //RG = RNG
+        //RG = Randomizer
         //CH = Charger
-        public enum attacks { None,Class_Ability,Heavy_Hit,Light_Hit, RG_Stats,HL_LifeSteal };
+        //BG = Bag
+        public enum attacks { None,Class_Ability,Heavy_Hit,Light_Hit,BG_NO, RG_Stats,HL_LifeSteal };
         public attacks[] characterAttacks = { attacks.Light_Hit,attacks.Heavy_Hit,attacks.None,attacks.None};
 
         public Creature(allClasses newClass, int startingLevel = 0)
@@ -86,6 +87,7 @@
                     classAbilityRecharge = classStats[2, 2];
                     maxClassAbilityUses = classStats[2, 3];
                     speed = classStats[2, 4];
+                    characterAttacks[2] = attacks.HL_LifeSteal;
                     break;
                 case allClasses.RNG:
                     maxHealth = classStats[3, 0];
@@ -108,6 +110,8 @@
                     classAbilityRecharge = classStats[5, 2];
                     maxClassAbilityUses = classStats[5, 3];
                     speed = classStats[5, 4];
+                    characterAttacks[2] = attacks.BG_NO;
+                    characterAttacks[2] = attacks.BG_NO;
                     break;
             }
             healthSources[0] = maxHealth;
@@ -162,6 +166,7 @@
             attacks currentAttack = attacks.None;
             dodge = 0;
             RandomAttack:
+            #region Select attack based on int
             switch (attack)
             {
                 case 1:
@@ -182,27 +187,30 @@
                 case -1:
                     return 0;
             }
+            #endregion
             float attackDamage = damage;
-            if(currentClass == allClasses.RNG)
+            #region Randomizer Random Attack Damage
+            if (currentClass == allClasses.RNG)
             {
                 Random rnd = new Random();
                 int rand = rnd.Next(-5, 5);
                 attackDamage += rand;
             }
+            #endregion
             Console.WriteLine(currentAttack);
             switch (currentAttack)
             {
                 //The actual attacks
-                #region AllClasses
+                #region All Class Attacks
+                    #region None
                 case attacks.None:
-                    Console.WriteLine("ERROR, No attack");
                     roundsUntilAbilityRecharge -= 1;
                     return -100;
-                
+                #endregion
+                    #region Class Ability
                 case attacks.Class_Ability:
                     if (roundsUntilAbilityRecharge <= 0 && classAbilityUses < maxClassAbilityUses)
                     {
-                        Console.WriteLine("Class Ability!");
                         roundsUntilAbilityRecharge = classAbilityRecharge;
                         classAbilityUses++;
                         switch (currentClass)
@@ -211,13 +219,16 @@
                                 int classDamage = (int)((attackDamage * damageMultiplier) * 1.5f);
                                 Console.WriteLine(classDamage);
                                 return classDamage;
+
                             case allClasses.Tank:
                                 health = health + ((maxHealth / 10));
                                 return (int)((damage * damageMultiplier) * 0.5f);
+
                             case allClasses.Healer:
                                 health = health + ((maxHealth / 2));
                                 Console.WriteLine("Heals: " + maxHealth / 2);
                                 return 0;
+
                             case allClasses.RNG:
                                 bool gotRND = false;
                                 while (!gotRND)
@@ -232,11 +243,13 @@
                                     }
                                 }
                                 goto RandomAttack;
+
                             case allClasses.Charger:
                                 classDamage = (int)((((attackDamage * 0.75f) + chargerCharge) * chargerCharge)*damageMultiplier);
                                 Console.WriteLine(chargerCharge + " Damage: " + classDamage);
                                 chargerCharge = 0;
                                 return classDamage;
+
                             case allClasses.Bag:
                                 return 1;
                         }
@@ -246,7 +259,8 @@
                         Console.WriteLine("Cant use ability rn");
                     }
                     break;
-
+                #endregion
+                    #region Light Hit
                 case attacks.Light_Hit:
                     dodge = 5;
                     roundsUntilAbilityRecharge -= 2;
@@ -259,7 +273,8 @@
                         }
                     }
                     return (int)((attackDamage + extraDamage) * damageMultiplier);
-
+                #endregion
+                    #region Heavy Hit
                 case attacks.Heavy_Hit:
                     extraDamage = 0;
                     dodge = 15;
@@ -273,6 +288,7 @@
                     roundsUntilAbilityRecharge -= 1;
                     return (int)(((attackDamage * 1.5f) + extraDamage) * damageMultiplier);
                 #endregion
+                #endregion
 
                 #region ClassSpecificAttacks
                 #region Damage Dealer
@@ -280,20 +296,17 @@
                 #region Tank
                 #endregion
                 #region Healer
+                    #region LifeSteal
                 case attacks.HL_LifeSteal:
                     dodge = 5;
                     roundsUntilAbilityRecharge -= 2;
-                    extraDamage = 0;
-                    for (int i = 0; i < skills.Length; i++)
-                    {
-                        if (skills[i] == allSkills.Light_Hitter)
-                        {
-                            extraDamage = extraDamage + (attackDamage * 1.2f);
-                        }
-                    }
-                    return (int)((attackDamage + extraDamage) * damageMultiplier);
+                    int dmg = (int)((attackDamage) * damageMultiplier);
+                    health = health + (dmg / 2);
+                    return dmg/2;
+                #endregion
                 #endregion
                 #region RNG
+                    #region RG_Stats
                 case attacks.RG_Stats:
                     Random rnd = new Random();
                     int rand = rnd.Next(5, 15);
@@ -309,9 +322,14 @@
                     } 
                     Console.WriteLine(rand+"dmg");
                     return rand;
-                    #endregion
+                #endregion
+                #endregion
                 #region Charger
-                    #endregion
+                #endregion
+                #region Bag
+                case attacks.BG_NO:
+                    return 0;
+                #endregion
                 #endregion
             }
             return 0;

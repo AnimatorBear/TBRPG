@@ -3,7 +3,7 @@
     internal class Program
     {
         static Creature currentPlayer = new Creature(Creature.allClasses.Class_None, 0);
-        static Creature.allClasses testingEnemyClass = Creature.allClasses.DamageDealer;
+        static Creature.allClasses testingEnemyClass = Creature.allClasses.Bag;
         static int classSelection = 0;
         //Few stats, Put amountOfClasses to 6 for Bag class
         public static int amountOfClasses = 5;
@@ -12,6 +12,8 @@
             //Some Misc things
             Console.OutputEncoding = System.Text.Encoding.Unicode;
             Console.Title = "TBRPG";
+
+            NewCharacter();
 
             NewCharacter();
 
@@ -214,7 +216,7 @@
                 },
                     new string[5]
                 {
-                    "The RNG_CLASS is based around randomness","It's strength is based around your luck","Class Ability:","Use a random selected attack",""
+                    "The randomizer is based around randomness","It's strength is based around your luck","Class Ability:","Use a random selected attack",""
                 },
                     new string[5]
                 {
