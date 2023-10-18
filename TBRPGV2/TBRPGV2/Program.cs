@@ -15,13 +15,16 @@
 
             NewCharacter();
 
-            while (true)
+            do
             {
                 currentPlayer.health = currentPlayer.maxHealth;
                 StartBattle(false);
             }
+            while (true);
 
             NewCharacter();
+
+            StartBattle(true);
 
             Console.ReadKey();
         }
@@ -130,6 +133,10 @@
                     enemy.health = enemy.maxHealth;
                 }
                 damage = enemy.Attack(out dodge, selectedAttack);
+                if (damage == -100)
+                {
+                    damage = 0;
+                }
                 //Player Dodging
                 #region Player Dodge
                 dodged = CalculateDodge(currentPlayer,enemy, dodge);
@@ -606,8 +613,8 @@
                             activeSkillsIconArray[i][j] = iconArray[3][j];
                         }
                         skillNames[i] = "Glass Cannon";
-                        skillDescriptions[i][0] = "2x Damage";
-                        skillDescriptions[i][1] = "50% max HP";
+                        skillDescriptions[i][0] = "1.5x Damage";
+                        skillDescriptions[i][1] = "75?% max HP";
                         break;
                 }
             }

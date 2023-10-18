@@ -150,8 +150,8 @@
             }
             if (glassCannon)
             {
-                maxHealth = maxHealth / 2;
-                damage = damage * 2;
+                maxHealth = (int)(maxHealth / 1.5f);
+                damage = damage * 1.5f;
             }
             damage = (float)Math.Round(damage,1);
             //Math if I wanna see it
@@ -307,11 +307,11 @@
                 #region Healer
                     #region LifeSteal
                 case attacks.HL_LifeSteal:
-                    dodge = 5;
+                    dodge = 10;
                     roundsUntilAbilityRecharge -= 2;
                     int dmg = (int)((attackDamage) * damageMultiplier);
-                    health = health + (dmg / 2);
-                    return dmg/2;
+                    health = (int)(health + (dmg / 1.5f));
+                    return (int)(dmg / 1.5f);
                 #endregion
                 #endregion
                 #region RNG
