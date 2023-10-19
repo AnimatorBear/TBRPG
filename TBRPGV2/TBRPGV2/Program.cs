@@ -595,7 +595,7 @@
                             activeSkillsIconArray[i][j] = iconArray[3][j];
                         }
                         skillNames[i] = "Light Hitter";
-                        skillDescriptions[i][0] = "More ";
+                        skillDescriptions[i][0] = "1.2x";
                         skillDescriptions[i][1] = "light hit damage";
                         break;
                     case Creature.allSkills.Heavy_Hitter:
@@ -604,7 +604,7 @@
                             activeSkillsIconArray[i][j] = iconArray[3][j];
                         }
                         skillNames[i] = "Heavy Hitter";
-                        skillDescriptions[i][0] = "More ";
+                        skillDescriptions[i][0] = "1.2x";
                         skillDescriptions[i][1] = "heavy hit damage";
                         break;
                     case Creature.allSkills.Glass_Cannon:

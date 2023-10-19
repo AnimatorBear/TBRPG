@@ -347,7 +347,27 @@
         {
             //Chooses a random skill from the allskills enum
             Random rnd = new Random();
-            allSkills skill = (allSkills)rnd.Next(Enum.GetNames(typeof(allSkills)).Length);
+            List<allSkills> randomSkills = new List<allSkills>();
+            allSkills[] allClassSkills = { allSkills.Healthy,allSkills.Fast,allSkills.Violent};
+            allSkills[][] classSkills = { 
+                new allSkills[] {allSkills.Glass_Cannon},
+                new allSkills[] { }
+            };
+            for(int i = 0; i < allClassSkills.Length; i++)
+            {
+                randomSkills.Add(allClassSkills[i]);
+            }
+            switch (currentClass)
+            {
+                case allClasses.DamageDealer:
+                    for (int i = 0; i < classSkills[0].Length; i++)
+                    {
+                        randomSkills.Add(classSkills[0][0]);
+                    }
+                    break;
+            }
+            //allSkills skill = (allSkills)rnd.Next(Enum.GetNames(typeof(allSkills)).Length);
+            allSkills skill = randomSkills[rnd.Next(0,randomSkills.Count)];
             if (skill == skills[0] || skill == skills[1] || skill == skills[2] || skill == allSkills.None)
             {
                 skill = randomSkill();
