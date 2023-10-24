@@ -37,6 +37,9 @@
             {
                 SelectClass();
             }
+            currentPlayer.skills[0] = currentPlayer.randomSkill();
+            currentPlayer.skills[1] = currentPlayer.randomSkill();
+            currentPlayer.skills[2] = currentPlayer.randomSkill();
             ShowRandomSkills();
             Console.ReadKey();
             Console.Clear();
@@ -614,7 +617,16 @@
                         }
                         skillNames[i] = "Glass Cannon";
                         skillDescriptions[i][0] = "1.5x Damage";
-                        skillDescriptions[i][1] = "75?% max HP";
+                        skillDescriptions[i][1] = "75% max HP";
+                        break;
+                    case Creature.allSkills.Stone_Wall:
+                        for (int j = 0; j < 4; j++)
+                        {
+                            activeSkillsIconArray[i][j] = iconArray[3][j];
+                        }
+                        skillNames[i] = "Stone Wall";
+                        skillDescriptions[i][0] = "1.5x max Health";
+                        skillDescriptions[i][1] = "75% Damage";
                         break;
                 }
             }

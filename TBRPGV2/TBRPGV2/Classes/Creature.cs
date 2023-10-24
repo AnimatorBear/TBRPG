@@ -30,10 +30,10 @@
         #endregion
         #region Skills
         //Skills are small buffs , you starts with 3 and can unlock 1 later on
-        public enum allSkills { None, Healthy, Fast, Violent, Heavy_Hitter, Light_Hitter, Fast_Learner,Accurate,Glass_Cannon};
+        public enum allSkills { None, Healthy, Fast, Violent, Heavy_Hitter, Light_Hitter, Fast_Learner,Accurate,Glass_Cannon, Stone_Wall };
         public allSkills[] skills = { allSkills.None, allSkills.None, allSkills.None,allSkills.None };
         #endregion
-
+        #region attacks
         //DD = DamageDealer
         //TK = Tank 
         //HL = Healer
@@ -42,7 +42,7 @@
         //BG = Bag
         public enum attacks { None,Class_Ability,Heavy_Hit,Light_Hit,BG_NO, RG_Stats,HL_LifeSteal };
         public attacks[] characterAttacks = { attacks.Light_Hit,attacks.Heavy_Hit,attacks.None,attacks.None};
-
+        #endregion
         public Creature(allClasses newClass, int startingLevel = 0)
         {
 
@@ -50,9 +50,6 @@
             //Adds starting stats and stuff
             currentClass = newClass;
             currentLevel = startingLevel;
-            skills[0] = randomSkill();
-            skills[1] = randomSkill();
-            skills[2] = randomSkill();
             health = maxHealth;
         }
         public void RecalculateStats(bool showCalculation = false)
@@ -130,6 +127,7 @@
             }
             //Skills stats
             bool glassCannon = false;
+            bool stoneWall = false;
             for(int i = 0;i < skills.Length; i++)
             {
                 if (skills[i] == allSkills.Healthy)
@@ -146,12 +144,20 @@
                 }else if (skills[i] == allSkills.Glass_Cannon)
                 {
                     glassCannon = true;
+                }else if (skills[i] == allSkills.Stone_Wall)
+                {
+                    stoneWall = true;
                 }
             }
             if (glassCannon)
             {
-                maxHealth = (int)(maxHealth / 1.5f);
+                maxHealth = (int)((maxHealth / 100) * 75);
                 damage = damage * 1.5f;
+            }
+            if (stoneWall)
+            {
+                maxHealth = (int)(maxHealth * 1.5f);
+                damage = (damage / 100) * 75;
             }
             damage = (float)Math.Round(damage,1);
             //Math if I wanna see it
@@ -348,25 +354,63 @@
             //Chooses a random skill from the allskills enum
             Random rnd = new Random();
             List<allSkills> randomSkills = new List<allSkills>();
-            allSkills[] allClassSkills = { allSkills.Healthy,allSkills.Fast,allSkills.Violent};
+            //Not class specific skills
+            allSkills[] allClassSkills = { allSkills.Healthy,allSkills.Fast,allSkills.Violent,allSkills.Heavy_Hitter,allSkills.Light_Hitter,allSkills.Fast_Learner,allSkills.Accurate};
+
+            //Class specific skills
             allSkills[][] classSkills = { 
+                //DamageDealer
                 new allSkills[] {allSkills.Glass_Cannon},
-                new allSkills[] { }
+                //Tank
+                new allSkills[] {allSkills.Stone_Wall},
+                //Healer
+                new allSkills[] {allSkills.Stone_Wall},
+                //RNG
+                new allSkills[] {},
+                //Charger
+                new allSkills[] {allSkills.Glass_Cannon }
             };
-            for(int i = 0; i < allClassSkills.Length; i++)
+            #region Adding skills to available skills
+            for (int i = 0; i < allClassSkills.Length; i++)
             {
-                randomSkills.Add(allClassSkills[i]);
+                //randomSkills.Add(allClassSkills[i]);
             }
+            #endregion
+            #region Adding class skills to the available skills
             switch (currentClass)
             {
                 case allClasses.DamageDealer:
                     for (int i = 0; i < classSkills[0].Length; i++)
                     {
-                        randomSkills.Add(classSkills[0][0]);
+                        randomSkills.Add(classSkills[0][i]);
+                    }
+                    break;
+                case allClasses.Tank:
+                    for (int i = 0; i < classSkills[1].Length; i++)
+                    {
+                        randomSkills.Add(classSkills[1][i]);
+                    }
+                    break;
+                case allClasses.Healer:
+                    for (int i = 0; i < classSkills[2].Length; i++)
+                    {
+                        randomSkills.Add(classSkills[2][i]);
+                    }
+                    break;
+                case allClasses.RNG:
+                    for (int i = 0; i < classSkills[3].Length; i++)
+                    {
+                        randomSkills.Add(classSkills[3][i]);
+                    }
+                    break;
+                case allClasses.Charger:
+                    for (int i = 0; i < classSkills[4].Length; i++)
+                    {
+                        randomSkills.Add(classSkills[4][i]);
                     }
                     break;
             }
-            //allSkills skill = (allSkills)rnd.Next(Enum.GetNames(typeof(allSkills)).Length);
+            #endregion
             allSkills skill = randomSkills[rnd.Next(0,randomSkills.Count)];
             if (skill == skills[0] || skill == skills[1] || skill == skills[2] || skill == allSkills.None)
             {
