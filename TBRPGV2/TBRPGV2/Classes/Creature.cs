@@ -2,9 +2,6 @@
 {
     internal class Creature
     {
-        public int[,] classStats = { {90,13,4, 999, 8} , { 130, 9, 3, 999, 7 }, { 115, 7, 5, 3, 9 }, { 100, 10, 0, 999, 7 }, { 90, 10, 1, 999, 7 }, 
-            //Bag Stats, For testing
-            { 999, -5, 0, 999, 0 } };
         #region Stats
         //  All stats
         //Health-Type stats
@@ -18,9 +15,15 @@
         public int speed = 0;
         #endregion
         #region Class
-        //What Class
+        //Al Classes and Current Class
         public enum allClasses { Class_None, DamageDealer, Tank, Healer, RNG, Charger,Bag }
-        public allClasses currentClass = allClasses.DamageDealer;
+        public allClasses currentClass = allClasses.Class_None;
+
+        //Stats for each seperate class
+        public int[,] classStats = { {90,13,4, 999, 8} , { 130, 9, 3, 999, 7 }, { 115, 7, 5, 3, 9 }, { 100, 10, 0, 999, 7 }, { 90, 10, 1, 999, 7 }, 
+            //Bag Stats, For testing
+            { 999, -5, 0, 999, 0 } };
+
         //Every class has its own class ability they can use after a few rounds
         public int classAbilityRecharge = 100;
         public int roundsUntilAbilityRecharge = 0;
@@ -32,6 +35,23 @@
         //Skills are small buffs , you starts with 3 and can unlock 1 later on
         public enum allSkills { None, Healthy, Fast, Violent, Heavy_Hitter, Light_Hitter, Fast_Learner,Accurate,Glass_Cannon, Stone_Wall };
         public allSkills[] skills = { allSkills.None, allSkills.None, allSkills.None,allSkills.None };
+
+        //Not class specific skills
+        allSkills[] allClassSkills = { allSkills.Healthy, allSkills.Fast, allSkills.Violent, allSkills.Heavy_Hitter, allSkills.Light_Hitter, allSkills.Fast_Learner, allSkills.Accurate };
+
+        //Class specific skills
+        allSkills[][] classSkills = { 
+                //DamageDealer
+                new allSkills[] {allSkills.Glass_Cannon},
+                //Tank
+                new allSkills[] {allSkills.Stone_Wall},
+                //Healer
+                new allSkills[] {allSkills.Stone_Wall},
+                //RNG
+                new allSkills[] {},
+                //Charger
+                new allSkills[] {allSkills.Glass_Cannon }
+            };
         #endregion
         #region attacks
         //DD = DamageDealer
@@ -354,26 +374,10 @@
             //Chooses a random skill from the allskills enum
             Random rnd = new Random();
             List<allSkills> randomSkills = new List<allSkills>();
-            //Not class specific skills
-            allSkills[] allClassSkills = { allSkills.Healthy,allSkills.Fast,allSkills.Violent,allSkills.Heavy_Hitter,allSkills.Light_Hitter,allSkills.Fast_Learner,allSkills.Accurate};
-
-            //Class specific skills
-            allSkills[][] classSkills = { 
-                //DamageDealer
-                new allSkills[] {allSkills.Glass_Cannon},
-                //Tank
-                new allSkills[] {allSkills.Stone_Wall},
-                //Healer
-                new allSkills[] {allSkills.Stone_Wall},
-                //RNG
-                new allSkills[] {},
-                //Charger
-                new allSkills[] {allSkills.Glass_Cannon }
-            };
             #region Adding skills to available skills
             for (int i = 0; i < allClassSkills.Length; i++)
             {
-                //randomSkills.Add(allClassSkills[i]);
+                randomSkills.Add(allClassSkills[i]);
             }
             #endregion
             #region Adding class skills to the available skills
