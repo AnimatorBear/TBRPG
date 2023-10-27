@@ -13,7 +13,7 @@ namespace TBRPGV2
 
         //What GetSkillInfo(); changes
         static string skillName = "";
-        static string[] skillDescription = { " descriptions (1) ", " descriptions 2", " descriptions 3", " descriptions 4", " descriptions 5" };
+        static string[] skillDescription = { "", "", "", "", "" };
         static string[] activeSkillsIcon = new string[4]{
                     "     /\\   ",
                     "    / /   ",
@@ -41,7 +41,7 @@ namespace TBRPGV2
                 {
                     //Select a 4rth skill at level 20
                     int amount = SelectSkill();
-                    moveSelectedSkill(amount);
+                    moveSelectedSkill(amount,3);
                 }
                 currentPlayer.health = currentPlayer.maxHealth;
                 StartBattle(true);
@@ -63,9 +63,8 @@ namespace TBRPGV2
             {
                 SelectClass();
             }
-            currentPlayer.skills[0] = currentPlayer.randomSkill();
-            currentPlayer.skills[1] = currentPlayer.randomSkill();
-            currentPlayer.skills[2] = currentPlayer.randomSkill();
+            CreatureSkills(currentPlayer,true,3);
+            Console.Clear();
             ShowRandomSkills();
             Console.ReadKey();
             Console.Clear();
@@ -74,6 +73,26 @@ namespace TBRPGV2
             currentPlayer.RecalculateStats();
             currentPlayer.health = currentPlayer.maxHealth;
             Console.WriteLine($"Class: {currentPlayer.currentClass}");
+        }
+
+        static void CreatureSkills(Creature crt, bool random,int amountOfSkills)
+        {
+            for(int i = 0; i < amountOfSkills; i++)
+            {
+                if (random)
+                {
+                    crt.skills[i] = crt.randomSkill();
+                }
+                else
+                {
+                    selectedSkill = 0;
+                    while (crt.skills[i] == allSkills.None)
+                    {
+                        int amount = SelectSkill();
+                        moveSelectedSkill(amount, i);
+                    }
+                }
+            }
         }
         static void StartBattle(bool showStatsAtStart)
         {
@@ -647,7 +666,7 @@ namespace TBRPGV2
             return allAvSkills.Count;
            
         }
-        public static void moveSelectedSkill(int totalSkills)
+        public static void moveSelectedSkill(int totalSkills,int skillNumber)
         {
             //If you press WASD it moves the selected skill, If you press ENTER it sets your skill
             ConsoleKey key = Console.ReadKey(true).Key;
@@ -677,7 +696,7 @@ namespace TBRPGV2
             }else if (key == ConsoleKey.Enter)
             {
                 List<allSkills> allAvSkills = currentPlayer.GetAllAvailableSkills();
-                currentPlayer.skills[3] = allAvSkills[selectedSkill];
+                currentPlayer.skills[skillNumber] = allAvSkills[selectedSkill];
             }
 
             if(selectedSkill >= totalSkills)
@@ -811,6 +830,15 @@ namespace TBRPGV2
                     skillName = "Stone Wall";
                     skillDescription[0] = "1.5x max Health";
                     skillDescription[1] = "75% Damage";
+                    break;
+                case Creature.allSkills.NotBag:
+                    for (int j = 0; j < 4; j++)
+                    {
+                        activeSkillsIcon[j] = iconArray[3][j];
+                    }
+                    skillName = "Not Bag";
+                    skillDescription[0] = "Bag deals damage!!";
+                    skillDescription[1] = "Guh";
                     break;
             }
         }

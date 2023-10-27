@@ -33,8 +33,8 @@
         #endregion
         #region Skills
         //Skills are small changes , you start with 3 and can unlock 1 at level 20
-        public enum allSkills { None, Healthy, Fast, Violent, Heavy_Hitter, Light_Hitter, Fast_Learner,Accurate,Glass_Cannon, Stone_Wall,};
-        public allSkills[] skills = { allSkills.None, allSkills.None, allSkills.None,allSkills.None };
+        public enum allSkills { None, Healthy, Fast, Violent, Heavy_Hitter, Light_Hitter, Fast_Learner,Accurate,Glass_Cannon, Stone_Wall,NotBag};
+        public allSkills[] skills = new allSkills[4];
 
         //Not class specific skills
         allSkills[] allClassSkills = { allSkills.Healthy, allSkills.Fast, allSkills.Violent, allSkills.Heavy_Hitter, allSkills.Light_Hitter, allSkills.Fast_Learner, allSkills.Accurate};
@@ -50,7 +50,9 @@
                 //RNG
                 new allSkills[] {},
                 //Charger
-                new allSkills[] {allSkills.Glass_Cannon }
+                new allSkills[] {allSkills.Glass_Cannon},
+                //Bag
+                new allSkills[] {allSkills.Glass_Cannon,allSkills.Stone_Wall,allSkills.NotBag }
             };
         #endregion
         #region attacks
@@ -156,8 +158,8 @@
                     healthSources[2] = 25;
                 } else if (skills[i] == allSkills.Violent)
                 {
-                    damage = damage + 3;
-                    damageSources[2] = 3;
+                    damage = damage + 5;
+                    damageSources[2] = 5;
                 }else if (skills[i] == allSkills.Fast)
                 {
                     speed = speed + 3;
@@ -167,6 +169,9 @@
                 }else if (skills[i] == allSkills.Stone_Wall)
                 {
                     stoneWall = true;
+                }else if (skills[i] == allSkills.NotBag)
+                {
+                    damage = 0;
                 }
             }
             if (glassCannon)
@@ -413,6 +418,12 @@
                         randomSkills.Add(classSkills[4][i]);
                     }
                     break;
+                case allClasses.Bag:
+                    for (int i = 0; i < classSkills[5].Length; i++)
+                    {
+                        randomSkills.Add(classSkills[5][i]);
+                    }
+                    break;
             }
             #endregion
             allSkills skill = randomSkills[rnd.Next(0,randomSkills.Count)];
@@ -470,11 +481,17 @@
                         allAvSkills.Add(classSkills[4][i]);
                     }
                     break;
+                case allClasses.Bag:
+                    for (int i = 0; i < classSkills[5].Length; i++)
+                    {
+                        allAvSkills.Add(classSkills[5][i]);
+                    }
+                    break;
             }
             #endregion
 
             #region Remove skills the player already has
-            for (int i = 0; i < 3; i++)
+            for (int i = 0; i < skills.Length; i++)
             {
                 allAvSkills.Remove(skills[i]);
             }
