@@ -22,7 +22,7 @@
         //Stats for each seperate class
         public int[,] classStats = { {90,13,4, 999, 8} , { 130, 9, 3, 999, 7 }, { 115, 7, 5, 3, 9 }, { 100, 10, 0, 999, 7 }, { 90, 10, 1, 999, 7 }, 
             //Bag Stats, For testing
-            { 999, -5, 0, 999, 0 } };
+            { 99, -5, 0, 999, 0 } };
 
         //Every class has its own class ability they can use after a few rounds
         public int classAbilityRecharge = 100;
@@ -32,17 +32,17 @@
         public int classAbilityUses = 0;
         #endregion
         #region Skills
-        //Skills are small buffs , you starts with 3 and can unlock 1 later on
-        public enum allSkills { None, Healthy, Fast, Violent, Heavy_Hitter, Light_Hitter, Fast_Learner,Accurate,Glass_Cannon, Stone_Wall };
+        //Skills are small changes , you start with 3 and can unlock 1 at level 20
+        public enum allSkills { None, Healthy, Fast, Violent, Heavy_Hitter, Light_Hitter, Fast_Learner,Accurate,Glass_Cannon, Stone_Wall,};
         public allSkills[] skills = { allSkills.None, allSkills.None, allSkills.None,allSkills.None };
 
         //Not class specific skills
-        allSkills[] allClassSkills = { allSkills.Healthy, allSkills.Fast, allSkills.Violent, allSkills.Heavy_Hitter, allSkills.Light_Hitter, allSkills.Fast_Learner, allSkills.Accurate };
+        allSkills[] allClassSkills = { allSkills.Healthy, allSkills.Fast, allSkills.Violent, allSkills.Heavy_Hitter, allSkills.Light_Hitter, allSkills.Fast_Learner, allSkills.Accurate};
 
         //Class specific skills
         allSkills[][] classSkills = { 
                 //DamageDealer
-                new allSkills[] {allSkills.Glass_Cannon,allSkills.Stone_Wall},
+                new allSkills[] {allSkills.Glass_Cannon},
                 //Tank
                 new allSkills[] {allSkills.Stone_Wall},
                 //Healer
@@ -171,13 +171,13 @@
             }
             if (glassCannon)
             {
-                maxHealth = (int)((maxHealth / 100) * 75);
+                maxHealth = (int)((maxHealth) * 0.75f);
                 damage = damage * 1.5f;
             }
             if (stoneWall)
             {
                 maxHealth = (int)(maxHealth * 1.5f);
-                damage = (damage / 100) * 75;
+                damage = (damage) * 0.75f;
             }
             damage = (float)Math.Round(damage,1);
             //Math if I wanna see it
@@ -426,6 +426,8 @@
                 return skill;
             }
         }
+
+        //Returns a list of all skills a player doesnt have.
         public List<allSkills> GetAllAvailableSkills()
         {
             List<allSkills> allAvSkills = new List<allSkills>();
@@ -471,14 +473,12 @@
             }
             #endregion
 
-            for(int i = 0; i < 3; i++)
+            #region Remove skills the player already has
+            for (int i = 0; i < 3; i++)
             {
                 allAvSkills.Remove(skills[i]);
-            } 
-            for(int i = 0; i < allAvSkills.Count; i++)
-            {
-                //Console.WriteLine(allAvSkills[i]);
             }
+            #endregion
             return allAvSkills;
         }
     }

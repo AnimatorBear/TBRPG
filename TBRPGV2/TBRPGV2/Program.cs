@@ -5,14 +5,27 @@ namespace TBRPGV2
 {
     internal class Program
     {
+        //Player , Enemy test class , what class is selected
         static Creature currentPlayer = new Creature(Creature.allClasses.Class_None, 0);
-        static Creature.allClasses testingEnemyClass = Creature.allClasses.Tank;
+        static Creature.allClasses testingEnemyClass = Creature.allClasses.Bag;
         static int classSelection = 0;
 
-        static int selectedSkill = 5;
 
-        List<allSkills> allAvailableSkills = new List<allSkills>();
-        static int totalSkillsAvailable = 0;
+        //What GetSkillInfo(); changes
+        static string skillName = "";
+        static string[] skillDescription = { " descriptions (1) ", " descriptions 2", " descriptions 3", " descriptions 4", " descriptions 5" };
+        static string[] activeSkillsIcon = new string[4]{
+                    "     /\\   ",
+                    "    / /   ",
+                    "   / /    ",
+                    "  / /     "};
+
+        //Selected skill in the level 20 skill selection screen
+        static int pagesDown = 0;
+        static int selectedSkill = 0;
+
+
+
         //Few stats, Put amountOfClasses to 6 for Bag class
         public static int amountOfClasses = 5;
         static void Main(string[] args)
@@ -22,11 +35,16 @@ namespace TBRPGV2
             Console.Title = "TBRPG";
 
             NewCharacter();
-            SelectSkill();
             do
             {
+                while (currentPlayer.skills[3] == allSkills.None && currentPlayer.currentLevel >= 20)
+                {
+                    //Select a 4rth skill at level 20
+                    int amount = SelectSkill();
+                    moveSelectedSkill(amount);
+                }
                 currentPlayer.health = currentPlayer.maxHealth;
-                StartBattle(false);
+                StartBattle(true);
             }
             while (true);
 
@@ -56,9 +74,6 @@ namespace TBRPGV2
             currentPlayer.RecalculateStats();
             currentPlayer.health = currentPlayer.maxHealth;
             Console.WriteLine($"Class: {currentPlayer.currentClass}");
-
-            //Makes a battle
-            //StartBattle(true);
         }
         static void StartBattle(bool showStatsAtStart)
         {
@@ -136,7 +151,7 @@ namespace TBRPGV2
                 if (enemy.health < 1)
                 {
                     Console.WriteLine($"☠ Enemy died! Player HP: {currentPlayer.health}\r\nEnemy HP: {enemy.health}");
-                    currentPlayer.currentLevel += 1;
+                    currentPlayer.currentLevel += 5;
                     activeBattle = false;
                 }
                 else if (enemy.health > enemy.maxHealth)
@@ -482,23 +497,211 @@ namespace TBRPGV2
         {
             
             Console.ForegroundColor = ConsoleColor.White;
-            string[] skillNames = { "", "", ""};
-            string[][] skillDescriptions = new string[3][]
-            {
-                new string[5]
-                {
-                    " descriptions (1) "," descriptions 2"," descriptions 3"," descriptions 4"," descriptions 5"
-                },
-                    new string[5]
-                {
-                    " descriptions (2)"," descriptions 2"," descriptions 3"," descriptions 4"," descriptions 5"
-                },
-                    new string[5]
-                {
-                    " descriptions (3) "," descriptions 2"," descriptions 3"," descriptions 4"," descriptions 5"
-                }
-            };
             //Icons for all skills
+            //Icons for the skills you have
+
+            for(int i = 0; i < 3; i++)
+            {
+                
+            }
+            Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop + 10);
+            //Makes the box and puts the icon in it
+            for (int i = 0; i < 3; i++)
+            {
+                GetSkillInfo(currentPlayer.skills[i]);
+                int cursorMoveAmount = 20 * (i + 1);
+                cursorMoveAmount = cursorMoveAmount - 10;
+                Console.CursorVisible = false;
+                int center = skillName.Length / 2;
+                Console.SetCursorPosition(Console.CursorLeft + ((cursorMoveAmount + 6) - center), Console.CursorTop - 5);
+                Console.WriteLine(skillName + "\r\n");
+                center = skillDescription[0].Length / 2;
+                Console.SetCursorPosition(Console.CursorLeft + ((cursorMoveAmount + 6) - center), Console.CursorTop);
+                Console.WriteLine(skillDescription[0]);
+                center = skillDescription[1].Length / 2;
+                Console.SetCursorPosition(Console.CursorLeft + ((cursorMoveAmount + 6) - center), Console.CursorTop);
+                Console.WriteLine(skillDescription[1] + "\r\n");
+                Console.SetCursorPosition(Console.CursorLeft + cursorMoveAmount, Console.CursorTop);
+                Console.WriteLine("|----------|  ");
+                Console.SetCursorPosition(Console.CursorLeft + cursorMoveAmount, Console.CursorTop);
+                for(int j = 0; j < 4; j++)
+                {
+                    Console.Write("|");
+                    Console.Write(activeSkillsIcon[j]);
+                    Console.WriteLine("|  ");
+                    Console.SetCursorPosition(Console.CursorLeft + cursorMoveAmount, Console.CursorTop);
+                }
+                Console.WriteLine("|----------|  ");
+                Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop - 6);
+            }
+        }
+
+        static int SelectSkill()
+        {
+            Console.Clear();
+
+            //All available Skills 
+            List<allSkills> allAvSkills = currentPlayer.GetAllAvailableSkills();
+            GetSkillInfo(allAvSkills[selectedSkill]);
+
+            //Top Text
+            string topOfScreenText = "Select a skill you would like to have";
+            int center = topOfScreenText.Length / 2;
+            int cursorMoveAmount = 30;
+
+            Console.SetCursorPosition(Console.CursorLeft + ((cursorMoveAmount + 6) - center), Console.CursorTop);
+            Console.WriteLine(topOfScreenText);
+            Console.ForegroundColor = ConsoleColor.DarkGray;
+            Console.WriteLine("========================================================================");
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop + 5);
+
+            center = skillName.Length / 2;
+            Console.SetCursorPosition(Console.CursorLeft + ((cursorMoveAmount + 6) - center), Console.CursorTop - 5);
+            Console.WriteLine(skillName + "\r\n");
+            center = skillDescription[0].Length / 2;
+            Console.SetCursorPosition(Console.CursorLeft + ((cursorMoveAmount + 6) - center), Console.CursorTop);
+            Console.WriteLine(skillDescription[0]);
+            center = skillDescription[1].Length / 2;
+            Console.SetCursorPosition(Console.CursorLeft + ((cursorMoveAmount + 6) - center), Console.CursorTop);
+            Console.WriteLine(skillDescription[1]);
+
+            //Selected box
+            Console.SetCursorPosition(Console.CursorLeft + cursorMoveAmount, Console.CursorTop);
+            Console.WriteLine("|----------|  ");
+            Console.SetCursorPosition(Console.CursorLeft + cursorMoveAmount, Console.CursorTop);
+            for (int j = 0; j < 4; j++)
+            {
+                Console.Write("|");
+                Console.Write(activeSkillsIcon[j]);
+                Console.WriteLine("|  ");
+                Console.SetCursorPosition(Console.CursorLeft + cursorMoveAmount, Console.CursorTop);
+            }
+            Console.WriteLine("|----------|  ");
+            Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop - 6);
+            Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop + 6);
+            Console.ForegroundColor = ConsoleColor.DarkGray;
+            Console.WriteLine("========================================================================");
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop);
+
+            //Other boxes
+            int totalSkillsToGo = allAvSkills.Count - (pagesDown * 5);
+            int skills = 5;
+            //Writes rows
+            for(int j = 0; j < 2; j++)
+            {
+                if(totalSkillsToGo < 5)
+                {
+                    //Remaining boxes
+                    skills = totalSkillsToGo;
+                }
+                for (int i = 0; i < skills; i++)
+                {
+                    //Writes boxes
+                    int skillNumber = i + (pagesDown * 5);
+                    GetSkillInfo(allAvSkills[skillNumber + (j * 5)]);
+                    cursorMoveAmount = 15 * (i + 1);
+                    cursorMoveAmount = cursorMoveAmount - 15;
+                    Console.SetCursorPosition(Console.CursorLeft + cursorMoveAmount, Console.CursorTop);
+                    Console.WriteLine("|----------|  ");
+                    Console.SetCursorPosition(Console.CursorLeft + cursorMoveAmount, Console.CursorTop);
+                    for (int n = 0; n < 4; n++)
+                    {
+                        Console.Write("|");
+                        if (selectedSkill == skillNumber + (j * 5))
+                        {
+                            Console.BackgroundColor = ConsoleColor.White;
+                            Console.ForegroundColor = ConsoleColor.Black;
+                        }
+                        Console.Write(activeSkillsIcon[n]);
+                        if (selectedSkill == skillNumber + (j * 5))
+                        {
+                            Console.BackgroundColor = ConsoleColor.Black;
+                            Console.ForegroundColor = ConsoleColor.White;
+                        }
+                        Console.WriteLine("|  ");
+                        Console.SetCursorPosition(Console.CursorLeft + cursorMoveAmount, Console.CursorTop);
+                    }
+                    Console.WriteLine("|----------|  ");
+                    Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop - 6);
+                }
+                totalSkillsToGo -= 5;
+                skills = 5;
+                Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop + 7);
+            }
+            //Bottom Line
+            Console.ForegroundColor = ConsoleColor.DarkGray;
+            Console.WriteLine("========================================================================");
+            Console.ForegroundColor = ConsoleColor.White;
+
+            //Confirm text
+            string confirmText = "Press ENTER to confirm";
+            center = confirmText.Length / 2;
+            cursorMoveAmount = 30;
+            Console.SetCursorPosition(Console.CursorLeft + ((cursorMoveAmount + 6) - center), Console.CursorTop);
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.WriteLine(confirmText);
+            Console.ForegroundColor = ConsoleColor.White;
+
+            return allAvSkills.Count;
+           
+        }
+        public static void moveSelectedSkill(int totalSkills)
+        {
+            //If you press WASD it moves the selected skill, If you press ENTER it sets your skill
+            ConsoleKey key = Console.ReadKey(true).Key;
+            if (key == ConsoleKey.A)
+            {
+                selectedSkill--;
+            }
+            else if (key == ConsoleKey.D)
+            {
+                selectedSkill++;
+            }
+            else if (key == ConsoleKey.S)
+            {
+                selectedSkill+= 5;
+                if (selectedSkill >= totalSkills)
+                {
+                    selectedSkill = totalSkills - 1;
+                }
+            }
+            else if (key == ConsoleKey.W)
+            {
+                selectedSkill -= 5;
+                if (selectedSkill <= -1)
+                {
+                    selectedSkill += 5;
+                }
+            }else if (key == ConsoleKey.Enter)
+            {
+                List<allSkills> allAvSkills = currentPlayer.GetAllAvailableSkills();
+                currentPlayer.skills[3] = allAvSkills[selectedSkill];
+            }
+
+            if(selectedSkill >= totalSkills)
+            {
+                selectedSkill = 0;
+            } else if(selectedSkill <= -1)
+            {
+                selectedSkill = totalSkills - 1;
+            }
+
+            if(selectedSkill < pagesDown * 5)
+            {
+                pagesDown--;
+            }
+            if (selectedSkill > (pagesDown * 5) + 4)
+            {
+                pagesDown++;
+            }
+
+        }
+        //Puts the skills Icon, Name and Description into activeSkillsIcon, skillName and skillDescription
+        static void GetSkillInfo(allSkills skill)
+        {
+            //All skill icons
             string[][] iconArray = new string[5][]{
                 new string[4]{
                     "     /\\   ",
@@ -525,221 +728,91 @@ namespace TBRPGV2
                     " |████  | ",
                     " |██    | ",
                     " ======== "} };
-            //Icons for the skills you have
-            string[][] activeSkillsIconArray = new string[3][]{
-                new string[4]{
-                    "     /\\   ",
-                    "    / /   ",
-                    "   / /    ",
-                    "  / /     "},
-                new string[4]{
-                    "  /----\\  ",
-                    "  | -- |  ",
-                    "  |    |  ",
-                    "  \\----/  " },
-                new string[4]{
-                    "    ||    ",
-                    "----╝╚----",
-                    "----╗╔----",
-                    "    ||    "} };
-            for(int i = 0; i < 3; i++)
+            switch (skill)
             {
-                //Turns everything to unknown because default case was crying
-                skillNames[i] = "Unknown";
-                skillDescriptions[i][0] = "Unknown";
-                skillDescriptions[i][1] = "Unknown";
-                for (int j = 0; j < 4; j++)
-                {
-                    activeSkillsIconArray[i][j] = iconArray[3][j];
-                }
-                //Changes things based on the skills
-                switch (currentPlayer.skills[i])
-                {
-                    case Creature.allSkills.Healthy:
-                        for(int j = 0;j < 4; j++)
-                        {
-                            activeSkillsIconArray[i][j] = iconArray[1][j];
-                        }
-                        skillNames[i] = "Healthy";
-                        skillDescriptions[i][0] = "+25 HP";
-                        skillDescriptions[i][1] = "";
-                        break;
-                    case Creature.allSkills.Violent:
-                        for (int j = 0; j < 4; j++)
-                        {
-                            activeSkillsIconArray[i][j] = iconArray[0][j];
-                        }
-                        skillNames[i] = "Violent";
-                        skillDescriptions[i][0] = "+5 Damage";
-                        skillDescriptions[i][1] = "";
-                        break;
-                    case Creature.allSkills.Accurate:
-                        for (int j = 0; j < 4; j++)
-                        {
-                            activeSkillsIconArray[i][j] = iconArray[2][j];
-                        }
-                        skillNames[i] = "Accurate";
-                        skillDescriptions[i][0] = "-5 chance ";
-                        skillDescriptions[i][1] = "for an enemy to dodge";
-                        break;
-                    case Creature.allSkills.Fast:
-                        for (int j = 0; j < 4; j++)
-                        {
-                            activeSkillsIconArray[i][j] = iconArray[3][j];
-                        }
-                        skillNames[i] = "Fast";
-                        skillDescriptions[i][0] = "+3 Speed";
-                        skillDescriptions[i][1] = "";
-                        break;
-                    case Creature.allSkills.Fast_Learner:
-                        for (int j = 0; j < 4; j++)
-                        {
-                            activeSkillsIconArray[i][j] = iconArray[3][j];
-                        }
-                        skillNames[i] = "Fast Learner";
-                        skillDescriptions[i][0] = "Useless";
-                        skillDescriptions[i][1] = "";
-                        break;
-                    case Creature.allSkills.Light_Hitter:
-                        for (int j = 0; j < 4; j++)
-                        {
-                            activeSkillsIconArray[i][j] = iconArray[3][j];
-                        }
-                        skillNames[i] = "Light Hitter";
-                        skillDescriptions[i][0] = "1.2x";
-                        skillDescriptions[i][1] = "light hit damage";
-                        break;
-                    case Creature.allSkills.Heavy_Hitter:
-                        for (int j = 0; j < 4; j++)
-                        {
-                            activeSkillsIconArray[i][j] = iconArray[3][j];
-                        }
-                        skillNames[i] = "Heavy Hitter";
-                        skillDescriptions[i][0] = "1.2x";
-                        skillDescriptions[i][1] = "heavy hit damage";
-                        break;
-                    case Creature.allSkills.Glass_Cannon:
-                        for (int j = 0; j < 4; j++)
-                        {
-                            activeSkillsIconArray[i][j] = iconArray[3][j];
-                        }
-                        skillNames[i] = "Glass Cannon";
-                        skillDescriptions[i][0] = "1.5x Damage";
-                        skillDescriptions[i][1] = "75% max HP";
-                        break;
-                    case Creature.allSkills.Stone_Wall:
-                        for (int j = 0; j < 4; j++)
-                        {
-                            activeSkillsIconArray[i][j] = iconArray[3][j];
-                        }
-                        skillNames[i] = "Stone Wall";
-                        skillDescriptions[i][0] = "1.5x max Health";
-                        skillDescriptions[i][1] = "75% Damage";
-                        break;
-                }
-            }
-            Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop + 10);
-            //Makes the box and puts the icon in it
-            for (int i = 0; i < 3; i++)
-            {
-                int cursorMoveAmount = 20 * (i + 1);
-                cursorMoveAmount = cursorMoveAmount - 10;
-                Console.CursorVisible = false;
-                int center = skillNames[i].Length / 2;
-                Console.SetCursorPosition(Console.CursorLeft + ((cursorMoveAmount + 6) - center), Console.CursorTop - 5);
-                Console.WriteLine(skillNames[i] + "\r\n");
-                center = skillDescriptions[i][0].Length / 2;
-                Console.SetCursorPosition(Console.CursorLeft + ((cursorMoveAmount + 6) - center), Console.CursorTop);
-                Console.WriteLine(skillDescriptions[i][0]);
-                center = skillDescriptions[i][1].Length / 2;
-                Console.SetCursorPosition(Console.CursorLeft + ((cursorMoveAmount + 6) - center), Console.CursorTop);
-                Console.WriteLine(skillDescriptions[i][1] + "\r\n");
-                Console.SetCursorPosition(Console.CursorLeft + cursorMoveAmount, Console.CursorTop);
-                Console.WriteLine("|----------|  ");
-                Console.SetCursorPosition(Console.CursorLeft + cursorMoveAmount, Console.CursorTop);
-                for(int j = 0; j < 4; j++)
-                {
-                    Console.Write("|");
-                    Console.Write(activeSkillsIconArray[i][j]);
-                    Console.WriteLine("|  ");
-                    Console.SetCursorPosition(Console.CursorLeft + cursorMoveAmount, Console.CursorTop);
-                }
-                Console.WriteLine("|----------|  ");
-                Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop - 6);
-            }
-        }
-
-        static void SelectSkill()
-        {
-            Console.Clear();
-            List<allSkills> allAvSkills = currentPlayer.GetAllAvailableSkills();
-            string skillName = "";
-            string[] skillDescription = { " descriptions (1) ", " descriptions 2", " descriptions 3", " descriptions 4", " descriptions 5" };
-            Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop + 5);
-            int cursorMoveAmount = 20 * 2;
-            cursorMoveAmount = cursorMoveAmount - 10;
-            int center = skillName.Length / 2;
-            Console.SetCursorPosition(Console.CursorLeft + ((cursorMoveAmount + 6) - center), Console.CursorTop - 5);
-            Console.WriteLine(skillName + "\r\n");
-            center = skillDescription[0].Length / 2;
-            Console.SetCursorPosition(Console.CursorLeft + ((cursorMoveAmount + 6) - center), Console.CursorTop);
-            Console.WriteLine(skillDescription[0]);
-            center = skillDescription[1].Length / 2;
-            Console.SetCursorPosition(Console.CursorLeft + ((cursorMoveAmount + 6) - center), Console.CursorTop);
-            Console.WriteLine(skillDescription[1]);
-            Console.SetCursorPosition(Console.CursorLeft + cursorMoveAmount, Console.CursorTop);
-            Console.WriteLine("|----------|  ");
-            Console.SetCursorPosition(Console.CursorLeft + cursorMoveAmount, Console.CursorTop);
-            for (int j = 0; j < 4; j++)
-            {
-                Console.Write("|");
-                //Console.Write(skillIcons[skillIconNumbers[i]][j]);
-                Console.WriteLine("|  ");
-                Console.SetCursorPosition(Console.CursorLeft + cursorMoveAmount, Console.CursorTop);
-            }
-            Console.WriteLine("|----------|  ");
-            Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop - 6);
-            Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop + 7);
-            Console.WriteLine("========================================================================");
-            Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop + 1);
-
-            int totalSkillsToGo = allAvSkills.Count;
-            int skills = 5;
-            for(int j = 0; j < 2; j++)
-            {
-                if(totalSkillsToGo < 5)
-                {
-                    skills = totalSkillsToGo;
-                }
-                for (int i = 0; i < skills; i++)
-                {
-                    cursorMoveAmount = 15 * (i + 1);
-                    cursorMoveAmount = cursorMoveAmount - 15;
-                    center = skillName.Length / 2;
-                    Console.SetCursorPosition(Console.CursorLeft + cursorMoveAmount, Console.CursorTop);
-                    Console.WriteLine("|----------|  ");
-                    Console.SetCursorPosition(Console.CursorLeft + cursorMoveAmount, Console.CursorTop);
-                    for (int n = 0; n < 4; n++)
+                //Change icon,name and description based on skill
+                case Creature.allSkills.Healthy:
+                    for (int j = 0; j < 4; j++)
                     {
-                        if(selectedSkill == i + (j * 5))
-                        {
-                            Console.BackgroundColor = ConsoleColor.White;
-                        }
-                        Console.Write("|");
-                        //Console.Write(skillIcons[skillIconNumbers[i]][n]);
-                        Console.WriteLine("|  ");
-                        Console.SetCursorPosition(Console.CursorLeft + cursorMoveAmount, Console.CursorTop);
-                        Console.BackgroundColor = ConsoleColor.Black;
+                        activeSkillsIcon[j] = iconArray[1][j];
                     }
-                    Console.WriteLine("|----------|  ");
-                    Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop - 6);
-                }
-                totalSkillsToGo -= 5;
-                skills = 5;
-                Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop + 7);
+                    skillName = "Healthy";
+                    skillDescription[0] = "+25 HP";
+                    skillDescription[1] = "";
+                    break;
+                case Creature.allSkills.Violent:
+                    for (int j = 0; j < 4; j++)
+                    {
+                        activeSkillsIcon[j] = iconArray[0][j];
+                    }
+                    skillName = "Violent";
+                    skillDescription[0] = "+5 Damage";
+                    skillDescription[1] = "";
+                    break;
+                case Creature.allSkills.Accurate:
+                    for (int j = 0; j < 4; j++)
+                    {
+                        activeSkillsIcon[j] = iconArray[2][j];
+                    }
+                    skillName = "Accurate";
+                    skillDescription[0] = "-5 chance ";
+                    skillDescription[1] = "for an enemy to dodge";
+                    break;
+                case Creature.allSkills.Fast:
+                    for (int j = 0; j < 4; j++)
+                    {
+                        activeSkillsIcon[j] = iconArray[3][j];
+                    }
+                    skillName = "Fast";
+                    skillDescription[0] = "+3 Speed";
+                    skillDescription[1] = "";
+                    break;
+                case Creature.allSkills.Fast_Learner:
+                    for (int j = 0; j < 4; j++)
+                    {
+                        activeSkillsIcon[j] = iconArray[3][j];
+                    }
+                    skillName = "Fast Learner";
+                    skillDescription[0] = "Useless";
+                    skillDescription[1] = "";
+                    break;
+                case Creature.allSkills.Light_Hitter:
+                    for (int j = 0; j < 4; j++)
+                    {
+                        activeSkillsIcon[j] = iconArray[3][j];
+                    }
+                    skillName = "Light Hitter";
+                    skillDescription[0] = "1.2x";
+                    skillDescription[1] = "light hit damage";
+                    break;
+                case Creature.allSkills.Heavy_Hitter:
+                    for (int j = 0; j < 4; j++)
+                    {
+                        activeSkillsIcon[j] = iconArray[3][j];
+                    }
+                    skillName = "Heavy Hitter";
+                    skillDescription[0] = "1.2x";
+                    skillDescription[1] = "heavy hit damage";
+                    break;
+                case Creature.allSkills.Glass_Cannon:
+                    for (int j = 0; j < 4; j++)
+                    {
+                        activeSkillsIcon[j] = iconArray[3][j];
+                    }
+                    skillName = "Glass Cannon";
+                    skillDescription[0] = "1.5x Damage";
+                    skillDescription[1] = "75% max HP";
+                    break;
+                case Creature.allSkills.Stone_Wall:
+                    for (int j = 0; j < 4; j++)
+                    {
+                        activeSkillsIcon[j] = iconArray[3][j];
+                    }
+                    skillName = "Stone Wall";
+                    skillDescription[0] = "1.5x max Health";
+                    skillDescription[1] = "75% Damage";
+                    break;
             }
-            
-            Console.ReadKey(true);
         }
     }
 }
