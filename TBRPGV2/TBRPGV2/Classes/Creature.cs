@@ -42,7 +42,7 @@
         //Class specific skills
         allSkills[][] classSkills = { 
                 //DamageDealer
-                new allSkills[] {allSkills.Glass_Cannon},
+                new allSkills[] {allSkills.Glass_Cannon,allSkills.Stone_Wall},
                 //Tank
                 new allSkills[] {allSkills.Stone_Wall},
                 //Healer

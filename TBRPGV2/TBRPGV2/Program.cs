@@ -9,6 +9,8 @@ namespace TBRPGV2
         static Creature.allClasses testingEnemyClass = Creature.allClasses.Tank;
         static int classSelection = 0;
 
+        static int selectedSkill = 5;
+
         List<allSkills> allAvailableSkills = new List<allSkills>();
         static int totalSkillsAvailable = 0;
         //Few stats, Put amountOfClasses to 6 for Bag class
@@ -701,24 +703,42 @@ namespace TBRPGV2
             Console.WriteLine("========================================================================");
             Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop + 1);
 
-            for (int i = 0; i < 5; i++)
+            int totalSkillsToGo = allAvSkills.Count;
+            int skills = 5;
+            for(int j = 0; j < 2; j++)
             {
-                cursorMoveAmount = 15 * (i + 1);
-                cursorMoveAmount = cursorMoveAmount - 15;
-                center = skillName.Length / 2;
-                Console.SetCursorPosition(Console.CursorLeft + cursorMoveAmount, Console.CursorTop);
-                Console.WriteLine("|----------|  ");
-                Console.SetCursorPosition(Console.CursorLeft + cursorMoveAmount, Console.CursorTop);
-                for (int j = 0; j < 4; j++)
+                if(totalSkillsToGo < 5)
                 {
-                    Console.Write("|");
-                    //Console.Write(skillIcons[skillIconNumbers[i]][j]);
-                    Console.WriteLine("|  ");
-                    Console.SetCursorPosition(Console.CursorLeft + cursorMoveAmount, Console.CursorTop);
+                    skills = totalSkillsToGo;
                 }
-                Console.WriteLine("|----------|  ");
-                Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop - 6);
+                for (int i = 0; i < skills; i++)
+                {
+                    cursorMoveAmount = 15 * (i + 1);
+                    cursorMoveAmount = cursorMoveAmount - 15;
+                    center = skillName.Length / 2;
+                    Console.SetCursorPosition(Console.CursorLeft + cursorMoveAmount, Console.CursorTop);
+                    Console.WriteLine("|----------|  ");
+                    Console.SetCursorPosition(Console.CursorLeft + cursorMoveAmount, Console.CursorTop);
+                    for (int n = 0; n < 4; n++)
+                    {
+                        if(selectedSkill == i + (j * 5))
+                        {
+                            Console.BackgroundColor = ConsoleColor.White;
+                        }
+                        Console.Write("|");
+                        //Console.Write(skillIcons[skillIconNumbers[i]][n]);
+                        Console.WriteLine("|  ");
+                        Console.SetCursorPosition(Console.CursorLeft + cursorMoveAmount, Console.CursorTop);
+                        Console.BackgroundColor = ConsoleColor.Black;
+                    }
+                    Console.WriteLine("|----------|  ");
+                    Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop - 6);
+                }
+                totalSkillsToGo -= 5;
+                skills = 5;
+                Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop + 7);
             }
+            
             Console.ReadKey(true);
         }
     }
