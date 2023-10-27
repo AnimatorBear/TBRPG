@@ -1,10 +1,16 @@
-﻿namespace TBRPGV2
+﻿using System.Diagnostics;
+using static TBRPGV2.Creature;
+
+namespace TBRPGV2
 {
     internal class Program
     {
         static Creature currentPlayer = new Creature(Creature.allClasses.Class_None, 0);
         static Creature.allClasses testingEnemyClass = Creature.allClasses.Tank;
         static int classSelection = 0;
+
+        List<allSkills> allAvailableSkills = new List<allSkills>();
+        static int totalSkillsAvailable = 0;
         //Few stats, Put amountOfClasses to 6 for Bag class
         public static int amountOfClasses = 5;
         static void Main(string[] args)
@@ -14,7 +20,7 @@
             Console.Title = "TBRPG";
 
             NewCharacter();
-
+            SelectSkill();
             do
             {
                 currentPlayer.health = currentPlayer.maxHealth;
@@ -50,7 +56,7 @@
             Console.WriteLine($"Class: {currentPlayer.currentClass}");
 
             //Makes a battle
-            StartBattle(true);
+            //StartBattle(true);
         }
         static void StartBattle(bool showStatsAtStart)
         {
@@ -659,6 +665,61 @@
                 Console.WriteLine("|----------|  ");
                 Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop - 6);
             }
+        }
+
+        static void SelectSkill()
+        {
+            Console.Clear();
+            List<allSkills> allAvSkills = currentPlayer.GetAllAvailableSkills();
+            string skillName = "";
+            string[] skillDescription = { " descriptions (1) ", " descriptions 2", " descriptions 3", " descriptions 4", " descriptions 5" };
+            Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop + 5);
+            int cursorMoveAmount = 20 * 2;
+            cursorMoveAmount = cursorMoveAmount - 10;
+            int center = skillName.Length / 2;
+            Console.SetCursorPosition(Console.CursorLeft + ((cursorMoveAmount + 6) - center), Console.CursorTop - 5);
+            Console.WriteLine(skillName + "\r\n");
+            center = skillDescription[0].Length / 2;
+            Console.SetCursorPosition(Console.CursorLeft + ((cursorMoveAmount + 6) - center), Console.CursorTop);
+            Console.WriteLine(skillDescription[0]);
+            center = skillDescription[1].Length / 2;
+            Console.SetCursorPosition(Console.CursorLeft + ((cursorMoveAmount + 6) - center), Console.CursorTop);
+            Console.WriteLine(skillDescription[1]);
+            Console.SetCursorPosition(Console.CursorLeft + cursorMoveAmount, Console.CursorTop);
+            Console.WriteLine("|----------|  ");
+            Console.SetCursorPosition(Console.CursorLeft + cursorMoveAmount, Console.CursorTop);
+            for (int j = 0; j < 4; j++)
+            {
+                Console.Write("|");
+                //Console.Write(skillIcons[skillIconNumbers[i]][j]);
+                Console.WriteLine("|  ");
+                Console.SetCursorPosition(Console.CursorLeft + cursorMoveAmount, Console.CursorTop);
+            }
+            Console.WriteLine("|----------|  ");
+            Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop - 6);
+            Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop + 7);
+            Console.WriteLine("========================================================================");
+            Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop + 1);
+
+            for (int i = 0; i < 5; i++)
+            {
+                cursorMoveAmount = 15 * (i + 1);
+                cursorMoveAmount = cursorMoveAmount - 15;
+                center = skillName.Length / 2;
+                Console.SetCursorPosition(Console.CursorLeft + cursorMoveAmount, Console.CursorTop);
+                Console.WriteLine("|----------|  ");
+                Console.SetCursorPosition(Console.CursorLeft + cursorMoveAmount, Console.CursorTop);
+                for (int j = 0; j < 4; j++)
+                {
+                    Console.Write("|");
+                    //Console.Write(skillIcons[skillIconNumbers[i]][j]);
+                    Console.WriteLine("|  ");
+                    Console.SetCursorPosition(Console.CursorLeft + cursorMoveAmount, Console.CursorTop);
+                }
+                Console.WriteLine("|----------|  ");
+                Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop - 6);
+            }
+            Console.ReadKey(true);
         }
     }
 }

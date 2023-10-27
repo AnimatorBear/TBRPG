@@ -426,5 +426,60 @@
                 return skill;
             }
         }
+        public List<allSkills> GetAllAvailableSkills()
+        {
+            List<allSkills> allAvSkills = new List<allSkills>();
+            #region Adding skills to available skills
+            for (int i = 0; i < allClassSkills.Length; i++)
+            {
+                allAvSkills.Add(allClassSkills[i]);
+            }
+            #endregion
+            #region Adding class skills to the available skills
+            switch (currentClass)
+            {
+                case allClasses.DamageDealer:
+                    for (int i = 0; i < classSkills[0].Length; i++)
+                    {
+                        allAvSkills.Add(classSkills[0][i]);
+                    }
+                    break;
+                case allClasses.Tank:
+                    for (int i = 0; i < classSkills[1].Length; i++)
+                    {
+                        allAvSkills.Add(classSkills[1][i]);
+                    }
+                    break;
+                case allClasses.Healer:
+                    for (int i = 0; i < classSkills[2].Length; i++)
+                    {
+                        allAvSkills.Add(classSkills[2][i]);
+                    }
+                    break;
+                case allClasses.RNG:
+                    for (int i = 0; i < classSkills[3].Length; i++)
+                    {
+                        allAvSkills.Add(classSkills[3][i]);
+                    }
+                    break;
+                case allClasses.Charger:
+                    for (int i = 0; i < classSkills[4].Length; i++)
+                    {
+                        allAvSkills.Add(classSkills[4][i]);
+                    }
+                    break;
+            }
+            #endregion
+
+            for(int i = 0; i < 3; i++)
+            {
+                allAvSkills.Remove(skills[i]);
+            } 
+            for(int i = 0; i < allAvSkills.Count; i++)
+            {
+                //Console.WriteLine(allAvSkills[i]);
+            }
+            return allAvSkills;
+        }
     }
 }
