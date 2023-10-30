@@ -5,7 +5,7 @@ namespace TBRPGV2
     internal class Program
     {
         const bool chooseStartSkills = false;
-        public const int amountStartSkills = 8;
+        public const int amountStartSkills = 10;
 
 
 
@@ -745,32 +745,49 @@ namespace TBRPGV2
         static void GetSkillInfo(allSkills skill)
         {
             //All skill icons
-            string[][] iconArray = new string[5][]{
+            string[][] iconArray = new string[][]{
+                //0 WIP
                 new string[4]{
                     "          ",
                     "   w.i.p  ",
                     "   w.i.p  ",
                     "          " },
+                //1 Violent
                 new string[4]{
                     "     /\\   ",
                     "    / /   ",
                     "   / /    ",
                     "  / /     "},
+                //2 Healthy
                 new string[4]{
                     "   _  _   ",
                     "  | \\/ |  ",
                     "   \\  /   ",
                     "    \\/    "},
+                //3 Accurate?
                 new string[4]{
                     "   - ---/\\",
                     " - ----/ /",
                     "- ----/ / ",
                     "-- --/ /  "},
+                //4
                 new string[4]{
                     " ======== ",
                     " |████  | ",
                     " |██    | ",
-                    " ======== "} };
+                    " ======== "},
+                //5 Stone Wall
+                new string[4]{
+                    "‾|‾‾|‾‾|‾‾",
+                    "‾‾|‾‾|‾‾|‾",
+                    "‾|‾‾|‾‾|‾‾",
+                    "‾‾|‾‾|‾‾|‾"},
+                //6 Glass Cannon
+                new string[4]{
+                    "    ||    ",
+                    "____||____",
+                    "‾‾‾‾||‾‾‾‾",
+                    "    ||    "} };
             switch (skill)
             {
                 //Change icon,name and description based on skill
@@ -840,7 +857,7 @@ namespace TBRPGV2
                 case Creature.allSkills.Glass_Cannon:
                     for (int j = 0; j < 4; j++)
                     {
-                        activeSkillsIcon[j] = iconArray[0][j];
+                        activeSkillsIcon[j] = iconArray[6][j];
                     }
                     skillName = "Glass Cannon";
                     skillDescription[0] = "1.5x Damage";
@@ -849,7 +866,7 @@ namespace TBRPGV2
                 case Creature.allSkills.Stone_Wall:
                     for (int j = 0; j < 4; j++)
                     {
-                        activeSkillsIcon[j] = iconArray[0][j];
+                        activeSkillsIcon[j] = iconArray[5][j];
                     }
                     skillName = "Stone Wall";
                     skillDescription[0] = "1.5x max Health";
