@@ -5,7 +5,7 @@ namespace TBRPGV2
     internal class Program
     {
         const bool chooseStartSkills = false;
-        public const int amountStartSkills = 3;
+        public const int amountStartSkills = 8;
 
 
 
@@ -747,6 +747,11 @@ namespace TBRPGV2
             //All skill icons
             string[][] iconArray = new string[5][]{
                 new string[4]{
+                    "          ",
+                    "   w.i.p  ",
+                    "   w.i.p  ",
+                    "          " },
+                new string[4]{
                     "     /\\   ",
                     "    / /   ",
                     "   / /    ",
@@ -762,11 +767,6 @@ namespace TBRPGV2
                     "- ----/ / ",
                     "-- --/ /  "},
                 new string[4]{
-                    "          ",
-                    "   w.i.p  ",
-                    "   w.i.p  ",
-                    "          " },
-                new string[4]{
                     " ======== ",
                     " |████  | ",
                     " |██    | ",
@@ -777,7 +777,7 @@ namespace TBRPGV2
                 case Creature.allSkills.Healthy:
                     for (int j = 0; j < 4; j++)
                     {
-                        activeSkillsIcon[j] = iconArray[1][j];
+                        activeSkillsIcon[j] = iconArray[2][j];
                     }
                     skillName = "Healthy";
                     skillDescription[0] = "+25 HP";
@@ -786,7 +786,7 @@ namespace TBRPGV2
                 case Creature.allSkills.Violent:
                     for (int j = 0; j < 4; j++)
                     {
-                        activeSkillsIcon[j] = iconArray[0][j];
+                        activeSkillsIcon[j] = iconArray[1][j];
                     }
                     skillName = "Violent";
                     skillDescription[0] = "+5 Damage";
@@ -795,7 +795,7 @@ namespace TBRPGV2
                 case Creature.allSkills.Accurate:
                     for (int j = 0; j < 4; j++)
                     {
-                        activeSkillsIcon[j] = iconArray[2][j];
+                        activeSkillsIcon[j] = iconArray[3][j];
                     }
                     skillName = "Accurate";
                     skillDescription[0] = "-5 chance ";
@@ -804,7 +804,7 @@ namespace TBRPGV2
                 case Creature.allSkills.Fast:
                     for (int j = 0; j < 4; j++)
                     {
-                        activeSkillsIcon[j] = iconArray[3][j];
+                        activeSkillsIcon[j] = iconArray[0][j];
                     }
                     skillName = "Fast";
                     skillDescription[0] = "+3 Speed";
@@ -813,7 +813,7 @@ namespace TBRPGV2
                 case Creature.allSkills.Fast_Learner:
                     for (int j = 0; j < 4; j++)
                     {
-                        activeSkillsIcon[j] = iconArray[3][j];
+                        activeSkillsIcon[j] = iconArray[0][j];
                     }
                     skillName = "Fast Learner";
                     skillDescription[0] = "Useless";
@@ -822,7 +822,7 @@ namespace TBRPGV2
                 case Creature.allSkills.Light_Hitter:
                     for (int j = 0; j < 4; j++)
                     {
-                        activeSkillsIcon[j] = iconArray[3][j];
+                        activeSkillsIcon[j] = iconArray[0][j];
                     }
                     skillName = "Light Hitter";
                     skillDescription[0] = "1.2x";
@@ -831,7 +831,7 @@ namespace TBRPGV2
                 case Creature.allSkills.Heavy_Hitter:
                     for (int j = 0; j < 4; j++)
                     {
-                        activeSkillsIcon[j] = iconArray[3][j];
+                        activeSkillsIcon[j] = iconArray[0][j];
                     }
                     skillName = "Heavy Hitter";
                     skillDescription[0] = "1.2x";
@@ -840,7 +840,7 @@ namespace TBRPGV2
                 case Creature.allSkills.Glass_Cannon:
                     for (int j = 0; j < 4; j++)
                     {
-                        activeSkillsIcon[j] = iconArray[3][j];
+                        activeSkillsIcon[j] = iconArray[0][j];
                     }
                     skillName = "Glass Cannon";
                     skillDescription[0] = "1.5x Damage";
@@ -849,7 +849,7 @@ namespace TBRPGV2
                 case Creature.allSkills.Stone_Wall:
                     for (int j = 0; j < 4; j++)
                     {
-                        activeSkillsIcon[j] = iconArray[3][j];
+                        activeSkillsIcon[j] = iconArray[0][j];
                     }
                     skillName = "Stone Wall";
                     skillDescription[0] = "1.5x max Health";
@@ -858,7 +858,7 @@ namespace TBRPGV2
                 case Creature.allSkills.NotBag:
                     for (int j = 0; j < 4; j++)
                     {
-                        activeSkillsIcon[j] = iconArray[3][j];
+                        activeSkillsIcon[j] = iconArray[0][j];
                     }
                     skillName = "Not Bag";
                     skillDescription[0] = "Bag deals damage!!";
