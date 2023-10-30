@@ -34,7 +34,7 @@
         #region Skills
         //Skills are small changes , you start with 3 and can unlock 1 at level 20
         public enum allSkills { None, Healthy, Fast, Violent, Heavy_Hitter, Light_Hitter, Fast_Learner,Accurate,Glass_Cannon, Stone_Wall,NotBag};
-        public allSkills[] skills = new allSkills[4];
+        public allSkills[] skills = new allSkills[Program.amountStartSkills + 1];
 
         //Not class specific skills
         allSkills[] allClassSkills = { allSkills.Healthy, allSkills.Fast, allSkills.Violent, allSkills.Heavy_Hitter, allSkills.Light_Hitter, allSkills.Fast_Learner, allSkills.Accurate};
@@ -52,7 +52,7 @@
                 //Charger
                 new allSkills[] {allSkills.Glass_Cannon},
                 //Bag
-                new allSkills[] {allSkills.Glass_Cannon,allSkills.Stone_Wall,allSkills.NotBag }
+                new allSkills[] {allSkills.Glass_Cannon,allSkills.Stone_Wall,allSkills.NotBag}
             };
         #endregion
         #region attacks
@@ -188,7 +188,19 @@
             //Math if I wanna see it
             if (showCalculation)
             {
-                Console.WriteLine($"=====\r\nMaxHealth: {maxHealth}\r\nDamage: {damage}\r\nCurrent Level: {currentLevel} \r\n Skills: {skills[0]}, {skills[1]}, {skills[2]} and {skills[3]}\r\n  Health Sources: \r\nBase Health: {healthSources[0]}\r\nHealth from Levels: {healthSources[1]}\r\nHealth from Skills: {healthSources[2]}\r\n  Damage Sources: \r\nBase Damage: {damageSources[0]}\r\nDamage from Levels: {damageSources[1]}\r\nDamage from Skills: {damageSources[2]}\r\n=====");
+                Console.Write($"=====\r\nMaxHealth: {maxHealth}\r\nDamage: {damage}\r\nCurrent Level: {currentLevel} \r\n Skills: ");
+                for (int i = 0; i < skills.Length; i++)
+                {
+                    if (i != 0 && i != skills.Length - 1)
+                    {
+                        Console.Write(", ");
+                    } else if (i != 0)
+                    {
+                        Console.Write(" and ");
+                    }
+                    Console.Write(skills[i]);
+                }
+                Console.WriteLine("\r\n=====");
             }
         }
         public bool[] Upgrades()
@@ -380,15 +392,7 @@
             Random rnd = new Random();
             List<allSkills> randomSkills = GetAllAvailableSkills();
             allSkills skill = randomSkills[rnd.Next(0,randomSkills.Count)];
-            if (skill == skills[0] || skill == skills[1] || skill == skills[2] || skill == allSkills.None)
-            {
-                skill = randomSkill();
-                return skill;
-            }
-            else
-            {
-                return skill;
-            }
+            return skill;
         }
 
         //Returns a list of all skills a player doesnt have.

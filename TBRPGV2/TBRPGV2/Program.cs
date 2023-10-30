@@ -4,6 +4,11 @@ namespace TBRPGV2
 {
     internal class Program
     {
+        const bool chooseStartSkills = false;
+        public const int amountStartSkills = 3;
+
+
+
         //Player , Enemy test class , what class is selected
         static Creature currentPlayer = new Creature(Creature.allClasses.Class_None, 0);
         static Creature.allClasses testingEnemyClass = Creature.allClasses.Bag;
@@ -26,7 +31,7 @@ namespace TBRPGV2
 
 
         //Few stats, Put amountOfClasses to 6 for Bag class
-        public static int amountOfClasses = 5;
+        public static int amountOfClasses = 6;
         static void Main(string[] args)
         {
             //Some Misc things
@@ -36,14 +41,25 @@ namespace TBRPGV2
             NewCharacter();
             do
             {
-                while (currentPlayer.skills[3] == allSkills.None && currentPlayer.currentLevel >= 20)
                 {
-                    //Select a 4rth skill at level 20
-                    int amount = SelectSkill();
-                    moveSelectedSkill(amount,3);
+                    while (currentPlayer.skills[amountStartSkills] == allSkills.None && currentPlayer.currentLevel >= 20)
+                    {
+                        try
+                        {
+                            //Select a 4rth skill at level 20
+                            int amount = SelectSkill();
+                            moveSelectedSkill(amount, amountStartSkills);
+                        }
+                        catch (Exception)
+                        {
+                            Console.WriteLine("You already have all skills!");
+                            break;
+                        }
+                    }
                 }
                 currentPlayer.health = currentPlayer.maxHealth;
                 StartBattle(true);
+
             }
             while (true);
 
@@ -62,7 +78,7 @@ namespace TBRPGV2
             {
                 SelectClass();
             }
-            CreatureSkills(currentPlayer,true,3);
+            CreatureSkills(currentPlayer,!chooseStartSkills,amountStartSkills);
             Console.Clear();
             ShowRandomSkills();
             Console.ReadKey();
@@ -517,17 +533,25 @@ namespace TBRPGV2
             Console.ForegroundColor = ConsoleColor.White;
             //Icons for all skills
             //Icons for the skills you have
-
-            for(int i = 0; i < 3; i++)
-            {
-                
-            }
             Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop + 10);
             //Makes the box and puts the icon in it
-            for (int i = 0; i < 3; i++)
+            for (int i = 0; i < currentPlayer.skills.Length - 1; i++)
             {
+                int cursorMoveAmount = 0;
+                if(i == 5)
+                {
+                    Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop + 13);
+                }
+                if (i >= 5)
+                {
+                    int amount = (int)i / 5;
+                    cursorMoveAmount = 20 * (i - ((amount * 5)-1));
+                }
+                else
+                {
+                    cursorMoveAmount = 20 * (i + 1);
+                }
                 GetSkillInfo(currentPlayer.skills[i]);
-                int cursorMoveAmount = 20 * (i + 1);
                 cursorMoveAmount = cursorMoveAmount - 10;
                 Console.CursorVisible = false;
                 int center = skillName.Length / 2;
@@ -646,7 +670,7 @@ namespace TBRPGV2
                 }
                 totalSkillsToGo -= 5;
                 skills = 5;
-                Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop + 7);
+                Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop + 6);
             }
             //Bottom Line
             Console.ForegroundColor = ConsoleColor.DarkGray;
@@ -657,7 +681,7 @@ namespace TBRPGV2
             string confirmText = "Press ENTER to confirm";
             center = confirmText.Length / 2;
             cursorMoveAmount = 30;
-            Console.SetCursorPosition(Console.CursorLeft + ((cursorMoveAmount + 6) - center), Console.CursorTop);
+            Console.SetCursorPosition(Console.CursorLeft + ((cursorMoveAmount + 6) - center), Console.CursorTop + 1);
             Console.ForegroundColor = ConsoleColor.Blue;
             Console.WriteLine(confirmText);
             Console.ForegroundColor = ConsoleColor.White;
@@ -696,6 +720,7 @@ namespace TBRPGV2
             {
                 List<allSkills> allAvSkills = currentPlayer.GetAllAvailableSkills();
                 currentPlayer.skills[skillNumber] = allAvSkills[selectedSkill];
+                selectedSkill = 0;
             }
 
             if(selectedSkill >= totalSkills)
