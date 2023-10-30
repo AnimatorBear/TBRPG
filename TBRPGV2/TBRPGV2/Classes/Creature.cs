@@ -378,54 +378,7 @@
         {
             //Chooses a random skill from the allskills enum
             Random rnd = new Random();
-            List<allSkills> randomSkills = new List<allSkills>();
-            #region Adding skills to available skills
-            for (int i = 0; i < allClassSkills.Length; i++)
-            {
-                randomSkills.Add(allClassSkills[i]);
-            }
-            #endregion
-            #region Adding class skills to the available skills
-            switch (currentClass)
-            {
-                case allClasses.DamageDealer:
-                    for (int i = 0; i < classSkills[0].Length; i++)
-                    {
-                        randomSkills.Add(classSkills[0][i]);
-                    }
-                    break;
-                case allClasses.Tank:
-                    for (int i = 0; i < classSkills[1].Length; i++)
-                    {
-                        randomSkills.Add(classSkills[1][i]);
-                    }
-                    break;
-                case allClasses.Healer:
-                    for (int i = 0; i < classSkills[2].Length; i++)
-                    {
-                        randomSkills.Add(classSkills[2][i]);
-                    }
-                    break;
-                case allClasses.RNG:
-                    for (int i = 0; i < classSkills[3].Length; i++)
-                    {
-                        randomSkills.Add(classSkills[3][i]);
-                    }
-                    break;
-                case allClasses.Charger:
-                    for (int i = 0; i < classSkills[4].Length; i++)
-                    {
-                        randomSkills.Add(classSkills[4][i]);
-                    }
-                    break;
-                case allClasses.Bag:
-                    for (int i = 0; i < classSkills[5].Length; i++)
-                    {
-                        randomSkills.Add(classSkills[5][i]);
-                    }
-                    break;
-            }
-            #endregion
+            List<allSkills> randomSkills = GetAllAvailableSkills();
             allSkills skill = randomSkills[rnd.Next(0,randomSkills.Count)];
             if (skill == skills[0] || skill == skills[1] || skill == skills[2] || skill == allSkills.None)
             {

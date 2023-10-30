@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using static TBRPGV2.Creature;
+﻿using static TBRPGV2.Creature;
 
 namespace TBRPGV2
 {
