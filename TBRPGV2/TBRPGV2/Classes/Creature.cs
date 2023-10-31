@@ -65,6 +65,9 @@
         public enum attacks { None,Class_Ability,Heavy_Hit,Light_Hit,BG_NO, RG_Stats,HL_LifeSteal };
         public attacks[] characterAttacks = { attacks.Light_Hit,attacks.Heavy_Hit,attacks.None,attacks.None};
         #endregion
+        #region Inventory
+        public Item[] itemsInInv = new Item[20];
+        #endregion
         public Creature(allClasses newClass, int startingLevel = 0)
         {
 
@@ -73,6 +76,7 @@
             currentClass = newClass;
             currentLevel = startingLevel;
             health = maxHealth;
+            itemsInInv[0] = new Item(this,10,0,0);
         }
         public void RecalculateStats(bool showCalculation = false)
         {

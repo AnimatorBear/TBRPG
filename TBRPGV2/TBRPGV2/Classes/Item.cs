@@ -6,6 +6,8 @@
         float healing;
         float tempDodge;
         float tempDamage;
+        string[] icon = new string[4];
+        string[] description = new string[2];
         public Item(Creature creature,float heals, float dodge,float dmg)
         {
             owner = creature;

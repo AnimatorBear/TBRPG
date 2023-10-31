@@ -48,7 +48,7 @@ namespace TBRPGV2
                         {
                             //Select a 4rth skill at level 20
                             int amount = SelectSkill();
-                            moveSelectedSkill(amount, amountStartSkills);
+                            MoveSelectedSkill(amount, amountStartSkills);
                         }
                         catch (Exception)
                         {
@@ -104,7 +104,7 @@ namespace TBRPGV2
                     while (crt.skills[i] == allSkills.None)
                     {
                         int amount = SelectSkill();
-                        moveSelectedSkill(amount, i);
+                        MoveSelectedSkill(amount, i);
                     }
                 }
             }
@@ -156,6 +156,9 @@ namespace TBRPGV2
                         case ConsoleKey.D5:
                             selectedAttack = 5;
                             AddChargerCharge(enemy,true);
+                            break;
+                        case ConsoleKey.D6:
+                            currentPlayer.itemsInInv[0].UseItem();
                             break;
                         case ConsoleKey.D0:
                             currentPlayer.health = 0;
@@ -689,7 +692,7 @@ namespace TBRPGV2
             return allAvSkills.Count;
            
         }
-        public static void moveSelectedSkill(int totalSkills,int skillNumber)
+        public static void MoveSelectedSkill(int totalSkills,int skillNumber)
         {
             //If you press WASD it moves the selected skill, If you press ENTER it sets your skill
             ConsoleKey key = Console.ReadKey(true).Key;
