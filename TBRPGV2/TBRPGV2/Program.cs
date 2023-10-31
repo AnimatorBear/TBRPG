@@ -5,7 +5,7 @@ namespace TBRPGV2
     internal class Program
     {
         const bool chooseStartSkills = false;
-        public const int amountStartSkills = 10;
+        public const int amountStartSkills = 3;
 
 
 

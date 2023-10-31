@@ -273,12 +273,11 @@
                                 return classDamage;
 
                             case allClasses.Tank:
-                                health = health + ((maxHealth / 10));
+                                HealCreature((maxHealth / 10));
                                 return (int)((damage * damageMultiplier) * 0.5f);
 
                             case allClasses.Healer:
-                                health = health + ((maxHealth / 2));
-                                Console.WriteLine("Heals: " + maxHealth / 2);
+                                HealCreature((maxHealth / 2));
                                 return 0;
 
                             case allClasses.RNG:
@@ -353,7 +352,7 @@
                     dodge = 10;
                     roundsUntilAbilityRecharge -= 2;
                     int dmg = (int)((attackDamage) * damageMultiplier);
-                    health = (int)(health + (dmg / 1.5f));
+                    HealCreature((dmg / 1.5f));
                     return (int)(dmg / 1.5f);
                 #endregion
                 #endregion
@@ -366,7 +365,7 @@
                     Console.WriteLine(dodge + "dodge");
                     rand = rnd.Next(-5, 10);
                     Console.WriteLine(rand + "HP");
-                    health += rand;
+                    HealCreature(rand);
                     rand = rnd.Next(5,20);
                     if(rand >= 18)
                     {
@@ -454,6 +453,11 @@
             }
             #endregion
             return allAvSkills;
+        }
+        public void HealCreature(float healing)
+        {
+            Console.WriteLine($"Healed {healing} health");
+            health += (int)healing;
         }
     }
 }
