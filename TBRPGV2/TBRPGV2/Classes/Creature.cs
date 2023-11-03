@@ -54,7 +54,7 @@
                 //Charger
                 new allSkills[] {allSkills.Glass_Cannon},
                 //Bag
-                new allSkills[] {allSkills.Glass_Cannon,allSkills.Stone_Wall,allSkills.NotBag}
+                new allSkills[] {allSkills.Glass_Cannon,allSkills.Stone_Wall,allSkills.NotBag,allSkills.rngLucky}
             };
         #endregion
         #region attacks

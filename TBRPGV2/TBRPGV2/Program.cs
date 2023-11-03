@@ -11,7 +11,7 @@ namespace TBRPGV2
 
         //Player , Enemy test class , what class is selected
         static Creature currentPlayer = new Creature(Creature.allClasses.Class_None, 0);
-        static Creature.allClasses testingEnemyClass = Creature.allClasses.Bag;
+        static Creature.allClasses testingEnemyClass = Creature.allClasses.Healer;
         static int classSelection = 0;
 
 
@@ -189,6 +189,7 @@ namespace TBRPGV2
                 {
                     Console.WriteLine($"☠ Enemy died! Player HP: {currentPlayer.health}\r\nEnemy HP: {enemy.health}");
                     currentPlayer.AddXP(CalculateXPGain(currentPlayer,enemy));
+                    currentPlayer.chargerCharge = 0;
                     activeBattle = false;
                 }
                 else if (enemy.health > enemy.maxHealth)
@@ -217,6 +218,7 @@ namespace TBRPGV2
                 {
                     Console.WriteLine($"☠ Player died! Player HP: {currentPlayer.health}\r\nEnemy HP: {enemy.health}");
                     activeBattle = false;
+                    currentPlayer.chargerCharge = 0;
                 } else if(currentPlayer.health > currentPlayer.maxHealth)
                 {
                     currentPlayer.health = currentPlayer.maxHealth;
@@ -666,6 +668,10 @@ namespace TBRPGV2
             //Writes rows
             for(int j = 0; j < 2; j++)
             {
+                if(j == 1)
+                {
+                    Console.WriteLine();
+                }
                 if(totalSkillsToGo < 5)
                 {
                     //Remaining boxes
@@ -714,7 +720,7 @@ namespace TBRPGV2
             string confirmText = "Press ENTER to confirm";
             center = confirmText.Length / 2;
             cursorMoveAmount = 30;
-            Console.SetCursorPosition(Console.CursorLeft + ((cursorMoveAmount + 6) - center), Console.CursorTop + 1);
+            Console.SetCursorPosition(Console.CursorLeft + ((cursorMoveAmount + 6) - center), Console.CursorTop);
             Console.ForegroundColor = ConsoleColor.Blue;
             Console.WriteLine(confirmText);
             Console.ForegroundColor = ConsoleColor.White;
@@ -766,7 +772,7 @@ namespace TBRPGV2
 
             if(selectedSkill < pagesDown * 5)
             {
-                pagesDown--;
+                pagesDown = 0;
             }
             if (selectedSkill > (pagesDown * 5) + 4)
             {
@@ -803,12 +809,12 @@ namespace TBRPGV2
                     " - ----/ /",
                     "- ----/ / ",
                     "-- --/ /  "},
-                //4
+                //4 Not Bag
                 new string[4]{
-                    " ======== ",
-                    " |████  | ",
-                    " |██    | ",
-                    " ======== "},
+                    "   |  |   ",
+                    "   |‾-|   ",
+                    "  /    \\  ",
+                    " /______\\ "},
                 //5 Stone Wall
                 new string[4]{
                     "‾|‾‾|‾‾|‾‾",
@@ -908,7 +914,7 @@ namespace TBRPGV2
                 case Creature.allSkills.NotBag:
                     for (int j = 0; j < 4; j++)
                     {
-                        activeSkillsIcon[j] = iconArray[0][j];
+                        activeSkillsIcon[j] = iconArray[4][j];
                     }
                     skillName = "Not Bag";
                     skillDescription[0] = "Bag deals damage!!";
