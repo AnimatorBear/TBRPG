@@ -12,7 +12,9 @@
         public float damageMultiplier = 1;
         //Misc Stats
         public int currentLevel = 0;
+        public int currentXP = 0;
         public int speed = 0;
+        int rng_ExtraLuck = 0;
         #endregion
         #region Class
         //Al Classes and Current Class
@@ -33,7 +35,7 @@
         #endregion
         #region Skills
         //Skills are small changes , you start with 3 and can unlock 1 at level 20
-        public enum allSkills { None, Healthy, Fast, Violent, Heavy_Hitter, Light_Hitter, Fast_Learner,Accurate,Glass_Cannon, Stone_Wall,NotBag};
+        public enum allSkills { None, Healthy, Fast, Violent, Heavy_Hitter, Light_Hitter, Fast_Learner,Accurate,Glass_Cannon, Stone_Wall,NotBag, rngLucky};
         public allSkills[] skills = new allSkills[Program.amountStartSkills + 1];
 
         //Not class specific skills
@@ -48,7 +50,7 @@
                 //Healer
                 new allSkills[] {allSkills.Stone_Wall},
                 //RNG
-                new allSkills[] {},
+                new allSkills[] {allSkills.rngLucky},
                 //Charger
                 new allSkills[] {allSkills.Glass_Cannon},
                 //Bag
@@ -63,6 +65,7 @@
         //CH = Charger
         //BG = Bag
         public enum attacks { None,Class_Ability,Heavy_Hit,Light_Hit,BG_NO, RG_Stats,HL_LifeSteal };
+        public int[] attackLevels = { -1, -1, -1, -1, -1,5,5};
         public attacks[] characterAttacks = { attacks.Light_Hit,attacks.Heavy_Hit,attacks.None,attacks.None};
         #endregion
         #region Inventory
@@ -156,26 +159,29 @@
             bool stoneWall = false;
             for(int i = 0;i < skills.Length; i++)
             {
-                if (skills[i] == allSkills.Healthy)
+                switch (skills[i])
                 {
-                    maxHealth = maxHealth + 25;
-                    healthSources[2] = 25;
-                } else if (skills[i] == allSkills.Violent)
-                {
-                    damage = damage + 5;
-                    damageSources[2] = 5;
-                }else if (skills[i] == allSkills.Fast)
-                {
-                    speed = speed + 3;
-                }else if (skills[i] == allSkills.Glass_Cannon)
-                {
-                    glassCannon = true;
-                }else if (skills[i] == allSkills.Stone_Wall)
-                {
-                    stoneWall = true;
-                }else if (skills[i] == allSkills.NotBag)
-                {
-                    damage = 0;
+                    case allSkills.Healthy:
+                        maxHealth = maxHealth + 25;
+                        break;
+                    case allSkills.Violent:
+                        damage = damage + 5;
+                        break;
+                    case allSkills.Fast:
+                        speed = speed + 3;
+                        break;
+                    case allSkills.Glass_Cannon:
+                        glassCannon = true;
+                        break;
+                    case allSkills.Stone_Wall:
+                        stoneWall = true;
+                        break;
+                    case allSkills.NotBag:
+                        damage = 0;
+                        break;
+                    case allSkills.rngLucky:
+                        rng_ExtraLuck = 2;
+                        break;
                 }
             }
             if (glassCannon)
@@ -192,7 +198,7 @@
             //Math if I wanna see it
             if (showCalculation)
             {
-                Console.Write($"=====\r\nMaxHealth: {maxHealth}\r\nDamage: {damage}\r\nCurrent Level: {currentLevel} \r\n Skills: ");
+                Console.Write($"=====\r\nMaxHealth: {maxHealth}\r\nDamage: {damage}\r\nCurrent Level: {currentLevel}\r\nCurrent XP: {currentXP} \r\n Skills: ");
                 for (int i = 0; i < skills.Length; i++)
                 {
                     if (i != 0 && i != skills.Length - 1)
@@ -249,7 +255,7 @@
             if (currentClass == allClasses.RNG)
             {
                 Random rnd = new Random();
-                int rand = rnd.Next(-5, 5);
+                int rand = rnd.Next(-5 + rng_ExtraLuck, 5 + rng_ExtraLuck);
                 attackDamage += rand;
             }
             #endregion
@@ -367,13 +373,14 @@
                     int rand = rnd.Next(5, 15);
                     dodge = rand;
                     Console.WriteLine(dodge + "dodge");
-                    rand = rnd.Next(-5, 10);
+                    rand = rnd.Next(-5 + rng_ExtraLuck, 10 + rng_ExtraLuck);
                     Console.WriteLine(rand + "HP");
                     HealCreature(rand);
-                    rand = rnd.Next(5,20);
-                    if(rand >= 18)
+                    float nerf = 0.05f;
+                    rand = rnd.Next((int)(((5 + rng_ExtraLuck) * nerf) * damage), (int)(((20 + rng_ExtraLuck) * nerf) * damage));
+                    if(rand >= (int)(((18 + rng_ExtraLuck) * nerf) * damage))
                     {
-                        rand = rnd.Next(18, 30);
+                        rand = rnd.Next((int)(((18 + rng_ExtraLuck) * nerf) * damage), (int)(((30 + rng_ExtraLuck) * nerf) * damage));
                     } 
                     Console.WriteLine(rand+"dmg");
                     return rand;
@@ -462,6 +469,25 @@
         {
             Console.WriteLine($"Healed {healing} health");
             health += (int)healing;
+        }
+
+        public void AddXP(int xp,bool levels = false)
+        {
+            currentXP += currentLevel * 100;
+            if (!levels)
+            {
+                
+                currentXP += xp;
+            }
+            else
+            {
+                currentXP += xp * 100;
+            }
+            float totalXP = currentXP / 100;
+            currentLevel = (int)(Math.Floor(totalXP));
+            currentXP -= currentLevel * 100;
+            Console.WriteLine(totalXP);
+            Console.WriteLine(currentLevel);
         }
     }
 }

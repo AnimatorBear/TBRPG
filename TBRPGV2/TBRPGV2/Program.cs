@@ -4,7 +4,7 @@ namespace TBRPGV2
 {
     internal class Program
     {
-        const bool chooseStartSkills = false;
+        const bool chooseStartSkills = true;
         public const int amountStartSkills = 3;
 
 
@@ -112,7 +112,7 @@ namespace TBRPGV2
         static void StartBattle(bool showStatsAtStart)
         {
             //Makes the enemy
-            Creature enemy = new Creature(testingEnemyClass,currentPlayer.currentLevel);
+            Creature enemy = new Creature(testingEnemyClass,currentPlayer.currentLevel + 5);
             Console.WriteLine($"Enemy Class: {enemy.currentClass}");
 
             //Recalculate Stats
@@ -188,7 +188,7 @@ namespace TBRPGV2
                 if (enemy.health < 1)
                 {
                     Console.WriteLine($"☠ Enemy died! Player HP: {currentPlayer.health}\r\nEnemy HP: {enemy.health}");
-                    currentPlayer.currentLevel += 5;
+                    currentPlayer.AddXP(CalculateXPGain(currentPlayer,enemy));
                     activeBattle = false;
                 }
                 else if (enemy.health > enemy.maxHealth)
@@ -222,6 +222,36 @@ namespace TBRPGV2
                     currentPlayer.health = currentPlayer.maxHealth;
                 }
             }
+        }
+        static int CalculateXPGain(Creature winner, Creature loser)
+        {
+            int startingXPGain = 150;
+            float xpBuff = 1;
+
+            if(winner.currentClass == allClasses.RNG)
+            {
+                Random rnd = new Random();
+                xpBuff = rnd.Next(5, 15);
+                xpBuff = xpBuff / 10;
+            }
+            //Math
+            if(winner.currentLevel < loser.currentLevel)
+            {
+                xpBuff += 0.05f * (loser.currentLevel - winner.currentLevel);
+            }
+            if(winner.health > winner.maxHealth * 0.75f)
+            {
+                xpBuff += 0.25f;
+            }
+            int xpGain = (int)(startingXPGain * xpBuff);
+            for (int i = 0; i < winner.skills.Length; i++)
+            {
+                if (winner.skills[i] == allSkills.Fast_Learner)
+                {
+                    xpGain += (int)(xpGain * 0.1f);
+                }
+            }
+            return xpGain;
         }
         static bool CalculateDodge(Creature creature, Creature creature2,int startingDodge)
         {
@@ -883,6 +913,15 @@ namespace TBRPGV2
                     skillName = "Not Bag";
                     skillDescription[0] = "Bag deals damage!!";
                     skillDescription[1] = "Guh";
+                    break;
+                case Creature.allSkills.rngLucky:
+                    for (int j = 0; j < 4; j++)
+                    {
+                        activeSkillsIcon[j] = iconArray[0][j];
+                    }
+                    skillName = "Lucky";
+                    skillDescription[0] = "All rng stats";
+                    skillDescription[1] = "are 2 higher";
                     break;
             }
         }
