@@ -1,4 +1,5 @@
-﻿using static TBRPGV2.Creature;
+﻿using System.Text;
+using static TBRPGV2.Creature;
 
 namespace TBRPGV2
 {
@@ -37,7 +38,6 @@ namespace TBRPGV2
             //Some Misc things
             Console.OutputEncoding = System.Text.Encoding.Unicode;
             Console.Title = "TBRPG";
-
             NewCharacter();
             do
             {
