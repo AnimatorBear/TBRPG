@@ -115,7 +115,6 @@ namespace TBRPGV2
             //Makes the enemy
             Creature enemy = new Creature(testingEnemyClass,currentPlayer.currentLevel);
             Enemy enemyBrain = new Enemy(enemy,currentPlayer);
-            CreatureSkills(enemy, !chooseStartSkills, amountStartSkills);
             enemy.currentClass = enemyBrain.ChooseClass();
             enemyBrain.ChooseExtraSkill();
             Console.WriteLine($"Enemy Class: {enemy.currentClass}");
@@ -832,7 +831,37 @@ namespace TBRPGV2
                     "    ||    ",
                     "____||____",
                     "‾‾‾‾||‾‾‾‾",
-                    "    ||    "} };
+                    "    ||    "},
+                //7 Fast Learner
+                new string[4]{
+                    " \\  / |‾\\ ",
+                    "  \\/  |  |",
+                    "  /\\  |_/ ",
+                    " /  \\ |   "},
+                //8 rng lucky
+                new string[4]{
+                    "  _/‾‾\\_  ",
+                    " / /‾‾\\ \\ ",
+                    " \\ \\__/ / ",
+                    "  ‾\\__/‾  "},
+                //9 Fast
+                new string[4]{
+                    "- --- --| ",
+                    " - ---- / ",
+                    "- --- --\\ ",
+                    "-- -----| "},
+                //10 Heavy hit
+                new string[4]{
+                    "   |‾‾|   ",
+                    "  /‾‾‾‾\\  ",
+                    " |1000kg| ",
+                    " |______| "},
+                //11 Light hit
+                new string[4]{
+                    "   /‾‾\\   ",
+                    "   \\__/   ",
+                    "    /     ",
+                    "    \\     "} };
             switch (skill)
             {
                 //Change icon,name and description based on skill
@@ -866,7 +895,7 @@ namespace TBRPGV2
                 case Creature.allSkills.Fast:
                     for (int j = 0; j < 4; j++)
                     {
-                        activeSkillsIcon[j] = iconArray[0][j];
+                        activeSkillsIcon[j] = iconArray[9][j];
                     }
                     skillName = "Fast";
                     skillDescription[0] = "+3 Speed";
@@ -875,7 +904,7 @@ namespace TBRPGV2
                 case Creature.allSkills.Fast_Learner:
                     for (int j = 0; j < 4; j++)
                     {
-                        activeSkillsIcon[j] = iconArray[0][j];
+                        activeSkillsIcon[j] = iconArray[7][j];
                     }
                     skillName = "Fast Learner";
                     skillDescription[0] = "5% more XP";
@@ -884,7 +913,7 @@ namespace TBRPGV2
                 case Creature.allSkills.Light_Hitter:
                     for (int j = 0; j < 4; j++)
                     {
-                        activeSkillsIcon[j] = iconArray[0][j];
+                        activeSkillsIcon[j] = iconArray[11][j];
                     }
                     skillName = "Light Hitter";
                     skillDescription[0] = "1.2x";
@@ -893,7 +922,7 @@ namespace TBRPGV2
                 case Creature.allSkills.Heavy_Hitter:
                     for (int j = 0; j < 4; j++)
                     {
-                        activeSkillsIcon[j] = iconArray[0][j];
+                        activeSkillsIcon[j] = iconArray[10][j];
                     }
                     skillName = "Heavy Hitter";
                     skillDescription[0] = "1.2x";
@@ -929,7 +958,7 @@ namespace TBRPGV2
                 case Creature.allSkills.rngLucky:
                     for (int j = 0; j < 4; j++)
                     {
-                        activeSkillsIcon[j] = iconArray[0][j];
+                        activeSkillsIcon[j] = iconArray[8][j];
                     }
                     skillName = "Lucky";
                     skillDescription[0] = "All rng stats";
