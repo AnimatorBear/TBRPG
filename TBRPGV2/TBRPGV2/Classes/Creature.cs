@@ -1,6 +1,6 @@
 ﻿namespace TBRPGV2
 {
-    internal class Creature
+    class Creature
     {
         #region Stats
         //  All stats
@@ -73,8 +73,6 @@
         #endregion
         public Creature(allClasses newClass, int startingLevel = 0)
         {
-
-
             //Adds starting stats and stuff
             currentClass = newClass;
             currentLevel = startingLevel;

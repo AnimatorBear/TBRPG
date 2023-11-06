@@ -113,6 +113,9 @@ namespace TBRPGV2
         {
             //Makes the enemy
             Creature enemy = new Creature(testingEnemyClass,currentPlayer.currentLevel + 5);
+            Enemy enemyBrain = new Enemy(enemy,currentPlayer);
+            enemy.currentClass = enemyBrain.ChooseClass();
+            enemyBrain.ChooseExtraSkill();
             Console.WriteLine($"Enemy Class: {enemy.currentClass}");
 
             //Recalculate Stats

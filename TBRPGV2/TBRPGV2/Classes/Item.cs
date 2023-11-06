@@ -1,6 +1,6 @@
 ﻿namespace TBRPGV2
 {
-    internal class Item
+    class Item
     {
         Creature owner;
         float healing;
