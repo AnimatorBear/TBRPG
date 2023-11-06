@@ -22,9 +22,9 @@
         public allClasses currentClass = allClasses.Class_None;
 
         //Stats for each seperate class
-        public int[,] classStats = { {90,13,4, 999, 8} , { 130, 9, 3, 999, 7 }, { 115, 7, 5, 3, 9 }, { 100, 10, 0, 999, 7 }, { 90, 10, 1, 999, 7 }, 
+        public int[,] classStats = { {90,12,5, 999, 8} , { 130, 8, 4, 999, 7 }, { 115, 6, 6, 3, 9 }, { 100, 9, 0, 999, 7 }, { 90, 9, 1, 999, 7 }, 
             //Bag Stats, For testing
-            { 99, -5, 0, 999, 0 } };
+            { 99, -6, 0, 999, 0 } };
 
         //Every class has its own class ability they can use after a few rounds
         public int classAbilityRecharge = 100;
@@ -77,7 +77,7 @@
             currentClass = newClass;
             currentLevel = startingLevel;
             health = maxHealth;
-            itemsInInv[0] = new Item(this,10,0,0);
+            itemsInInv[0] = new Item(this,10000000,0,0);
         }
         public void RecalculateStats(bool showCalculation = false)
         {
@@ -264,7 +264,7 @@
                     #region None
                 case attacks.None:
                     roundsUntilAbilityRecharge -= 1;
-                    return -100;
+                    return 0;
                 #endregion
                     #region Class Ability
                 case attacks.Class_Ability:
@@ -275,7 +275,7 @@
                         switch (currentClass)
                         {
                             case allClasses.DamageDealer:
-                                int classDamage = (int)((attackDamage * damageMultiplier) * 1.5f);
+                                int classDamage = (int)((attackDamage * damageMultiplier) * 2f);
                                 Console.WriteLine(classDamage);
                                 return classDamage;
 
@@ -303,7 +303,7 @@
                                 goto RandomAttack;
 
                             case allClasses.Charger:
-                                classDamage = (int)((((attackDamage * 0.75f) + chargerCharge) * chargerCharge)*damageMultiplier);
+                                classDamage = (int)((((attackDamage * 0.5f) + chargerCharge) * chargerCharge)*damageMultiplier);
                                 Console.WriteLine(chargerCharge + " Damage: " + classDamage);
                                 chargerCharge = 0;
                                 return classDamage;
@@ -335,7 +335,7 @@
                     #region Heavy Hit
                 case attacks.Heavy_Hit:
                     extraDamage = 0;
-                    dodge = 15;
+                    dodge = 25;
                     for (int i = 0; i < skills.Length; i++)
                     {
                         if (skills[i] == allSkills.Heavy_Hitter)

@@ -5,7 +5,7 @@ namespace TBRPGV2
 {
     internal class Program
     {
-        const bool chooseStartSkills = true;
+        const bool chooseStartSkills = false;
         public const int amountStartSkills = 3;
 
 
@@ -42,7 +42,7 @@ namespace TBRPGV2
             do
             {
                 {
-                    while (currentPlayer.skills[amountStartSkills] == allSkills.None && currentPlayer.currentLevel >= 20)
+                    while (currentPlayer.skills[amountStartSkills] == allSkills.None && currentPlayer.currentLevel >= 10)
                     {
                         try
                         {
@@ -58,6 +58,7 @@ namespace TBRPGV2
                     }
                 }
                 currentPlayer.health = currentPlayer.maxHealth;
+                currentPlayer.classAbilityUses = 0;
                 StartBattle(true);
 
             }
@@ -112,8 +113,9 @@ namespace TBRPGV2
         static void StartBattle(bool showStatsAtStart)
         {
             //Makes the enemy
-            Creature enemy = new Creature(testingEnemyClass,currentPlayer.currentLevel + 5);
+            Creature enemy = new Creature(testingEnemyClass,currentPlayer.currentLevel);
             Enemy enemyBrain = new Enemy(enemy,currentPlayer);
+            CreatureSkills(enemy, !chooseStartSkills, amountStartSkills);
             enemy.currentClass = enemyBrain.ChooseClass();
             enemyBrain.ChooseExtraSkill();
             Console.WriteLine($"Enemy Class: {enemy.currentClass}");
@@ -220,6 +222,7 @@ namespace TBRPGV2
                 if (currentPlayer.health < 1)
                 {
                     Console.WriteLine($"☠ Player died! Player HP: {currentPlayer.health}\r\nEnemy HP: {enemy.health}");
+                    Thread.Sleep(1000);
                     activeBattle = false;
                     currentPlayer.chargerCharge = 0;
                 } else if(currentPlayer.health > currentPlayer.maxHealth)
@@ -875,7 +878,7 @@ namespace TBRPGV2
                         activeSkillsIcon[j] = iconArray[0][j];
                     }
                     skillName = "Fast Learner";
-                    skillDescription[0] = "Useless";
+                    skillDescription[0] = "5% more XP";
                     skillDescription[1] = "";
                     break;
                 case Creature.allSkills.Light_Hitter:
@@ -921,7 +924,7 @@ namespace TBRPGV2
                     }
                     skillName = "Not Bag";
                     skillDescription[0] = "Bag deals damage!!";
-                    skillDescription[1] = "Guh";
+                    skillDescription[1] = "0 damage!!";
                     break;
                 case Creature.allSkills.rngLucky:
                     for (int j = 0; j < 4; j++)
