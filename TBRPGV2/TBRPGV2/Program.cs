@@ -199,7 +199,7 @@ namespace TBRPGV2
                 {
                     enemy.health = enemy.maxHealth;
                 }
-                damage = enemy.Attack(out dodge, selectedAttack);
+                damage = enemy.Attack(out dodge, enemyBrain.ChooseAttack());
                 if (damage == -100)
                 {
                     damage = 0;

@@ -4,6 +4,7 @@
     {
         Creature enemy;
         Creature player;
+        int prevAttack;
 
         public Enemy(Creature _enemy,Creature _player)
         {
@@ -13,12 +14,12 @@
 
         public void ChooseExtraSkill()
         {
-            enemy.skills[3] = Creature.allSkills.Violent;
+
         }
 
         public Creature.allClasses ChooseClass()
         {
-            Creature.allClasses currentClass = Creature.allClasses.Class_None;
+            Creature.allClasses currentClass;
             //DD, Tank, Healer, RNG, Charger , Bag
             int[] classValues = { 20, 20, 20, 20, 20,0 };
             switch (player.currentClass)
@@ -95,8 +96,196 @@
                     Thread.Sleep(10000);
                     break;
             }
-           //
             return currentClass;
+        }
+
+        public int ChooseAttack()
+        {
+            int[] attackValue = new int[5];
+            int[] healingValue = new int[5];
+            int[] dodgeValue = new int[5];
+            int[] miscValue = new int[5];
+            for (int i = 0;i < enemy.characterAttacks.Length - 1; i++)
+            {
+                switch(enemy.characterAttacks[i])
+                {
+                    case Creature.attacks.Light_Hit:
+                        Random rnd = new Random();
+
+                        attackValue[i] = 18 + rnd.Next(0,5);
+                        healingValue[i] = 0;
+                        dodgeValue[i] = 5;
+                        miscValue[i] = 0;
+                        break;
+                    case Creature.attacks.Heavy_Hit:
+                        Random rand = new Random();
+                        attackValue[i] = 20 + rand.Next(0, 5);
+                        healingValue[i] = 0;
+                        dodgeValue[i] = 15;
+                        miscValue[i] = 0;
+                        break;
+                    case Creature.attacks.RG_Stats:
+                        attackValue[i] = 15;
+                        healingValue[i] = 15;
+                        dodgeValue[i] = 10;
+                        miscValue[i] = 0;
+                        break;
+                    case Creature.attacks.HL_LifeSteal:
+                        attackValue[i] = 15;
+                        healingValue[i] = 15;
+                        dodgeValue[i] = 10;
+                        miscValue[i] = 0;
+                        break;
+                }
+            }
+            switch (enemy.currentClass)
+            {
+                case Creature.allClasses.DamageDealer:
+                    attackValue[4] = 30;
+                    healingValue[4] = 0;
+                    dodgeValue[4] = 0;
+                    miscValue[4] = 0;
+                    break;
+                case Creature.allClasses.Tank:
+                    attackValue[4] = 15;
+                    healingValue[4] = 15;
+                    dodgeValue[4] = 0;
+                    miscValue[4] = 0;
+                    break;
+                case Creature.allClasses.Healer:
+                    attackValue[4] = 0;
+                    healingValue[4] = 40;
+                    dodgeValue[4] = 0;
+                    miscValue[4] = 0;
+                    break;
+                case Creature.allClasses.RNG:
+                    attackValue[4] = 0;
+                    healingValue[4] = 0;
+                    dodgeValue[4] = 0;
+                    miscValue[4] = 30;
+                    break;
+                case Creature.allClasses.Charger:
+                    attackValue[4] = 3 * enemy.chargerCharge;
+                    healingValue[4] = 0;
+                    dodgeValue[4] = 0;
+                    miscValue[4] = 0;
+                    break;
+                case Creature.allClasses.Bag:
+                    attackValue[4] = 1;
+                    healingValue[4] = 0;
+                    dodgeValue[4] = 0;
+                    miscValue[4] = 0;
+                    break;
+            }
+
+            int attackChance = 0;
+            int healChance = 0;
+            int miscChance = 0;
+            switch (enemy.currentClass)
+            {
+                case Creature.allClasses.DamageDealer:
+                    attackChance = 5;
+                    healChance = 0;
+                    miscChance = 0;
+                    break;
+                case Creature.allClasses.Tank:
+                    attackChance = 5;
+                    healChance = 5;
+                    miscChance = 0;
+                    break;
+                case Creature.allClasses.Healer:
+                    attackChance = 0;
+                    healChance = 5;
+                    miscChance = 0;
+                    break;
+                case Creature.allClasses.RNG:
+                    attackChance = 0;
+                    healChance = 0;
+                    miscChance = 5;
+                    break;
+                case Creature.allClasses.Charger:
+                    attackChance = 5;
+                    healChance = 0;
+                    miscChance = 5;
+                    break;
+                case Creature.allClasses.Bag:
+                    attackChance = 5;
+                    healChance = 0;
+                    miscChance = 0;
+                    break;
+            }
+
+            for(int i = 0; i < enemy.skills.Length; i++)
+            {
+                switch(enemy.skills[i])
+                {
+                    case Creature.allSkills.Healthy:
+                        healChance += 1;
+                        break;
+                    case Creature.allSkills.Violent:
+                        attackChance += 1;
+                        break;
+                    case Creature.allSkills.rngLucky:
+                        miscChance += 5;
+                        break;
+                }
+            }
+
+            attackChance += (int)((enemy.maxHealth + enemy.health) * 0.1f);
+            if (enemy.health > enemy.maxHealth * 0.8f)
+            {
+                attackChance += 10;
+                healChance -= 10;
+            }
+            else
+            {
+                healChance += (int)((enemy.maxHealth - enemy.health) * 0.2f);
+            }
+
+            if(player.health < player.maxHealth * 0.3f)
+            {
+                attackChance += 10;
+                healChance -= 10;
+            }
+            int bestOption = -1;
+            float bestOptionDifference = 10000;
+            for (int i = 0; i < attackValue.Length; i++)
+            {
+                if (attackValue[i] == 0 && healingValue[i] == 0 && miscValue[i] == 0)
+                {
+                    continue;
+                }
+                if(healChance < 0 && healingValue[i] > 0)
+                {
+                    continue;
+                }
+                if (enemy.roundsUntilAbilityRecharge > 0 && i == 4)
+                {
+                    continue;
+                }
+
+                int difference;
+                int attackdifference = attackValue[i] - attackChance;
+                if(attackdifference < 0) { attackdifference = -attackdifference; }
+                difference = attackdifference;
+
+                int hpdifference = healingValue[i] - healChance;
+                if (hpdifference < 0) { hpdifference = -hpdifference; }
+                difference += hpdifference;
+                difference += (int)(dodgeValue[i] * 0.3f);
+                if (i == prevAttack)
+                {
+                    Random rnd = new Random();
+                    difference += rnd.Next(0, 10);
+                }
+                if (bestOption == -1 || difference < bestOptionDifference)
+                {
+                    bestOption = i;
+                    bestOptionDifference = difference;
+                }
+
+            }
+            return bestOption + 1;
         }
     }
 }
