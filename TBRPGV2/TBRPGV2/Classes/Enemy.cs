@@ -30,14 +30,24 @@
                     classValues[0] -= 5;
                     break;
                 case Creature.allClasses.Tank:
+                    classValues[1] -= 5;
                     break;
                 case Creature.allClasses.Healer:
+                    classValues[2] -= 5;
                     break;
                 case Creature.allClasses.RNG:
+                    classValues[3] -= 5;
                     break;
                 case Creature.allClasses.Charger:
+                    classValues[4] -= 5;
                     break;
                 case Creature.allClasses.Bag:
+                    classValues[0] = 0;
+                    classValues[1] = 0;
+                    classValues[2] = 0;
+                    classValues[3] = 0;
+                    classValues[4] = 0;
+                    classValues[5] = 100;
                     break;
             }
 
@@ -49,7 +59,6 @@
             }
             int classNumber = rnd.Next(1, total);
             int numb = 0;
-            Console.WriteLine(classNumber);
             for (int i = 0; i < 6; i++)
             {
                 if (classNumber > numb  && classNumber <= numb + classValues[i])
@@ -59,7 +68,6 @@
                 }
                 numb += classValues[i];
             }
-            Console.WriteLine(numb);
             switch (numb)
             {
                 case 0:
@@ -82,6 +90,8 @@
                     break;
 
                 default:
+                    Console.WriteLine("Error! Cant decide class! Went to default DamageDealer");
+                    currentClass = Creature.allClasses.DamageDealer;
                     Thread.Sleep(10000);
                     break;
             }
