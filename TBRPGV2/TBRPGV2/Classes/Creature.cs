@@ -14,7 +14,7 @@
         public int currentLevel = 0;
         public int currentXP = 0;
         public int speed = 0;
-        int rng_ExtraLuck = 0;
+        public int rng_ExtraLuck = 0;
         #endregion
         #region Class
         //Al Classes and Current Class
@@ -96,6 +96,7 @@
                     classAbilityRecharge = classStats[0, 2];
                     maxClassAbilityUses = classStats[0, 3];
                     speed = classStats[0, 4];
+                    characterAttacks[2] = attacks.BG_NO;
                     break;
                 case allClasses.Tank:
                     maxHealth = classStats[1, 0];
@@ -220,10 +221,11 @@
             }
             return result;
         }
-        public int Attack(out int dodge,int attack = 0)
+        public int Attack(out int dodge, out int healing, int attack = 0, bool doRandom = true)
         {
             attacks currentAttack = attacks.None;
             dodge = 0;
+            healing = 0;
             RandomAttack:
             #region Select attack based on int
             switch (attack)
@@ -249,7 +251,7 @@
             #endregion
             float attackDamage = damage;
             #region Randomizer Random Attack Damage
-            if (currentClass == allClasses.RNG)
+            if (currentClass == allClasses.RNG && doRandom)
             {
                 Random rnd = new Random();
                 int rand = rnd.Next(-5 + rng_ExtraLuck, 5 + rng_ExtraLuck);
@@ -282,10 +284,15 @@
                                 return (int)((damage * damageMultiplier) * 0.5f);
 
                             case allClasses.Healer:
+                                healing = (maxHealth / 2);
                                 HealCreature((maxHealth / 2));
                                 return 0;
 
                             case allClasses.RNG:
+                                if(doRandom == false)
+                                {
+                                    return 0;
+                                }
                                 bool gotRND = false;
                                 while (!gotRND)
                                 {
