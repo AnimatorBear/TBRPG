@@ -4,7 +4,7 @@
     {
         Creature enemy;
         Creature player;
-        int prevAttack;
+        int prevAttack = 0;
 
         public Enemy(Creature _enemy,Creature _player)
         {

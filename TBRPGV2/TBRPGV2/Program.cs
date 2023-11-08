@@ -5,7 +5,7 @@ namespace TBRPGV2
 {
     internal class Program
     {
-        const bool chooseStartSkills = false;
+        const bool chooseStartSkills = true;
         public const int amountStartSkills = 3;
 
 
@@ -32,7 +32,7 @@ namespace TBRPGV2
 
 
         //Few stats, Put amountOfClasses to 6 for Bag class
-        public static int amountOfClasses = 6;
+        public static int amountOfClasses = 5;
         static void Main(string[] args)
         {
             //Some Misc things
@@ -59,7 +59,7 @@ namespace TBRPGV2
                 }
                 currentPlayer.health = currentPlayer.maxHealth;
                 currentPlayer.classAbilityUses = 0;
-                StartBattle(true);
+                StartBattle(false);
 
             }
             while (true);
@@ -79,7 +79,7 @@ namespace TBRPGV2
             {
                 SelectClass();
             }
-            CreatureSkills(currentPlayer,!chooseStartSkills,amountStartSkills);
+            CreatureSkills(currentPlayer, !chooseStartSkills, amountStartSkills);
             Console.Clear();
             ShowRandomSkills();
             Console.ReadKey();
@@ -88,12 +88,11 @@ namespace TBRPGV2
             //Makes the player stats
             currentPlayer.RecalculateStats();
             currentPlayer.health = currentPlayer.maxHealth;
-            Console.WriteLine($"Class: {currentPlayer.currentClass}");
         }
 
-        static void CreatureSkills(Creature crt, bool random,int amountOfSkills)
+        static void CreatureSkills(Creature crt, bool random, int amountOfSkills)
         {
-            for(int i = 0; i < amountOfSkills; i++)
+            for (int i = 0; i < amountOfSkills; i++)
             {
                 if (random)
                 {
@@ -113,24 +112,22 @@ namespace TBRPGV2
         static void StartBattle(bool showStatsAtStart)
         {
             //Makes the enemy
-            Creature enemy = new Creature(testingEnemyClass,currentPlayer.currentLevel);
-            Enemy enemyBrain = new Enemy(enemy,currentPlayer);
+            Creature enemy = new Creature(testingEnemyClass, currentPlayer.currentLevel);
+            Enemy enemyBrain = new Enemy(enemy, currentPlayer);
             enemy.currentClass = enemyBrain.ChooseClass();
             enemyBrain.ChooseExtraSkill();
-            Console.WriteLine($"Enemy Class: {enemy.currentClass}");
+            //Console.WriteLine($"Enemy Class: {enemy.currentClass}");
 
             //Recalculate Stats
             enemy.RecalculateStats(showStatsAtStart);
-            currentPlayer.RecalculateStats(showStatsAtStart) ;
+            currentPlayer.RecalculateStats(showStatsAtStart);
             enemy.health = enemy.maxHealth;
 
             bool activeBattle = true;
             while (activeBattle)
             {
+                DrawBattle(ConsoleColor.DarkGray,enemy);
                 Console.Title = "TBRPG";
-                Console.WriteLine("-----");
-                Console.WriteLine($"Player hp: {currentPlayer.health} , Enemy hp: {enemy.health}");
-                Console.WriteLine($"Player dmg: {currentPlayer.damage} , Enemy dmg: {enemy.damage}");
                 bool selectingAttack = true;
 
                 //Makes some ints
@@ -159,7 +156,7 @@ namespace TBRPGV2
                             break;
                         case ConsoleKey.D5:
                             selectedAttack = 5;
-                            AddChargerCharge(enemy,true);
+                            AddChargerCharge(enemy, true);
                             break;
                         case ConsoleKey.D6:
                             currentPlayer.itemsInInv[0].UseItem();
@@ -179,20 +176,21 @@ namespace TBRPGV2
                 //Enemy Dodging
                 #region Enemy Dodge
                 dodged = CalculateDodge(enemy, currentPlayer, dodge);
-                if(!dodged)
+                if (!dodged)
                 {
                     enemy.health -= damage;
                 }
                 else
                 {
-                    Console.WriteLine("Dodge!");
+                    
                 }
                 #endregion
                 //Death check
                 if (enemy.health < 1)
                 {
-                    Console.WriteLine($"☠ Enemy died! Player HP: {currentPlayer.health}\r\nEnemy HP: {enemy.health}");
-                    currentPlayer.AddXP(CalculateXPGain(currentPlayer,enemy));
+                    //Console.WriteLine($"☠ Enemy died! Player HP: {currentPlayer.health}\r\nEnemy HP: {enemy.health}");
+                    Thread.Sleep(1000);
+                    currentPlayer.AddXP(CalculateXPGain(currentPlayer, enemy));
                     currentPlayer.chargerCharge = 0;
                     activeBattle = false;
                 }
@@ -207,24 +205,24 @@ namespace TBRPGV2
                 }
                 //Player Dodging
                 #region Player Dodge
-                dodged = CalculateDodge(currentPlayer,enemy, dodge);
+                dodged = CalculateDodge(currentPlayer, enemy, dodge);
                 if (!dodged)
                 {
                     currentPlayer.health -= damage;
                 }
                 else
                 {
-                    Console.WriteLine("Dodge!");
+                    
                 }
                 #endregion
                 //Death check
                 if (currentPlayer.health < 1)
                 {
-                    Console.WriteLine($"☠ Player died! Player HP: {currentPlayer.health}\r\nEnemy HP: {enemy.health}");
+                    //Console.WriteLine($"☠ Player died! Player HP: {currentPlayer.health}\r\nEnemy HP: {enemy.health}");
                     Thread.Sleep(1000);
                     activeBattle = false;
                     currentPlayer.chargerCharge = 0;
-                } else if(currentPlayer.health > currentPlayer.maxHealth)
+                } else if (currentPlayer.health > currentPlayer.maxHealth)
                 {
                     currentPlayer.health = currentPlayer.maxHealth;
                 }
@@ -235,18 +233,18 @@ namespace TBRPGV2
             int startingXPGain = 150;
             float xpBuff = 1;
 
-            if(winner.currentClass == allClasses.RNG)
+            if (winner.currentClass == allClasses.RNG)
             {
                 Random rnd = new Random();
                 xpBuff = rnd.Next(5, 15);
                 xpBuff = xpBuff / 10;
             }
             //Math
-            if(winner.currentLevel < loser.currentLevel)
+            if (winner.currentLevel < loser.currentLevel)
             {
                 xpBuff += 0.05f * (loser.currentLevel - winner.currentLevel);
             }
-            if(winner.health > winner.maxHealth * 0.75f)
+            if (winner.health > winner.maxHealth * 0.75f)
             {
                 xpBuff += 0.25f;
             }
@@ -260,13 +258,13 @@ namespace TBRPGV2
             }
             return xpGain;
         }
-        static bool CalculateDodge(Creature creature, Creature creature2,int startingDodge)
+        static bool CalculateDodge(Creature creature, Creature creature2, int startingDodge)
         {
             //Creature is defending , Creature2 is attacking,
             int totalDodge = startingDodge;
 
             //Adds or removes dodge based on skills
-            for(int i = 0; i < creature.skills.Length; i++)
+            for (int i = 0; i < creature.skills.Length; i++)
             {
                 if (creature.skills[i] == Creature.allSkills.Fast)
                 {
@@ -293,9 +291,9 @@ namespace TBRPGV2
             }
             return false;
         }
-        static void AddChargerCharge(Creature enemy,bool remove = false)
+        static void AddChargerCharge(Creature enemy, bool remove = false)
         {
-            if(currentPlayer.currentClass == Creature.allClasses.Charger)
+            if (currentPlayer.currentClass == Creature.allClasses.Charger)
             {
                 currentPlayer.chargerCharge++;
             }
@@ -312,7 +310,7 @@ namespace TBRPGV2
             ConsoleColor selectionColor = ConsoleColor.White;
             ConsoleColor selectionTextColor = ConsoleColor.Black;
             //Class Icons,Names and Descriptions
-            string[] classNames = { "Damage Dealer", "Tank","Healer", "Randomizer", "Charger","Bag" };
+            string[] classNames = { "Damage Dealer", "Tank", "Healer", "Randomizer", "Charger", "Bag" };
             string[][] classDescriptions = new string[6][]
             {
                 new string[5]
@@ -390,7 +388,7 @@ namespace TBRPGV2
                 int center = classNames[classSelection].Length / 2;
                 Console.SetCursorPosition(Console.CursorLeft + 35 - center, Console.CursorTop - 15);
                 Console.WriteLine(classNames[classSelection]);
-                for(int j = 0; j < 1; ++j)
+                for (int j = 0; j < 1; ++j)
                 {
                     Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop);
                 }
@@ -407,7 +405,7 @@ namespace TBRPGV2
                     switch (j)
                     {
                         case 0:
-                            word = "Base max HP: " + currentPlayer.classStats[classSelection,0];
+                            word = "Base max HP: " + currentPlayer.classStats[classSelection, 0];
                             break;
                         case 1:
                             word = "Base damage: " + currentPlayer.classStats[classSelection, 1];
@@ -416,7 +414,7 @@ namespace TBRPGV2
                             word = "Rounds until ability recharge: " + currentPlayer.classStats[classSelection, 2];
                             break;
                         case 3:
-                            if (currentPlayer.classStats[classSelection,3] != 999)
+                            if (currentPlayer.classStats[classSelection, 3] != 999)
                             {
                                 word = "Class ability uses: " + currentPlayer.classStats[classSelection, 3];
                             }
@@ -521,7 +519,7 @@ namespace TBRPGV2
             while (startingSelection == classSelection)
             {
                 ConsoleKey key = Console.ReadKey(true).Key;
-                if(key == ConsoleKey.A)
+                if (key == ConsoleKey.A)
                 {
                     classSelection--;
                 }
@@ -555,10 +553,10 @@ namespace TBRPGV2
                     Console.Clear();
                     startingSelection = 100;
                 }
-                if(classSelection == amountOfClasses)
+                if (classSelection == amountOfClasses)
                 {
                     classSelection = 0;
-                } else if(classSelection <= -1)
+                } else if (classSelection <= -1)
                 {
                     classSelection = amountOfClasses - 1;
                 }
@@ -569,7 +567,7 @@ namespace TBRPGV2
         //Shows what skills you got at the start of the game
         static void ShowRandomSkills()
         {
-            
+
             Console.ForegroundColor = ConsoleColor.White;
             //Icons for all skills
             //Icons for the skills you have
@@ -578,14 +576,14 @@ namespace TBRPGV2
             for (int i = 0; i < currentPlayer.skills.Length - 1; i++)
             {
                 int cursorMoveAmount = 0;
-                if(i == 5)
+                if (i == 5)
                 {
                     Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop + 13);
                 }
                 if (i >= 5)
                 {
                     int amount = (int)i / 5;
-                    cursorMoveAmount = 20 * (i - ((amount * 5)-1));
+                    cursorMoveAmount = 20 * (i - ((amount * 5) - 1));
                 }
                 else
                 {
@@ -606,7 +604,7 @@ namespace TBRPGV2
                 Console.SetCursorPosition(Console.CursorLeft + cursorMoveAmount, Console.CursorTop);
                 Console.WriteLine("|----------|  ");
                 Console.SetCursorPosition(Console.CursorLeft + cursorMoveAmount, Console.CursorTop);
-                for(int j = 0; j < 4; j++)
+                for (int j = 0; j < 4; j++)
                 {
                     Console.Write("|");
                     Console.Write(activeSkillsIcon[j]);
@@ -671,13 +669,13 @@ namespace TBRPGV2
             int totalSkillsToGo = allAvSkills.Count - (pagesDown * 5);
             int skills = 5;
             //Writes rows
-            for(int j = 0; j < 2; j++)
+            for (int j = 0; j < 2; j++)
             {
-                if(j == 1)
+                if (j == 1)
                 {
                     Console.WriteLine();
                 }
-                if(totalSkillsToGo < 5)
+                if (totalSkillsToGo < 5)
                 {
                     //Remaining boxes
                     skills = totalSkillsToGo;
@@ -731,9 +729,9 @@ namespace TBRPGV2
             Console.ForegroundColor = ConsoleColor.White;
 
             return allAvSkills.Count;
-           
+
         }
-        public static void MoveSelectedSkill(int totalSkills,int skillNumber)
+        public static void MoveSelectedSkill(int totalSkills, int skillNumber)
         {
             //If you press WASD it moves the selected skill, If you press ENTER it sets your skill
             ConsoleKey key = Console.ReadKey(true).Key;
@@ -747,7 +745,7 @@ namespace TBRPGV2
             }
             else if (key == ConsoleKey.S)
             {
-                selectedSkill+= 5;
+                selectedSkill += 5;
                 if (selectedSkill >= totalSkills)
                 {
                     selectedSkill = totalSkills - 1;
@@ -760,22 +758,22 @@ namespace TBRPGV2
                 {
                     selectedSkill += 5;
                 }
-            }else if (key == ConsoleKey.Enter)
+            } else if (key == ConsoleKey.Enter)
             {
                 List<allSkills> allAvSkills = currentPlayer.GetAllAvailableSkills();
                 currentPlayer.skills[skillNumber] = allAvSkills[selectedSkill];
                 selectedSkill = 0;
             }
 
-            if(selectedSkill >= totalSkills)
+            if (selectedSkill >= totalSkills)
             {
                 selectedSkill = 0;
-            } else if(selectedSkill <= -1)
+            } else if (selectedSkill <= -1)
             {
                 selectedSkill = totalSkills - 1;
             }
 
-            if(selectedSkill < pagesDown * 5)
+            if (selectedSkill < pagesDown * 5)
             {
                 pagesDown = 0;
             }
@@ -965,6 +963,68 @@ namespace TBRPGV2
                     skillDescription[1] = "are 2 higher";
                     break;
             }
+        } 
+        private static void DrawBattle(ConsoleColor color,Creature enemy)
+        {
+            Console.Clear();
+            //Max size: 71L , 26T
+
+            //Lines
+            Console.ForegroundColor = color;
+            Console.SetCursorPosition(0, 0);
+            Console.WriteLine("  --------------------------------------------------------------------  ");
+            Console.WriteLine("  |                    |             |  Items   |                    |  ");
+            Console.WriteLine("  --------------------------------------------------------------------  ");
+            for(int i = 0; i < 6; i++)
+            {
+                Console.WriteLine("  |                    |");
+            }
+
+            Console.ForegroundColor= ConsoleColor.White;
+            //Text
+            int unusedDodge;
+            Console.SetCursorPosition(61, 4);
+            Console.SetCursorPosition(27, 1);
+            Console.WriteLine("Attacks");
+            Console.SetCursorPosition(40, 1);
+            Console.WriteLine("Items");
+            Console.SetCursorPosition(26, 3);
+            Console.WriteLine(currentPlayer.characterAttacks[0]);
+            Console.SetCursorPosition(38, 3);
+            Console.WriteLine(currentPlayer.Attack(out unusedDodge,1));
+            //Console.WriteLine("Attacks");
+
+            //Health bars
+            Console.SetCursorPosition(3, 1);
+            float maxHP = enemy.maxHealth;
+            float curHP = enemy.health;
+            float percent = (100/maxHP) * curHP;
+            percent /= 5;
+            if(percent > 20)
+            {
+                percent = 20;
+            }
+            Console.ForegroundColor = ConsoleColor.Red;
+            for (int i = 0;i < percent; i++)
+            {
+                Console.Write("█");
+            }
+
+            maxHP = currentPlayer.maxHealth;
+            curHP = currentPlayer.health;
+            percent = (100 / maxHP) * curHP;
+            percent /= 5;
+            if (percent > 20)
+            {
+                percent = 20;
+            }
+            Console.SetCursorPosition((int)(69f - percent), 1);
+            Console.ForegroundColor = ConsoleColor.Red;
+            for (int i = 0; i < percent; i++)
+            {
+                Console.Write("█");
+            }
+            Console.ForegroundColor = ConsoleColor.White;
         }
     }
 }

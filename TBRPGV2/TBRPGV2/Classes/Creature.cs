@@ -256,7 +256,6 @@
                 attackDamage += rand;
             }
             #endregion
-            Console.WriteLine(currentAttack);
             switch (currentAttack)
             {
                 //The actual attacks
@@ -276,7 +275,6 @@
                         {
                             case allClasses.DamageDealer:
                                 int classDamage = (int)((attackDamage * damageMultiplier) * 2f);
-                                Console.WriteLine(classDamage);
                                 return classDamage;
 
                             case allClasses.Tank:
@@ -304,7 +302,6 @@
 
                             case allClasses.Charger:
                                 classDamage = (int)((((attackDamage * 0.5f) + chargerCharge) * chargerCharge)*damageMultiplier);
-                                Console.WriteLine(chargerCharge + " Damage: " + classDamage);
                                 chargerCharge = 0;
                                 return classDamage;
 
@@ -369,9 +366,7 @@
                     Random rnd = new Random();
                     int rand = rnd.Next(5, 15);
                     dodge = rand;
-                    Console.WriteLine(dodge + "dodge");
                     rand = rnd.Next(-5 + rng_ExtraLuck, 10 + rng_ExtraLuck);
-                    Console.WriteLine(rand + "HP");
                     HealCreature(rand);
                     float nerf = 0.05f;
                     rand = rnd.Next((int)(((5 + rng_ExtraLuck) * nerf) * damage), (int)(((20 + rng_ExtraLuck) * nerf) * damage));
@@ -379,7 +374,6 @@
                     {
                         rand = rnd.Next((int)(((18 + rng_ExtraLuck) * nerf) * damage), (int)(((30 + rng_ExtraLuck) * nerf) * damage));
                     } 
-                    Console.WriteLine(rand+"dmg");
                     return rand;
                 #endregion
                 #endregion
@@ -464,7 +458,6 @@
         }
         public void HealCreature(float healing)
         {
-            Console.WriteLine($"Healed {healing} health");
             health += (int)healing;
         }
 
