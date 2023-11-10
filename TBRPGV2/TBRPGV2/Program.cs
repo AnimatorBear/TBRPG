@@ -6,7 +6,7 @@ namespace TBRPGV2
 {
     internal class Program
     {
-        const bool chooseStartSkills = true;
+        const bool chooseStartSkills = false;
         public const int amountStartSkills = 3;
 
 
@@ -25,6 +25,9 @@ namespace TBRPGV2
                     "    / /   ",
                     "   / /    ",
                     "  / /     "};
+
+        //Needed for UI
+        static bool[] creatureDodgedLastRound = new bool[2];
 
         //Selected skill in the level 20 skill selection screen
         static int pagesDown = 0;
@@ -127,7 +130,15 @@ namespace TBRPGV2
             bool activeBattle = true;
             while (activeBattle)
             {
-                DrawBattle(ConsoleColor.DarkGray,enemy);
+                if(currentPlayer.health > currentPlayer.maxHealth / 5)
+                {
+                    DrawBattle(ConsoleColor.DarkGray);
+                }
+                else
+                {
+                    DrawBattle(ConsoleColor.DarkRed);
+                }
+                DrawText(enemy);
                 Console.Title = "TBRPG";
                 bool selectingAttack = true;
 
@@ -172,6 +183,24 @@ namespace TBRPGV2
                     if (damage != -100)
                     {
                         selectingAttack = false;
+                        if(healing > 0)
+                        {
+                            if (currentPlayer.health > currentPlayer.maxHealth)
+                            {
+                                currentPlayer.health = currentPlayer.maxHealth;
+                            }
+                            DrawBattle(ConsoleColor.DarkGreen);
+                            DrawText(enemy);
+                            Thread.Sleep(200);
+                            DrawBattle(ConsoleColor.Green);
+                            DrawText(enemy);
+                            Thread.Sleep(200);
+                            DrawBattle(ConsoleColor.DarkGreen);
+                            DrawText(enemy);
+                            Thread.Sleep(200);
+                            DrawBattle(ConsoleColor.White);
+                            DrawText(enemy);
+                        }
                     }
                 }
 
@@ -181,15 +210,18 @@ namespace TBRPGV2
                 if (!dodged)
                 {
                     enemy.health -= damage;
+                    creatureDodgedLastRound[1] = false;
                 }
                 else
                 {
-                    
+                    creatureDodgedLastRound[1] = true;
                 }
                 #endregion
                 //Death check
                 if (enemy.health < 1)
                 {
+                    enemy.health = 0;
+                    DrawText(enemy);
                     //Console.WriteLine($"☠ Enemy died! Player HP: {currentPlayer.health}\r\nEnemy HP: {enemy.health}");
                     Thread.Sleep(1000);
                     currentPlayer.AddXP(CalculateXPGain(currentPlayer, enemy));
@@ -211,15 +243,18 @@ namespace TBRPGV2
                 if (!dodged)
                 {
                     currentPlayer.health -= damage;
+                    creatureDodgedLastRound[0] = false;
                 }
                 else
                 {
-                    
+                    creatureDodgedLastRound[0] = true;
                 }
                 #endregion
                 //Death check
                 if (currentPlayer.health < 1)
                 {
+                    currentPlayer.health = 0;
+                    DrawText(enemy);
                     //Console.WriteLine($"☠ Player died! Player HP: {currentPlayer.health}\r\nEnemy HP: {enemy.health}");
                     Thread.Sleep(1000);
                     activeBattle = false;
@@ -966,142 +1001,122 @@ namespace TBRPGV2
                     break;
             }
         } 
-        private static void DrawBattle(ConsoleColor color,Creature enemy)
+        private static void DrawBattle(ConsoleColor color)
         {
             Console.Clear();
             //Max size: 71L , 26T
 
             //Lines
             Console.ForegroundColor = color;
+            Console.SetCursorPosition(70, 26);
+            Console.WriteLine("-");
             Console.SetCursorPosition(0, 0);
             Console.WriteLine("  --------------------------------------------------------------------  ");
-            Console.WriteLine("  |                    |             |          |                    |  ");
+            Console.WriteLine("  |                                                                  |  ");
             Console.WriteLine("  --------------------------------------------------------------------  ");
-            for(int i = 0; i < 6; i++)
+            Console.SetCursorPosition(2, 3);
+            Console.WriteLine("|HP:    |");
+            Console.SetCursorPosition(2, 4);
+            Console.WriteLine("---------");
+            Console.SetCursorPosition(61, 3);
+            Console.WriteLine("|       |");
+            Console.SetCursorPosition(61, 4);
+            Console.WriteLine("---------");
+
+
+            Console.SetCursorPosition(2, 14);
+            Console.WriteLine("---------");
+            Console.SetCursorPosition(2, 15);
+            Console.WriteLine("|HP:    |");
+            Console.SetCursorPosition(61, 15);
+            Console.WriteLine("|       |");
+            Console.SetCursorPosition(61, 14);
+            Console.WriteLine("---------");
+            Console.SetCursorPosition(0, 16);
+            Console.WriteLine("  --------------------------------------------------------------------  ");
+            Console.WriteLine("  |                                                                  |  ");
+            Console.WriteLine("  --------------------------------------------------------------------  ");
+            Console.SetCursorPosition(0, 26);
+            Console.WriteLine("  --------------------------------------------------------------------  ");
+
+            Console.SetCursorPosition(0, 19);
+            for (int i = 0; i < 7; i++)
             {
-                Console.WriteLine("  |                    |");
+                Console.WriteLine("  |         |                                        |               |");
+            }
+            Console.ForegroundColor = ConsoleColor.White;
+
+        }
+        public static void DrawText(Creature enemy)
+        {
+            Console.ForegroundColor = ConsoleColor.White;
+
+            Console.SetCursorPosition(3, 15);
+            Console.WriteLine($"HP: {currentPlayer.health}");
+
+            Console.SetCursorPosition(3, 3);
+            Console.WriteLine($"HP: {enemy.health}");
+
+            if (creatureDodgedLastRound[0] == true)
+            {
+                Console.SetCursorPosition(62, 15);
+                Console.WriteLine("Dodged");
             }
 
-            Console.ForegroundColor= ConsoleColor.White;
+            if (creatureDodgedLastRound[1] == true)
+            {
+                Console.SetCursorPosition(62, 3);
+                Console.WriteLine("Dodged");
+            }
+
+            Console.SetCursorPosition(4, 20);
+            Console.WriteLine("Attacks");
+            Console.SetCursorPosition(5, 23);
+            Console.WriteLine("Items");
+
+            Console.SetCursorPosition(18, 20);
+            Console.WriteLine("Attack 1");
+            Console.SetCursorPosition(18, 23);
+            Console.WriteLine("Attack 3");
+            Console.SetCursorPosition(40, 20);
+            Console.WriteLine("Attack 2");
+            Console.SetCursorPosition(40, 23);
+            Console.WriteLine("Attack 4");
+            Console.SetCursorPosition(26, 25);
+            Console.WriteLine("Class ability");
+
+            Console.SetCursorPosition(54, 19);
+            Console.WriteLine("  Attack desc");
+
             //Text
             int unusedDodge;
             int healing = 0;
-            Console.SetCursorPosition(61, 4);
-            Console.SetCursorPosition(27, 1);
-            Console.WriteLine("Attacks");
-            Console.SetCursorPosition(40, 1);
-            Console.WriteLine("Items");
-/*            Console.SetCursorPosition(26, 3);
-            Console.WriteLine("Attack");
-            Console.SetCursorPosition(36, 3);
-            Console.WriteLine(":");
-            Console.SetCursorPosition(38, 3);
-            Console.WriteLine("Dmg");*/
-            string textAb = "Attacks";
-            int centerAb = textAb.Length / 2;
-            Console.SetCursorPosition(30 - centerAb, 3);
-            Console.Write(textAb);
-            Console.SetCursorPosition(37, 3);
-            Console.Write(":");
-            Console.SetCursorPosition(40, 3);
-            Console.Write("Dmg");
-            Console.SetCursorPosition(44, 3);
-            Console.Write(":");
-            Console.SetCursorPosition(46, 3);
-            Console.Write("HP");
             int amountMoved = 0;
-            for(int i = 5;i < currentPlayer.characterAttacks.Length + 5; i++)
-            {
-                string text = "";
-                if (currentPlayer.characterAttacks[i-5] != attacks.None)
-                {
-                    switch (currentPlayer.characterAttacks[i - 5])
-                    {
-                        case attacks.Light_Hit:
-                            text = "Light hit";
-                            break;
-                        case attacks.Heavy_Hit:
-                            text = "Heavy hit";
-                            break;
-                        case attacks.BG_NO:
-                            text = "Bag";
-                            break;
-                        case attacks.HL_LifeSteal:
-                            text = "Lifesteal";
-                            break;
-                        case attacks.RG_Stats:
-                            text = "Random Stats";
-                            break;
-                    }
-                    int center = text.Length / 2;
-                    Console.SetCursorPosition(30 - center, i);
-                    Console.WriteLine(text);
-                    Console.SetCursorPosition(37, i);
-                    Console.WriteLine(":");
-                    Console.SetCursorPosition(40, i);
-                    switch (currentPlayer.characterAttacks[i - 5])
-                    {
-                        case attacks.RG_Stats:
-                            Console.SetCursorPosition(39, i);
-                            float nerf = 0.05f;
-                            Console.WriteLine((int)(((5 + currentPlayer.rng_ExtraLuck) * nerf * currentPlayer.damage))+"-" + (int)(((30 + currentPlayer.rng_ExtraLuck) * nerf * currentPlayer.damage)));
-                            break;
-                        default:
-                            Console.WriteLine(currentPlayer.Attack(out unusedDodge, out healing, i - 4,false));
-                            break;
-
-                    }
-                    Console.SetCursorPosition(44, i);
-                    Console.Write(":");
-                    Console.SetCursorPosition(46, i);
-                    Console.Write(healing);
-
-                }
-                else
-                {
-                    amountMoved++;
-                }
-            }
-            textAb = "Ability";
-            centerAb = textAb.Length / 2;
-            Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop + 1);
-            Console.SetCursorPosition(30 - centerAb, Console.CursorTop);
-            Console.Write(textAb);
-            Console.SetCursorPosition(37, Console.CursorTop);
-            Console.Write(":");
-            Console.SetCursorPosition(40, Console.CursorTop);
-            Console.Write(currentPlayer.Attack(out unusedDodge, out healing, 5, false));
-            Console.SetCursorPosition(44, Console.CursorTop);
-            Console.Write(":");
-            Console.SetCursorPosition(46, Console.CursorTop);
-            Console.Write(healing);
-            //Console.WriteLine("Attacks");
 
             //Health bars
             Console.SetCursorPosition(3, 1);
             float maxHP = enemy.maxHealth;
             float curHP = enemy.health;
-            float percent = (100/maxHP) * curHP;
-            percent /= 5;
-            if(percent > 20)
+            float percent = (100 / maxHP) * curHP;
+            percent /= 1.52f;
+            if (percent > 66)
             {
-                percent = 20;
+                percent = 66;
             }
             Console.ForegroundColor = ConsoleColor.DarkRed;
-            for (int i = 0;i < percent; i++)
+            for (int i = 0; i < percent; i++)
             {
                 Console.Write("█");
             }
-
             maxHP = currentPlayer.maxHealth;
             curHP = currentPlayer.health;
             percent = (100 / maxHP) * curHP;
-            percent /= 5;
-            if (percent > 20)
+            percent /= 1.52f;
+            if (percent > 66)
             {
-                percent = 20;
+                percent = 66;
             }
-            Console.SetCursorPosition((int)(69f - percent), 1);
+            Console.SetCursorPosition(3, 17);
             Console.ForegroundColor = ConsoleColor.DarkGreen;
             for (int i = 0; i < percent; i++)
             {
