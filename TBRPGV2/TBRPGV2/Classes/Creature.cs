@@ -280,6 +280,7 @@
                                 return classDamage;
 
                             case allClasses.Tank:
+                                healing = (maxHealth / 10);
                                 HealCreature((maxHealth / 10));
                                 return (int)((damage * damageMultiplier) * 0.5f);
 
@@ -363,6 +364,7 @@
                     dodge = 10;
                     roundsUntilAbilityRecharge -= 2;
                     int dmg = (int)((attackDamage) * damageMultiplier);
+                    healing = (int)(dmg / 1.5f);
                     HealCreature((dmg / 1.5f));
                     return (int)(dmg / 1.5f);
                 #endregion
@@ -374,6 +376,7 @@
                     int rand = rnd.Next(5, 15);
                     dodge = rand;
                     rand = rnd.Next(-5 + rng_ExtraLuck, 10 + rng_ExtraLuck);
+                    healing = rand;
                     HealCreature(rand);
                     float nerf = 0.05f;
                     rand = rnd.Next((int)(((5 + rng_ExtraLuck) * nerf) * damage), (int)(((20 + rng_ExtraLuck) * nerf) * damage));

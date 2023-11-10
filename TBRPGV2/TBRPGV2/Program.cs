@@ -33,6 +33,9 @@ namespace TBRPGV2
         static int pagesDown = 0;
         static int selectedSkill = 0;
 
+        //Selected ui for battle
+        static int selectedTopic = 0;
+        static int selectedAttack = 1;
 
 
         //Few stats, Put amountOfClasses to 6 for Bag class
@@ -128,8 +131,12 @@ namespace TBRPGV2
             enemy.health = enemy.maxHealth;
 
             bool activeBattle = true;
+            DrawText(enemy, ConsoleColor.DarkGray);
+            DrawBattle(ConsoleColor.DarkGray);
+            Thread.Sleep(500);
             while (activeBattle)
             {
+                Console.Clear();
                 if(currentPlayer.health > currentPlayer.maxHealth / 5)
                 {
                     DrawBattle(ConsoleColor.DarkGray);
@@ -143,7 +150,7 @@ namespace TBRPGV2
                 bool selectingAttack = true;
 
                 //Makes some ints
-                int selectedAttack = 0;
+                int selectedAttack = -1;
                 int healing = 0;
                 int damage = 0;
                 int dodge = 0;
@@ -151,33 +158,13 @@ namespace TBRPGV2
 
                 while (selectingAttack)
                 {
-                    ConsoleKey key = Console.ReadKey(true).Key;
+                    //ConsoleKey key = Console.ReadKey(true).Key;
                     AddChargerCharge(enemy);
-                    switch (key)
+                    while(selectedAttack == -1)
                     {
-                        case ConsoleKey.D1:
-                            selectedAttack = 1;
-                            break;
-                        case ConsoleKey.D2:
-                            selectedAttack = 2;
-                            break;
-                        case ConsoleKey.D3:
-                            selectedAttack = 3;
-                            break;
-                        case ConsoleKey.D4:
-                            selectedAttack = 4;
-                            break;
-                        case ConsoleKey.D5:
-                            selectedAttack = 5;
-                            AddChargerCharge(enemy, true);
-                            break;
-                        case ConsoleKey.D6:
-                            currentPlayer.itemsInInv[0].UseItem();
-                            break;
-                        case ConsoleKey.D0:
-                            currentPlayer.health = 0;
-                            selectedAttack = -1;
-                            break;
+                        DrawText(enemy);
+                        selectedAttack = AttackMenuInput();
+
                     }
                     damage = currentPlayer.Attack(out dodge,out healing, selectedAttack);
                     if (damage != -100)
@@ -190,16 +177,11 @@ namespace TBRPGV2
                                 currentPlayer.health = currentPlayer.maxHealth;
                             }
                             DrawBattle(ConsoleColor.DarkGreen);
-                            DrawText(enemy);
                             Thread.Sleep(200);
                             DrawBattle(ConsoleColor.Green);
-                            DrawText(enemy);
                             Thread.Sleep(200);
                             DrawBattle(ConsoleColor.DarkGreen);
-                            DrawText(enemy);
                             Thread.Sleep(200);
-                            DrawBattle(ConsoleColor.White);
-                            DrawText(enemy);
                         }
                     }
                 }
@@ -221,7 +203,16 @@ namespace TBRPGV2
                 if (enemy.health < 1)
                 {
                     enemy.health = 0;
-                    DrawText(enemy);
+                    Console.Clear();
+                    DrawText(enemy, ConsoleColor.DarkYellow);
+                    DrawBattle(ConsoleColor.DarkYellow);
+                    Thread.Sleep(500);
+                    DrawText(enemy, ConsoleColor.DarkGray);
+                    DrawBattle(ConsoleColor.DarkGray);
+                    Thread.Sleep(200);
+                    DrawText(enemy, ConsoleColor.Black);
+                    DrawBattle(ConsoleColor.Black);
+                    Thread.Sleep(500);
                     //Console.WriteLine($"☠ Enemy died! Player HP: {currentPlayer.health}\r\nEnemy HP: {enemy.health}");
                     Thread.Sleep(1000);
                     currentPlayer.AddXP(CalculateXPGain(currentPlayer, enemy));
@@ -254,8 +245,12 @@ namespace TBRPGV2
                 if (currentPlayer.health < 1)
                 {
                     currentPlayer.health = 0;
-                    DrawText(enemy);
-                    //Console.WriteLine($"☠ Player died! Player HP: {currentPlayer.health}\r\nEnemy HP: {enemy.health}");
+                    Console.Clear();
+                    DrawText(enemy,ConsoleColor.DarkGray);
+                    DrawBattle(ConsoleColor.DarkGray);
+                    Thread.Sleep(1000);
+                    DrawText(enemy, ConsoleColor.Black);
+                    DrawBattle(ConsoleColor.Black);
                     Thread.Sleep(1000);
                     activeBattle = false;
                     currentPlayer.chargerCharge = 0;
@@ -1003,7 +998,6 @@ namespace TBRPGV2
         } 
         private static void DrawBattle(ConsoleColor color)
         {
-            Console.Clear();
             //Max size: 71L , 26T
 
             //Lines
@@ -1011,15 +1005,24 @@ namespace TBRPGV2
             Console.SetCursorPosition(70, 26);
             Console.WriteLine("-");
             Console.SetCursorPosition(0, 0);
-            Console.WriteLine("  --------------------------------------------------------------------  ");
-            Console.WriteLine("  |                                                                  |  ");
-            Console.WriteLine("  --------------------------------------------------------------------  ");
+
+            Console.Write("  --------------------------------------------------------------------  ");
+            Console.SetCursorPosition(2, 1);
+            Console.Write("|");
+            Console.SetCursorPosition(69, 1);
+            Console.Write("|");
+            Console.SetCursorPosition(0, 2);
+            Console.Write("  --------------------------------------------------------------------  ");
             Console.SetCursorPosition(2, 3);
-            Console.WriteLine("|HP:    |");
+            Console.WriteLine("|");
+            Console.SetCursorPosition(10, 3);
+            Console.WriteLine("|");
             Console.SetCursorPosition(2, 4);
             Console.WriteLine("---------");
             Console.SetCursorPosition(61, 3);
-            Console.WriteLine("|       |");
+            Console.WriteLine("|");
+            Console.SetCursorPosition(69, 3);
+            Console.WriteLine("|");
             Console.SetCursorPosition(61, 4);
             Console.WriteLine("---------");
 
@@ -1027,14 +1030,22 @@ namespace TBRPGV2
             Console.SetCursorPosition(2, 14);
             Console.WriteLine("---------");
             Console.SetCursorPosition(2, 15);
-            Console.WriteLine("|HP:    |");
+            Console.WriteLine("|");
+            Console.SetCursorPosition(10, 15);
+            Console.WriteLine("|");
             Console.SetCursorPosition(61, 15);
-            Console.WriteLine("|       |");
+            Console.WriteLine("|");
+            Console.SetCursorPosition(69, 15);
+            Console.WriteLine("|");
             Console.SetCursorPosition(61, 14);
             Console.WriteLine("---------");
             Console.SetCursorPosition(0, 16);
             Console.WriteLine("  --------------------------------------------------------------------  ");
-            Console.WriteLine("  |                                                                  |  ");
+            Console.SetCursorPosition(2, 17);
+            Console.WriteLine("|");
+            Console.SetCursorPosition(69, 17);
+            Console.Write("|");
+            Console.SetCursorPosition(0, 18);
             Console.WriteLine("  --------------------------------------------------------------------  ");
             Console.SetCursorPosition(0, 26);
             Console.WriteLine("  --------------------------------------------------------------------  ");
@@ -1042,14 +1053,22 @@ namespace TBRPGV2
             Console.SetCursorPosition(0, 19);
             for (int i = 0; i < 7; i++)
             {
-                Console.WriteLine("  |         |                                        |               |");
+                Console.SetCursorPosition(2, i + 19);
+                Console.WriteLine("|");
+                Console.SetCursorPosition(12, i + 19);
+                Console.WriteLine("|");
+                Console.SetCursorPosition(53, i + 19);
+                Console.WriteLine("|");
+                Console.SetCursorPosition(69, i + 19);
+                Console.WriteLine("|");
             }
             Console.ForegroundColor = ConsoleColor.White;
 
         }
-        public static void DrawText(Creature enemy)
+        public static void DrawText(Creature enemy,ConsoleColor color = ConsoleColor.White)
         {
-            Console.ForegroundColor = ConsoleColor.White;
+            
+            Console.ForegroundColor = color;
 
             Console.SetCursorPosition(3, 15);
             Console.WriteLine($"HP: {currentPlayer.health}");
@@ -1069,24 +1088,86 @@ namespace TBRPGV2
                 Console.WriteLine("Dodged");
             }
 
-            Console.SetCursorPosition(4, 20);
-            Console.WriteLine("Attacks");
-            Console.SetCursorPosition(5, 23);
-            Console.WriteLine("Items");
+            Console.SetCursorPosition(3, 20);
+            if (selectedTopic == 0 && color == ConsoleColor.White)
+            {
+                Console.BackgroundColor = ConsoleColor.White;
+                Console.ForegroundColor = ConsoleColor.Black;
+                Console.Write(">Attacks ");
+                Console.BackgroundColor = ConsoleColor.Black;
+                Console.ForegroundColor = color;
+            }
+            else
+            {
+                Console.WriteLine(" Attacks ");
+            }
+            Console.SetCursorPosition(3, 23);
+            if (selectedTopic == 1 && color == ConsoleColor.White)
+            {
+                Console.BackgroundColor = ConsoleColor.White;
+                Console.ForegroundColor = ConsoleColor.Black;
+                Console.Write("> Items  ");
+                Console.BackgroundColor = ConsoleColor.Black;
+                Console.ForegroundColor = color;
+            }
+            else
+            {
+                Console.WriteLine("  Items  ");
+            }
+            if(selectedTopic == 0)
+            {
+                int[,] locations = { { 17, 20 }, { 39, 20 }, { 17, 23 }, { 39, 23 } };
+                for (int i = 0; i < 4; i++)
+                {
+                    Console.SetCursorPosition(locations[i, 0], locations[i, 1]);
+                    string text = "";
+                    switch (currentPlayer.characterAttacks[i])
+                    {
+                        case attacks.Light_Hit:
+                            text = "Light attack";
+                            break;
+                        case attacks.Heavy_Hit:
+                            text = "Heavy attack";
+                            break;
+                        case attacks.HL_LifeSteal:
+                            text = "Lifesteal";
+                            break;
+                    }
+                    if (selectedAttack == i && color == ConsoleColor.White)
+                    {
+                        Console.BackgroundColor = ConsoleColor.White;
+                        Console.ForegroundColor = ConsoleColor.Black;
+                        Console.WriteLine(">" + text);
+                        Console.BackgroundColor = ConsoleColor.Black;
+                        Console.ForegroundColor = ConsoleColor.White;
+                    }
+                    else
+                    {
+                        Console.WriteLine(" " + text);
+                    }
+                }
+                if (currentPlayer.roundsUntilAbilityRecharge <= 0 && currentPlayer.classAbilityUses < currentPlayer.maxClassAbilityUses)
+                {
+                    Console.SetCursorPosition(25, 25);
+                    if (selectedAttack == 4 && color == ConsoleColor.White)
+                    {
+                        Console.BackgroundColor = ConsoleColor.White;
+                        Console.ForegroundColor = ConsoleColor.Black;
+                        Console.SetCursorPosition(25, 25);
+                        Console.Write(">Class ability");
+                        Console.BackgroundColor = ConsoleColor.Black;
+                        Console.ForegroundColor = ConsoleColor.White;
+                    }
+                    else
+                    {
+                        Console.Write(" Class ability");
+                    }
+                }
 
-            Console.SetCursorPosition(18, 20);
-            Console.WriteLine("Attack 1");
-            Console.SetCursorPosition(18, 23);
-            Console.WriteLine("Attack 3");
-            Console.SetCursorPosition(40, 20);
-            Console.WriteLine("Attack 2");
-            Console.SetCursorPosition(40, 23);
-            Console.WriteLine("Attack 4");
-            Console.SetCursorPosition(26, 25);
-            Console.WriteLine("Class ability");
-
-            Console.SetCursorPosition(54, 19);
-            Console.WriteLine("  Attack desc");
+                Console.SetCursorPosition(54, 19);
+                Console.WriteLine("  Attack desc");
+            }
+            
 
             //Text
             int unusedDodge;
@@ -1103,7 +1184,10 @@ namespace TBRPGV2
             {
                 percent = 66;
             }
-            Console.ForegroundColor = ConsoleColor.DarkRed;
+            if(color == ConsoleColor.White)
+            {
+                Console.ForegroundColor = ConsoleColor.DarkRed;
+            }
             for (int i = 0; i < percent; i++)
             {
                 Console.Write("█");
@@ -1117,12 +1201,103 @@ namespace TBRPGV2
                 percent = 66;
             }
             Console.SetCursorPosition(3, 17);
-            Console.ForegroundColor = ConsoleColor.DarkGreen;
+            if (color == ConsoleColor.White)
+            {
+                Console.ForegroundColor = ConsoleColor.DarkGreen;
+            }
             for (int i = 0; i < percent; i++)
             {
                 Console.Write("█");
             }
             Console.ForegroundColor = ConsoleColor.White;
+        }
+        public static int AttackMenuInput()
+        {
+            bool selected =false;
+            while(selected == false)
+            {
+                ConsoleKey key = Console.ReadKey(true).Key;
+                int lowestAttack = 0;
+                if (currentPlayer.roundsUntilAbilityRecharge <= 0 && currentPlayer.classAbilityUses < currentPlayer.maxClassAbilityUses)
+                {
+                    lowestAttack = 4;
+                }
+                else
+                {
+                    for (int i = 3; i > -1; i--)
+                    {
+                        if (currentPlayer.characterAttacks[i] != attacks.None)
+                        {
+                            lowestAttack = i;
+                            break;
+                        }
+                    }
+                }
+                switch (key)
+                {
+                    case ConsoleKey.S:
+                        selectedTopic--;
+                        selected = true;
+                        break;
+                    case ConsoleKey.W:
+                        selectedTopic++;
+                        selected = true;
+                        break;
+                    case ConsoleKey.A:
+                        selectedAttack--;
+                        if (selectedAttack > lowestAttack)
+                        {
+                            selectedAttack = 0;
+                        }
+                        else if (selectedAttack < 0)
+                        {
+                            selectedAttack = lowestAttack;
+                        }else if (currentPlayer.characterAttacks[selectedAttack] == attacks.None)
+                        {
+                            for (int i = 3; i > -1; i--)
+                            {
+                                if (currentPlayer.characterAttacks[i] != attacks.None)
+                                {
+                                    lowestAttack = i;
+                                    break;
+                                }
+                            }
+                            selectedAttack = lowestAttack;
+                        }
+                        selected = true;
+                        break;
+                    case ConsoleKey.D:
+                        selectedAttack++;
+                        if (selectedAttack > lowestAttack)
+                        {
+                            selectedAttack = 0;
+                        }
+                        else if (selectedAttack < 0)
+                        {
+                            selectedAttack = lowestAttack;
+                        }else if (currentPlayer.characterAttacks[selectedAttack] == attacks.None)
+                        {
+                            selectedAttack = 4;
+                        }
+                        selected = true;
+                        break;
+                    case ConsoleKey.Enter:
+                        int number = selectedAttack + 1;
+                        if(selectedAttack == 4)
+                        {
+                            selectedAttack = 0;
+                        }
+                        return number;
+                }
+                if(selectedTopic > 1)
+                {
+                    selectedTopic = 0;
+                }else if(selectedTopic < 0)
+                {
+                    selectedTopic = 1;
+                }
+            }
+            return -1;
         }
     }
 }
