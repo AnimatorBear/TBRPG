@@ -292,8 +292,11 @@
                 case attacks.Class_Ability:
                     if (roundsUntilAbilityRecharge <= 0 && classAbilityUses < maxClassAbilityUses)
                     {
-                        roundsUntilAbilityRecharge = classAbilityRecharge;
-                        classAbilityUses++;
+                        if (!visual)
+                        {
+                            roundsUntilAbilityRecharge = classAbilityRecharge;
+                            classAbilityUses++;
+                        }
                         switch (currentClass)
                         {
                             case allClasses.DamageDealer:
@@ -302,12 +305,12 @@
 
                             case allClasses.Tank:
                                 healing = (maxHealth / 10);
-                                HealCreature((maxHealth / 10));
+                                HealCreature((maxHealth / 10), visual);
                                 return (int)((damage * damageMultiplier) * 0.5f);
 
                             case allClasses.Healer:
                                 healing = (maxHealth / 2);
-                                HealCreature((maxHealth / 2));
+                                HealCreature((maxHealth / 2), visual);
                                 return 0;
 
                             case allClasses.RNG:
@@ -331,11 +334,14 @@
 
                             case allClasses.Charger:
                                 classDamage = (int)((((attackDamage * 0.5f) + chargerCharge) * chargerCharge)*damageMultiplier);
-                                chargerCharge = 0;
+                                if (!visual)
+                                {
+                                    chargerCharge = 0;
+                                }
                                 return classDamage;
 
                             case allClasses.Bag:
-                                return 1;
+                                return 10 * (currentLevel + 1);
                         }
                     }
                     else
@@ -395,7 +401,7 @@
                     }
                     int dmg = (int)((attackDamage) * damageMultiplier);
                     healing = (int)(dmg / 1.5f);
-                    HealCreature((dmg / 1.5f));
+                    HealCreature((dmg / 1.5f),visual);
                     return (int)(dmg / 1.5f);
                 #endregion
                 #endregion
@@ -416,7 +422,7 @@
                         dodge = rand;
                         rand = rnd.Next(-5 + rng_ExtraLuck, 10 + rng_ExtraLuck);
                         healing = rand;
-                        HealCreature(rand);
+                        HealCreature(rand,visual);
                         rand = rnd.Next((int)(((5 + rng_ExtraLuck) * nerf) * damage), (int)(((20 + rng_ExtraLuck) * nerf) * damage));
                         if (rand >= (int)(((18 + rng_ExtraLuck) * nerf) * damage))
                         {
@@ -505,9 +511,12 @@
             #endregion
             return allAvSkills;
         }
-        public void HealCreature(float healing)
+        public void HealCreature(float healing,bool visual)
         {
-            health += (int)healing;
+            if (!visual)
+            {
+                health += (int)healing;
+            }
         }
 
         public void AddXP(int xp,bool levels = false)

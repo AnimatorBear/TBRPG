@@ -18,7 +18,7 @@
 
         public virtual void UseItem()
         {
-            owner.HealCreature(healing);
+            owner.HealCreature(healing,false);
         }
     }
 }

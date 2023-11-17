@@ -6,14 +6,13 @@ namespace TBRPGV2
 {
     internal class Program
     {
+        //Skills
         const bool chooseStartSkills = false;
         public const int amountStartSkills = 3;
 
-
-
         //Player , Enemy test class , what class is selected
         static Creature currentPlayer = new Creature(Creature.allClasses.Class_None, 0);
-        static Creature.allClasses forceEnemyClass = Creature.allClasses.Bag;
+        static Creature.allClasses forceEnemyClass = Creature.allClasses.Class_None;
         static int classSelection = 0;
 
 
@@ -36,7 +35,6 @@ namespace TBRPGV2
         //Selected ui for battle
         static int selectedTopic = 0;
         static int selectedAttack = 1;
-
 
         //Few stats, Put amountOfClasses to 6 for Bag class
         public static int amountOfClasses = 6;
@@ -176,7 +174,7 @@ namespace TBRPGV2
                     if (damage != -100)
                     {
                         selectingAttack = false;
-                        if(healing > 0)
+                        if(healing > 50)
                         {
                             if (currentPlayer.health > currentPlayer.maxHealth)
                             {
@@ -187,6 +185,14 @@ namespace TBRPGV2
                             DrawBattle(ConsoleColor.Green);
                             Thread.Sleep(200);
                             DrawBattle(ConsoleColor.DarkGreen);
+                            Thread.Sleep(200);
+                        }else if(healing > 0)
+                        {
+                            if (currentPlayer.health > currentPlayer.maxHealth)
+                            {
+                                currentPlayer.health = currentPlayer.maxHealth;
+                            }
+                            DrawBattle(ConsoleColor.Green);
                             Thread.Sleep(200);
                         }
                     }
@@ -471,7 +477,7 @@ namespace TBRPGV2
                             word = "Speed: " + currentPlayer.classStats[classSelection, 4];
                             break;
                         case 5:
-                            word = "special";
+                            word = "";
                             break;
 
                     }
@@ -563,40 +569,41 @@ namespace TBRPGV2
             while (startingSelection == classSelection)
             {
                 ConsoleKey key = Console.ReadKey(true).Key;
-                if (key == ConsoleKey.A)
+                switch (key)
                 {
-                    classSelection--;
+                    case ConsoleKey.A:
+                        classSelection--;
+                        break;
+                    case ConsoleKey.D:
+                        classSelection++;
+                        break;
+                    case ConsoleKey.Enter:
+                        switch (classSelection)
+                        {
+                            case 0:
+                                currentPlayer.currentClass = Creature.allClasses.DamageDealer;
+                                break;
+                            case 1:
+                                currentPlayer.currentClass = Creature.allClasses.Tank;
+                                break;
+                            case 2:
+                                currentPlayer.currentClass = Creature.allClasses.Healer;
+                                break;
+                            case 3:
+                                currentPlayer.currentClass = Creature.allClasses.RNG;
+                                break;
+                            case 4:
+                                currentPlayer.currentClass = Creature.allClasses.Charger;
+                                break;
+                            case 5:
+                                currentPlayer.currentClass = Creature.allClasses.Bag;
+                                break;
+                        }
+                        Console.Clear();
+                        startingSelection = 100;
+                        break;
                 }
-                else if (key == ConsoleKey.D)
-                {
-                    classSelection++;
-                }
-                else if (key == ConsoleKey.Enter)
-                {
-                    switch (classSelection)
-                    {
-                        case 0:
-                            currentPlayer.currentClass = Creature.allClasses.DamageDealer;
-                            break;
-                        case 1:
-                            currentPlayer.currentClass = Creature.allClasses.Tank;
-                            break;
-                        case 2:
-                            currentPlayer.currentClass = Creature.allClasses.Healer;
-                            break;
-                        case 3:
-                            currentPlayer.currentClass = Creature.allClasses.RNG;
-                            break;
-                        case 4:
-                            currentPlayer.currentClass = Creature.allClasses.Charger;
-                            break;
-                        case 5:
-                            currentPlayer.currentClass = Creature.allClasses.Bag;
-                            break;
-                    }
-                    Console.Clear();
-                    startingSelection = 100;
-                }
+                
                 if (classSelection == amountOfClasses)
                 {
                     classSelection = 0;
@@ -700,8 +707,7 @@ namespace TBRPGV2
                 Console.SetCursorPosition(Console.CursorLeft + cursorMoveAmount, Console.CursorTop);
             }
             Console.WriteLine("|----------|  ");
-            Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop - 6);
-            Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop + 6);
+            Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop);
             Console.ForegroundColor = ConsoleColor.DarkGray;
             Console.WriteLine("========================================================================");
             Console.ForegroundColor = ConsoleColor.White;
@@ -1222,6 +1228,49 @@ namespace TBRPGV2
                             case attacks.RG_Stats:
                                 Console.WriteLine("You should not be able to have this tf");
                                 break;
+                            case attacks.BG_NO:
+                                Console.WriteLine("Bag, No.");
+                                break;
+                            case attacks.HL_LifeSteal:
+                                Console.WriteLine("Lifesteal");
+                                Console.SetCursorPosition(54, Console.CursorTop);
+                                Console.WriteLine($"Damage: {currentPlayer.Attack(out unusedDodge, out unusedHealing, 0, false, true, attacks.HL_LifeSteal, true)}");
+                                Console.SetCursorPosition(54, Console.CursorTop);
+                                Console.WriteLine($"Healing: {unusedHealing}");
+                                Console.SetCursorPosition(54, Console.CursorTop);
+                                Console.WriteLine($"Dodge: {unusedDodge}");
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Class Ability");
+                        switch (currentPlayer.currentClass)
+                        {
+                            case allClasses.DamageDealer:
+                                Console.SetCursorPosition(54, Console.CursorTop);
+                                Console.WriteLine($"Damage: {currentPlayer.Attack(out unusedDodge, out unusedHealing, 0, false, true, attacks.Class_Ability, true)}");
+                                Console.SetCursorPosition(54, Console.CursorTop);
+                                Console.WriteLine("Cant Dodge");
+                                break;
+                            case allClasses.Tank:
+                                Console.SetCursorPosition(54, Console.CursorTop);
+                                Console.WriteLine($"Damage: {currentPlayer.Attack(out unusedDodge, out unusedHealing, 0, false, true, attacks.Class_Ability, true)}");
+                                Console.SetCursorPosition(54, Console.CursorTop);
+                                Console.WriteLine($"Healing: {unusedHealing}");
+                                Console.SetCursorPosition(54, Console.CursorTop);
+                                Console.WriteLine("Cant Dodge");
+                                break;
+                            case allClasses.Healer:
+                                Console.SetCursorPosition(54, Console.CursorTop);
+                                currentPlayer.Attack(out unusedDodge, out unusedHealing, 0, false, true, attacks.Class_Ability, true);
+                                Console.SetCursorPosition(54, Console.CursorTop);
+                                Console.WriteLine($"Healing: {unusedHealing}");
+                                break;
+                            case allClasses.Charger:
+                                Console.SetCursorPosition(54, Console.CursorTop);
+                                Console.WriteLine($"Damage: {currentPlayer.Attack(out unusedDodge, out unusedHealing, 0, false, true, attacks.Class_Ability, true)}");
+                                break;
                         }
                     }
                 }
@@ -1370,6 +1419,10 @@ namespace TBRPGV2
                             selectedAttack = 0;
                         }
                         return number;
+                    case ConsoleKey.D0:
+                        currentPlayer.health = 0;
+                        return -2;
+                        break;
                 }
                 if(selectedTopic > 1)
                 {
