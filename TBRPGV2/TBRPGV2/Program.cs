@@ -203,6 +203,8 @@ namespace TBRPGV2
                 if (enemy.health < 1)
                 {
                     enemy.health = 0;
+
+                    //Death animation thingy
                     Console.Clear();
                     DrawText(enemy, ConsoleColor.DarkYellow);
                     DrawBattle(ConsoleColor.DarkYellow);
@@ -213,10 +215,14 @@ namespace TBRPGV2
                     DrawText(enemy, ConsoleColor.Black);
                     DrawBattle(ConsoleColor.Black);
                     Thread.Sleep(500);
-                    //Console.WriteLine($"☠ Enemy died! Player HP: {currentPlayer.health}\r\nEnemy HP: {enemy.health}");
                     Thread.Sleep(1000);
+
+                    //Add xp, make sure you cant charger charge over multiple battles (rip mike strats)
                     currentPlayer.AddXP(CalculateXPGain(currentPlayer, enemy));
                     currentPlayer.chargerCharge = 0;
+
+                    //Makes sure your health gets set to your new max health later
+                    currentPlayer.RecalculateStats();
                     activeBattle = false;
                 }
                 else if (enemy.health > enemy.maxHealth)
@@ -601,8 +607,6 @@ namespace TBRPGV2
         {
 
             Console.ForegroundColor = ConsoleColor.White;
-            //Icons for all skills
-            //Icons for the skills you have
             Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop + 10);
             //Makes the box and puts the icon in it
             for (int i = 0; i < currentPlayer.skills.Length - 1; i++)
@@ -1070,12 +1074,14 @@ namespace TBRPGV2
             
             Console.ForegroundColor = color;
 
+            //Health text
             Console.SetCursorPosition(3, 15);
             Console.WriteLine($"HP: {currentPlayer.health}");
 
             Console.SetCursorPosition(3, 3);
             Console.WriteLine($"HP: {enemy.health}");
 
+            //Dodge text
             if (creatureDodgedLastRound[0] == true)
             {
                 Console.SetCursorPosition(62, 15);
@@ -1089,6 +1095,8 @@ namespace TBRPGV2
             }
 
             Console.SetCursorPosition(3, 20);
+
+            //Selected catogory
             if (selectedTopic == 0 && color == ConsoleColor.White)
             {
                 Console.BackgroundColor = ConsoleColor.White;
@@ -1114,6 +1122,8 @@ namespace TBRPGV2
             {
                 Console.WriteLine("  Items  ");
             }
+
+            //Attacks menu
             if(selectedTopic == 0)
             {
                 int[,] locations = { { 17, 20 }, { 39, 20 }, { 17, 23 }, { 39, 23 } };
@@ -1121,6 +1131,7 @@ namespace TBRPGV2
                 {
                     Console.SetCursorPosition(locations[i, 0], locations[i, 1]);
                     string text = "";
+                    //What attack and which one you have selected
                     switch (currentPlayer.characterAttacks[i])
                     {
                         case attacks.Light_Hit:
@@ -1148,6 +1159,7 @@ namespace TBRPGV2
                 }
                 if (currentPlayer.roundsUntilAbilityRecharge <= 0 && currentPlayer.classAbilityUses < currentPlayer.maxClassAbilityUses)
                 {
+                    //Class ability if you can use it
                     Console.SetCursorPosition(25, 25);
                     if (selectedAttack == 4 && color == ConsoleColor.White)
                     {
@@ -1165,14 +1177,13 @@ namespace TBRPGV2
                 }
 
                 Console.SetCursorPosition(54, 19);
+                //Dont do stuff yet
                 Console.WriteLine("  Attack desc");
             }
             
 
             //Text
             int unusedDodge;
-            int healing = 0;
-            int amountMoved = 0;
 
             //Health bars
             Console.SetCursorPosition(3, 1);

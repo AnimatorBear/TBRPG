@@ -96,7 +96,6 @@
                     classAbilityRecharge = classStats[0, 2];
                     maxClassAbilityUses = classStats[0, 3];
                     speed = classStats[0, 4];
-                    characterAttacks[2] = attacks.BG_NO;
                     break;
                 case allClasses.Tank:
                     maxHealth = classStats[1, 0];
