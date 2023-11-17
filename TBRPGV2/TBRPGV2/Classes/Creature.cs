@@ -22,7 +22,17 @@
         public allClasses currentClass = allClasses.Class_None;
 
         //Stats for each seperate class
-        public int[,] classStats = { {90,12,5, 999, 8} , { 130, 8, 4, 999, 7 }, { 115, 6, 6, 3, 9 }, { 100, 9, 0, 999, 7 }, { 90, 9, 1, 999, 7 }, 
+        public int[,] classStats = { 
+            //DamageDealer
+            {90,12,5, 999, 8} , 
+            //Tank
+            { 130, 8, 4, 999, 7 }, 
+            //Healer
+            { 115, 6, 6, 3, 9 }, 
+            //RNG
+            { 100, 9, 0, 999, 7 }, 
+            //Charger
+            { 90, 9, 1, 999, 7 }, 
             //Bag Stats, For testing
             { 99, -6, 0, 999, 0 } };
 
@@ -220,33 +230,42 @@
             }
             return result;
         }
-        public int Attack(out int dodge, out int healing, int attack = 0, bool doRandom = true)
+        public int Attack(out int dodge, out int healing, int attack = 0, bool doRandom = true,bool useEnumAttackInstead = false, attacks enumAttack = attacks.None,bool visual = false)
         {
             attacks currentAttack = attacks.None;
             dodge = 0;
             healing = 0;
             RandomAttack:
             #region Select attack based on int
-            switch (attack)
+            if (!useEnumAttackInstead)
             {
-                case 1:
-                    currentAttack = characterAttacks[0];
-                    break;
-                case 2:
-                    currentAttack = characterAttacks[1];
-                    break;
-                case 3:
-                    currentAttack = characterAttacks[2];
-                    break;
-                case 4:
-                    currentAttack = characterAttacks[3];
-                    break;
-                case 5:
-                    currentAttack = attacks.Class_Ability;
-                    break;
-                case -1:
-                    return 0;
+                switch (attack)
+                {
+                    case 1:
+                        currentAttack = characterAttacks[0];
+                        break;
+                    case 2:
+                        currentAttack = characterAttacks[1];
+                        break;
+                    case 3:
+                        currentAttack = characterAttacks[2];
+                        break;
+                    case 4:
+                        currentAttack = characterAttacks[3];
+                        break;
+                    case 5:
+                        currentAttack = attacks.Class_Ability;
+                        break;
+                    case -1:
+                        return 0;
+                }
             }
+            else
+            {
+                //or not
+                currentAttack = enumAttack;
+            }
+            
             #endregion
             float attackDamage = damage;
             #region Randomizer Random Attack Damage
@@ -263,7 +282,10 @@
                 #region All Class Attacks
                     #region None
                 case attacks.None:
-                    roundsUntilAbilityRecharge -= 1;
+                    if (!visual)
+                    {
+                        roundsUntilAbilityRecharge -= 1;
+                    }
                     return 0;
                 #endregion
                     #region Class Ability
@@ -325,7 +347,10 @@
                     #region Light Hit
                 case attacks.Light_Hit:
                     dodge = 5;
-                    roundsUntilAbilityRecharge -= 2;
+                    if (!visual)
+                    {
+                        roundsUntilAbilityRecharge -= 1;
+                    }
                     float extraDamage = 0;
                     for (int i = 0; i < skills.Length; i++)
                     {
@@ -347,7 +372,10 @@
                             extraDamage = extraDamage + (attackDamage * 1.2f);
                         }
                     }
-                    roundsUntilAbilityRecharge -= 1;
+                    if (!visual)
+                    {
+                        roundsUntilAbilityRecharge -= 1;
+                    }
                     return (int)(((attackDamage * 1.5f) + extraDamage) * damageMultiplier);
                 #endregion
                 #endregion
@@ -361,7 +389,10 @@
                     #region LifeSteal
                 case attacks.HL_LifeSteal:
                     dodge = 10;
-                    roundsUntilAbilityRecharge -= 2;
+                    if (!visual)
+                    {
+                        roundsUntilAbilityRecharge -= 2;
+                    }
                     int dmg = (int)((attackDamage) * damageMultiplier);
                     healing = (int)(dmg / 1.5f);
                     HealCreature((dmg / 1.5f));
@@ -371,19 +402,28 @@
                 #region RNG
                     #region RG_Stats
                 case attacks.RG_Stats:
-                    Random rnd = new Random();
-                    int rand = rnd.Next(5, 15);
-                    dodge = rand;
-                    rand = rnd.Next(-5 + rng_ExtraLuck, 10 + rng_ExtraLuck);
-                    healing = rand;
-                    HealCreature(rand);
                     float nerf = 0.05f;
-                    rand = rnd.Next((int)(((5 + rng_ExtraLuck) * nerf) * damage), (int)(((20 + rng_ExtraLuck) * nerf) * damage));
-                    if(rand >= (int)(((18 + rng_ExtraLuck) * nerf) * damage))
+                    if (!doRandom)
                     {
-                        rand = rnd.Next((int)(((18 + rng_ExtraLuck) * nerf) * damage), (int)(((30 + rng_ExtraLuck) * nerf) * damage));
-                    } 
-                    return rand;
+                        dodge = 12;
+                        healing = 2 + rng_ExtraLuck;
+                        return (int)(((12 + rng_ExtraLuck) * nerf) * damage);
+                    }
+                    else
+                    {
+                        Random rnd = new Random();
+                        int rand = rnd.Next(5, 15);
+                        dodge = rand;
+                        rand = rnd.Next(-5 + rng_ExtraLuck, 10 + rng_ExtraLuck);
+                        healing = rand;
+                        HealCreature(rand);
+                        rand = rnd.Next((int)(((5 + rng_ExtraLuck) * nerf) * damage), (int)(((20 + rng_ExtraLuck) * nerf) * damage));
+                        if (rand >= (int)(((18 + rng_ExtraLuck) * nerf) * damage))
+                        {
+                            rand = rnd.Next((int)(((18 + rng_ExtraLuck) * nerf) * damage), (int)(((30 + rng_ExtraLuck) * nerf) * damage));
+                        }
+                        return rand;
+                    }
                 #endregion
                 #endregion
                 #region Charger

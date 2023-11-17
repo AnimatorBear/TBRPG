@@ -13,7 +13,7 @@ namespace TBRPGV2
 
         //Player , Enemy test class , what class is selected
         static Creature currentPlayer = new Creature(Creature.allClasses.Class_None, 0);
-        static Creature.allClasses testingEnemyClass = Creature.allClasses.Healer;
+        static Creature.allClasses forceEnemyClass = Creature.allClasses.Bag;
         static int classSelection = 0;
 
 
@@ -39,7 +39,7 @@ namespace TBRPGV2
 
 
         //Few stats, Put amountOfClasses to 6 for Bag class
-        public static int amountOfClasses = 5;
+        public static int amountOfClasses = 6;
         static void Main(string[] args)
         {
             //Some Misc things
@@ -119,11 +119,17 @@ namespace TBRPGV2
         static void StartBattle(bool showStatsAtStart)
         {
             //Makes the enemy
-            Creature enemy = new Creature(testingEnemyClass, currentPlayer.currentLevel);
+            Creature enemy = new Creature(allClasses.Class_None, currentPlayer.currentLevel);
             Enemy enemyBrain = new Enemy(enemy, currentPlayer);
-            enemy.currentClass = enemyBrain.ChooseClass();
+            if(forceEnemyClass != allClasses.Class_None)
+            {
+                enemy.currentClass = forceEnemyClass;
+            }
+            else
+            {
+                enemy.currentClass = enemyBrain.ChooseClass();
+            }
             enemyBrain.ChooseExtraSkill();
-            //Console.WriteLine($"Enemy Class: {enemy.currentClass}");
 
             //Recalculate Stats
             enemy.RecalculateStats(showStatsAtStart);
@@ -1143,6 +1149,12 @@ namespace TBRPGV2
                         case attacks.HL_LifeSteal:
                             text = "Lifesteal";
                             break;
+                        case attacks.RG_Stats:
+                            text = "Random Stats";
+                            break;
+                        case attacks.BG_NO:
+                            text = "Bag, No.";
+                            break;
                     }
                     if (selectedAttack == i && color == ConsoleColor.White)
                     {
@@ -1176,14 +1188,73 @@ namespace TBRPGV2
                     }
                 }
 
+                for(int i = 0; i < 7; i++)
+                {
+                    Console.SetCursorPosition(54, 19 + i);
+                    Console.WriteLine("               ");
+                }
                 Console.SetCursorPosition(54, 19);
                 //Dont do stuff yet
-                Console.WriteLine("  Attack desc");
+                int unusedDodge=0;
+                int unusedHealing=0;
+                if (currentPlayer.currentClass != allClasses.RNG)
+                {
+                    if (selectedAttack != 4)
+                    {
+                        switch (currentPlayer.characterAttacks[selectedAttack])
+                        {
+                            case attacks.Light_Hit:
+                                Console.WriteLine("Light Attack");
+                                Console.SetCursorPosition(54, Console.CursorTop);
+                                Console.WriteLine($"Damage: {currentPlayer.Attack(out unusedDodge, out unusedHealing, 0, false, true, attacks.Light_Hit,true)}");
+                                Console.SetCursorPosition(54, Console.CursorTop);
+                                Console.WriteLine($"Dodge: {unusedDodge}");
+                                break;
+
+                            case attacks.Heavy_Hit:
+                                Console.WriteLine("Heavy Attack");
+                                Console.SetCursorPosition(54, Console.CursorTop);
+                                Console.WriteLine($"Damage: {currentPlayer.Attack(out unusedDodge, out unusedHealing, 0, false, true, attacks.Heavy_Hit,true)}");
+                                Console.SetCursorPosition(54, Console.CursorTop);
+                                Console.WriteLine($"Dodge: {unusedDodge}");
+                                break;
+
+                            case attacks.RG_Stats:
+                                Console.WriteLine("You should not be able to have this tf");
+                                break;
+                        }
+                    }
+                }
+                else
+                {
+                    if (selectedAttack != 4)
+                    {
+                        switch (currentPlayer.characterAttacks[selectedAttack])
+                        {
+                            case attacks.Light_Hit:
+                                Console.WriteLine("Light Attack");
+                                Console.SetCursorPosition(54, Console.CursorTop);
+                                Console.WriteLine($"Random damage ");
+                                Console.SetCursorPosition(54, Console.CursorTop);
+                                Console.WriteLine($"around {currentPlayer.Attack(out unusedDodge, out unusedHealing, 0, false, true, attacks.Light_Hit,true)}");
+                                break;
+                            case attacks.RG_Stats:
+                                Console.WriteLine("Random Stats");
+                                Console.SetCursorPosition(54, Console.CursorTop);
+                                //Why is it stupid
+                                Console.WriteLine($"Damage: {currentPlayer.Attack(out unusedDodge, out unusedHealing, 0, false, true, attacks.RG_Stats,true)}");
+                                Console.SetCursorPosition(54, Console.CursorTop);
+                                Console.WriteLine($"Healing: {unusedHealing}");
+                                Console.SetCursorPosition(54, Console.CursorTop);
+                                Console.WriteLine($"Dodge: {unusedDodge}");
+                                break;
+                        }
+                    }
+                }
             }
             
 
             //Text
-            int unusedDodge;
 
             //Health bars
             Console.SetCursorPosition(3, 1);
