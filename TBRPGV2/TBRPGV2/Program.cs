@@ -34,7 +34,7 @@ namespace TBRPGV2
 
         //Selected ui for battle
         static int selectedTopic = 0;
-        static int selectedAttack = 1;
+        static int selectedAttack = 0;
 
         //Few stats, Put amountOfClasses to 6 for Bag class
         public static int amountOfClasses = 6;
@@ -57,7 +57,6 @@ namespace TBRPGV2
                         }
                         catch (Exception)
                         {
-                            Console.WriteLine("You already have all skills!");
                             break;
                         }
                     }
@@ -1200,9 +1199,9 @@ namespace TBRPGV2
                     Console.WriteLine("               ");
                 }
                 Console.SetCursorPosition(54, 19);
-                //Dont do stuff yet
                 int unusedDodge=0;
                 int unusedHealing=0;
+                #region Attack Descriptions
                 if (currentPlayer.currentClass != allClasses.RNG)
                 {
                     if (selectedAttack != 4)
@@ -1270,6 +1269,8 @@ namespace TBRPGV2
                             case allClasses.Charger:
                                 Console.SetCursorPosition(54, Console.CursorTop);
                                 Console.WriteLine($"Damage: {currentPlayer.Attack(out unusedDodge, out unusedHealing, 0, false, true, attacks.Class_Ability, true)}");
+                                Console.SetCursorPosition(54, Console.CursorTop);
+                                Console.WriteLine("Cant Dodge");
                                 break;
                         }
                     }
@@ -1290,7 +1291,6 @@ namespace TBRPGV2
                             case attacks.RG_Stats:
                                 Console.WriteLine("Random Stats");
                                 Console.SetCursorPosition(54, Console.CursorTop);
-                                //Why is it stupid
                                 Console.WriteLine($"Damage: {currentPlayer.Attack(out unusedDodge, out unusedHealing, 0, false, true, attacks.RG_Stats,true)}");
                                 Console.SetCursorPosition(54, Console.CursorTop);
                                 Console.WriteLine($"Healing: {unusedHealing}");
@@ -1299,11 +1299,26 @@ namespace TBRPGV2
                                 break;
                         }
                     }
+                    else
+                    {
+                        Console.WriteLine("Class Ability");
+                        Console.SetCursorPosition(54, Console.CursorTop);
+                        Console.WriteLine("Does a ");
+                        Console.SetCursorPosition(54, Console.CursorTop);
+                        Console.WriteLine("random attack");
+                    }
+                }
+                #endregion
+            }
+            else
+            {
+                for(int i = 0; i < 7; i++)
+                {
+                    Console.SetCursorPosition(13, 19 + i);
+                    Console.WriteLine("                                        ");
                 }
             }
-            
 
-            //Text
 
             //Health bars
             Console.SetCursorPosition(3, 1);
@@ -1368,10 +1383,12 @@ namespace TBRPGV2
                 {
                     case ConsoleKey.S:
                         selectedTopic--;
+                        selectedAttack = 0;
                         selected = true;
                         break;
                     case ConsoleKey.W:
                         selectedTopic++;
+                        selectedAttack = 0;
                         selected = true;
                         break;
                     case ConsoleKey.A:
@@ -1413,12 +1430,20 @@ namespace TBRPGV2
                         selected = true;
                         break;
                     case ConsoleKey.Enter:
-                        int number = selectedAttack + 1;
-                        if(selectedAttack == 4)
+                        if(selectedTopic == 0)
                         {
-                            selectedAttack = 0;
+                            int number = selectedAttack + 1;
+                            if (selectedAttack == 4)
+                            {
+                                selectedAttack = 0;
+                            }
+                            return number;
                         }
-                        return number;
+                        else
+                        {
+
+                        }
+                        break;
                     case ConsoleKey.D0:
                         currentPlayer.health = 0;
                         return -2;
