@@ -1,5 +1,4 @@
 ﻿using System.Text;
-using static System.Net.Mime.MediaTypeNames;
 using static TBRPGV2.Creature;
 
 namespace TBRPGV2

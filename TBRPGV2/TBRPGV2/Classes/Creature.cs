@@ -30,7 +30,7 @@
             //Healer
             { 115, 6, 6, 3, 9 }, 
             //RNG
-            { 100, 9, 0, 999, 7 }, 
+            { 100, 9, 3, 999, 7 }, 
             //Charger
             { 90, 9, 1, 999, 7 }, 
             //Bag Stats, For testing
@@ -314,7 +314,13 @@
                                 return 0;
 
                             case allClasses.RNG:
-                                if(doRandom == false)
+                                Random rnd2 = new Random();
+                                int rand2 = rnd2.Next(30, 60);
+                                int rand3 = rnd2.Next(10, 30);
+                                HealCreature(-(maxHealth / 100) * rand3,false);
+                                Thread.Sleep(1000);
+                                return (int)((maxHealth/100) * rand2);
+                                /*if(doRandom == false)
                                 {
                                     return 0;
                                 }
@@ -330,7 +336,8 @@
                                         gotRND = true;
                                     }
                                 }
-                                goto RandomAttack;
+                                goto RandomAttack;*/
+                                return 0;
 
                             case allClasses.Charger:
                                 classDamage = (int)((((attackDamage * 0.5f) + chargerCharge) * chargerCharge)*damageMultiplier);
