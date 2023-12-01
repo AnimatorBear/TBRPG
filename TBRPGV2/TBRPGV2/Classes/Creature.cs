@@ -418,7 +418,6 @@ namespace TBRPGV2
                     {
                         prevAttack = attacks.Heavy_Hit;
                     }
-                    characterAttacks[3] = attacks.BG_NO;
                     return totalDamage;
                 #endregion
                 #endregion
