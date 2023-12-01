@@ -1446,7 +1446,6 @@ namespace TBRPGV2
                     case ConsoleKey.D0:
                         currentPlayer.health = 0;
                         return -2;
-                        break;
                 }
                 if(selectedTopic > 1)
                 {
