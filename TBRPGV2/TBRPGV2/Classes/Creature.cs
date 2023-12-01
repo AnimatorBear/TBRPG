@@ -77,7 +77,7 @@ namespace TBRPGV2
         //RG = Randomizer
         //CH = Charger
         //BG = Bag
-        public enum attacks { None,Class_Ability,Heavy_Hit,Light_Hit,BG_NO, RG_Stats,HL_LifeSteal };
+        public enum attacks { None,Class_Ability,Heavy_Hit,Light_Hit,DD_HPSacrifice, HL_LifeSteal, RG_Stats, BG_NO };
         public int[] attackLevels = { -1, -1, -1, -1, -1,5,5};
         public attacks[] characterAttacks { get; set; } = { attacks.Light_Hit,attacks.Heavy_Hit,attacks.None,attacks.None};
         public attacks prevAttack { get; set; }
@@ -116,6 +116,7 @@ namespace TBRPGV2
                     classAbilityRecharge = classStats[0, 2];
                     maxClassAbilityUses = classStats[0, 3];
                     speed = classStats[0, 4];
+                    characterAttacks[2] = attacks.DD_HPSacrifice;
                     break;
                 case allClasses.Tank:
                     maxHealth = classStats[1, 0];
@@ -245,7 +246,6 @@ namespace TBRPGV2
             attacks currentAttack = attacks.None;
             dodge = 0;
             healing = 0;
-            RandomAttack:
             #region Select attack based on int
             if (!useEnumAttackInstead)
             {
@@ -424,6 +424,25 @@ namespace TBRPGV2
 
                 #region ClassSpecificAttacks
                 #region Damage Dealer
+                case attacks.DD_HPSacrifice:
+                    dodge = 10;
+                    if (!visual)
+                    {
+                        roundsUntilAbilityRecharge -= 2;
+                    }
+                    int dmg = (int)((attackDamage) * damageMultiplier);
+                    totalDamage = (int)(dmg * 2);
+                    if (prevAttack == attacks.DD_HPSacrifice)
+                    {
+                        totalDamage = (int)(totalDamage * (1 - attackSpamNerf));
+                    }
+                    if (!visual)
+                    {
+                        prevAttack = attacks.DD_HPSacrifice;
+                    }
+                    HealCreature(-(maxHealth * 0.1f), visual);
+                    healing = (int)-(maxHealth * 0.1f);
+                    return totalDamage;
                 #endregion
                 #region Tank
                 #endregion
@@ -435,7 +454,7 @@ namespace TBRPGV2
                     {
                         roundsUntilAbilityRecharge -= 2;
                     }
-                    int dmg = (int)((attackDamage) * damageMultiplier);
+                    dmg = (int)((attackDamage) * damageMultiplier);
                     totalDamage = (int)(dmg / 1.5f);
                     if (prevAttack == attacks.HL_LifeSteal)
                     {

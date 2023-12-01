@@ -46,6 +46,8 @@ namespace TBRPGV2
         //Quick save file name
         static string playerFileName = "Saves/QuickPlayerSave.json";
         static string[] playerManualSaveNames = { "Saves/PlayerSave1.json", "Saves/PlayerSave2.json", "Saves/PlayerSave3.json" };
+        static int selectedSave = 0;
+
         static void Main(string[] args)
         {
             //Some Misc things
@@ -1171,6 +1173,9 @@ namespace TBRPGV2
                         case attacks.BG_NO:
                             text = "Bag, No.";
                             break;
+                        case attacks.DD_HPSacrifice:
+                            text = "HP Sacrifice";
+                            break;
                     }
                     if (selectedAttack == i && color == ConsoleColor.White)
                     {
@@ -1247,6 +1252,15 @@ namespace TBRPGV2
                                 Console.WriteLine($"Damage: {currentPlayer.Attack(out unusedDodge, out unusedHealing, 0, false, true, attacks.HL_LifeSteal, true)}");
                                 Console.SetCursorPosition(54, Console.CursorTop);
                                 Console.WriteLine($"Healing: {unusedHealing}");
+                                Console.SetCursorPosition(54, Console.CursorTop);
+                                Console.WriteLine($"Dodge: {unusedDodge}");
+                                break;
+                            case attacks.DD_HPSacrifice:
+                                Console.WriteLine("HP Sacrifice");
+                                Console.SetCursorPosition(54, Console.CursorTop);
+                                Console.WriteLine($"Damage: {currentPlayer.Attack(out unusedDodge, out unusedHealing, 0, false, true, attacks.DD_HPSacrifice, true)}");
+                                Console.SetCursorPosition(54, Console.CursorTop);
+                                Console.WriteLine($"Hurt: {-unusedHealing}");
                                 Console.SetCursorPosition(54, Console.CursorTop);
                                 Console.WriteLine($"Dodge: {unusedDodge}");
                                 break;
@@ -1459,7 +1473,7 @@ namespace TBRPGV2
                         currentPlayer.health = 0;
                         return -2;
                     case ConsoleKey.M:
-                        ManualSavePlayer(0);
+                        ManualSaveUI();
                         break;
                 }
                 if(selectedTopic > 1)
@@ -1486,19 +1500,237 @@ namespace TBRPGV2
 
         static void ManualSaveUI()
         {
+            bool selecting = true;
+            while (selecting)
+            {
+                Console.Clear();
+                if(selectedSave == 0)
+                {
+                    Console.WriteLine("Save1");
+                }
+                if (selectedSave == 1)
+                {
+                    Console.WriteLine("Save2");
+                }
+                if (selectedSave == 2)
+                {
+                    Console.WriteLine("Save3");
+                }
+                //Draw stuff
 
+                ConsoleKey key = Console.ReadKey().Key;
+
+                switch (key)
+                {
+                    case ConsoleKey.D:
+                        selectedSave++;
+                        break;
+                    case ConsoleKey.A:
+                        selectedSave--; 
+                        break;
+                    case ConsoleKey.Enter:
+                        ManualSavePlayer(selectedSave);
+                        selecting = false;
+                        selectedSave = 0;
+                        break;
+                }
+                if(selectedSave < 0)
+                {
+                    selectedSave = playerManualSaveNames.Length - 1;
+                }else if (selectedSave > playerManualSaveNames.Length - 1)
+                {
+                    selectedSave = 0;
+                }
+            }
+        }
+        static void ManualLoadUI()
+        {
+            bool[] existingFiles = {false,false,false,false};
+            if (File.Exists(playerFileName))
+            {
+                existingFiles[0] = true;
+            }
+            for (int i = 0; i < playerManualSaveNames.Length; i++)
+            {
+                if (File.Exists(playerManualSaveNames[i]))
+                {
+                    existingFiles[i+1] = true;
+                }
+            }
+            bool selecting = true;
+            while (selecting)
+            {
+                Console.Clear();
+                if (existingFiles[0])
+                {
+                    if(selectedSave == 0)
+                    {
+                        Console.BackgroundColor = ConsoleColor.White;
+                        Console.ForegroundColor = ConsoleColor.Black;
+                        Console.WriteLine(">Auto Save");
+                        Console.BackgroundColor = ConsoleColor.Black;
+                        Console.ForegroundColor = ConsoleColor.White;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Auto Save");
+                    }
+                }
+                if (existingFiles[1])
+                {
+                    if (selectedSave == 1)
+                    {
+                        Console.BackgroundColor = ConsoleColor.White;
+                        Console.ForegroundColor = ConsoleColor.Black;
+                        Console.WriteLine(">Save 1");
+                        Console.BackgroundColor = ConsoleColor.Black;
+                        Console.ForegroundColor = ConsoleColor.White;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Save 1");
+                    }
+                }
+                if (existingFiles[2])
+                {
+                    if (selectedSave == 2)
+                    {
+                        Console.BackgroundColor = ConsoleColor.White;
+                        Console.ForegroundColor = ConsoleColor.Black;
+                        Console.WriteLine(">Save 2");
+                        Console.BackgroundColor = ConsoleColor.Black;
+                        Console.ForegroundColor = ConsoleColor.White;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Save 2");
+                    }
+                }
+                if (existingFiles[3])
+                {
+                    if (selectedSave == 3)
+                    {
+                        Console.BackgroundColor = ConsoleColor.White;
+                        Console.ForegroundColor = ConsoleColor.Black;
+                        Console.WriteLine(">Save 3");
+                        Console.BackgroundColor = ConsoleColor.Black;
+                        Console.ForegroundColor = ConsoleColor.White;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Save 3");
+                    }
+                }
+                //Draw stuff
+
+                ConsoleKey key = Console.ReadKey().Key;
+
+                string file;
+                Creature playerSave;
+                switch (key)
+                {
+                    case ConsoleKey.S:
+                        selectedSave++;
+                        break;
+                    case ConsoleKey.W:
+                        selectedSave--;
+                        break;
+                    case ConsoleKey.Enter:
+                        switch (selectedSave)
+                        {
+                            case 0:
+                                if (File.Exists(playerFileName))
+                                {
+                                    file = File.ReadAllText(playerFileName);
+                                    playerSave = JsonSerializer.Deserialize<Creature>(file);
+                                    currentPlayer = playerSave;
+                                }
+                                else
+                                {
+                                    NewCharacter();
+                                }
+                                break;
+                            case 1:
+                                if (File.Exists(playerManualSaveNames[0]))
+                                {
+                                    file = File.ReadAllText(playerManualSaveNames[0]);
+                                    playerSave = JsonSerializer.Deserialize<Creature>(file);
+                                    currentPlayer = playerSave;
+                                }
+                                else
+                                {
+                                    NewCharacter();
+                                }
+                                break;
+                            case 2:
+                                if (File.Exists(playerManualSaveNames[1]))
+                                {
+                                    file = File.ReadAllText(playerManualSaveNames[1]);
+                                    playerSave = JsonSerializer.Deserialize<Creature>(file);
+                                    currentPlayer = playerSave;
+                                }
+                                else
+                                {
+                                    NewCharacter();
+                                }
+                                break;
+                            case 3:
+                                if (File.Exists(playerManualSaveNames[2]))
+                                {
+                                    file = File.ReadAllText(playerManualSaveNames[2]);
+                                    playerSave = JsonSerializer.Deserialize<Creature>(file);
+                                    currentPlayer = playerSave;
+                                }
+                                else
+                                {
+                                    NewCharacter();
+                                }
+                                break;
+                        }
+                        selecting = false;
+                        selectedSave = 0;
+                        break;
+                }
+                if (selectedSave < 0)
+                {
+                    selectedSave = playerManualSaveNames.Length;
+                }
+                else if (selectedSave > playerManualSaveNames.Length)
+                {
+                    selectedSave = 0;
+                }
+            }
         }
         static void LoadPlayer()
         {
             try
             {
                 Console.WriteLine("Save file detected! Use it? Y/N");
-                string allDices = File.ReadAllText(playerFileName);
-                Creature playerSave = JsonSerializer.Deserialize<Creature>(allDices);
                 #region Cheat Check
                 bool cheat = false;
+                string allDices;
+                Creature playerSave;
+                bool hasSave = false;
+                if (File.Exists(playerFileName) != false)
+                {
+                    allDices = File.ReadAllText(playerFileName);
+                    playerSave = JsonSerializer.Deserialize<Creature>(allDices);
+                    hasSave = true;
+                }
 
-                if(playerSave.damageMultiplier >2) {cheat = true;}
+                for (int i = 0; i < playerManualSaveNames.Length; i++)
+                {
+                    if (File.Exists(playerManualSaveNames[i]) != false)
+                    {
+                        allDices = File.ReadAllText(playerManualSaveNames[i]);
+                        playerSave = JsonSerializer.Deserialize<Creature>(allDices);
+                        hasSave = true;
+                    }
+                }
+
+                if (hasSave)
+                {
+                    /*if(playerSave.damageMultiplier >2) {cheat = true;}
                 if (playerSave.currentClass == allClasses.Bag) { cheat = true; }
                 if(playerSave.currentLevel < 20 && playerSave.skills[amountStartSkills] != allSkills.None) { cheat = true; }
 
@@ -1506,33 +1738,41 @@ namespace TBRPGV2
                 {
                     Console.WriteLine("Please note that this save file is flagged for cheating.");
                     Console.WriteLine("This will not have consequences.");
+                }*/
+                    #endregion
+                    bool chose = false;
+                    while (!chose)
+                    {
+                        ConsoleKey key = Console.ReadKey(true).Key;
+                        Console.WriteLine(key);
+                        if (key == ConsoleKey.Y)
+                        {
+                            ManualLoadUI();
+                            chose = true;
+                        }
+                        if (key == ConsoleKey.N)
+                        {
+                            chose = true;
+                            NewCharacter();
+                        }
+                        if (key == ConsoleKey.D1)
+                        {
+                            allDices = File.ReadAllText(playerFileName);
+                            playerSave = JsonSerializer.Deserialize<Creature>(allDices);
+                            currentPlayer = playerSave;
+                            chose = true;
+                        }
+                    }
                 }
-                #endregion
-                bool chose = false;
-                while (!chose)
+                else
                 {
-                    ConsoleKey key = Console.ReadKey().Key;
-                    if (key == ConsoleKey.Y)
-                    {
-                        currentPlayer = playerSave;
-                        chose = true;
-                    }
-                    if (key == ConsoleKey.N)
-                    {
-                        chose = true;
-                        NewCharacter();
-                    }
-                    if(key == ConsoleKey.D1)
-                    {
-                        allDices = File.ReadAllText(playerFileName);
-                        playerSave = JsonSerializer.Deserialize<Creature>(allDices);
-                        currentPlayer = playerSave;
-                        chose = true;
-                    }
+                    NewCharacter();
                 }
             }
             catch (Exception e)
             {
+                Console.WriteLine(e);
+                Thread.Sleep(5000);
                 NewCharacter();
             }
         }
