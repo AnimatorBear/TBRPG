@@ -2,6 +2,7 @@
 {
     class Creature
     {
+        float attackSpamNerf = 0.50f;
         #region Stats
         //  All stats
         //Health-Type stats
@@ -77,6 +78,7 @@
         public enum attacks { None,Class_Ability,Heavy_Hit,Light_Hit,BG_NO, RG_Stats,HL_LifeSteal };
         public int[] attackLevels = { -1, -1, -1, -1, -1,5,5};
         public attacks[] characterAttacks = { attacks.Light_Hit,attacks.Heavy_Hit,attacks.None,attacks.None};
+        public attacks prevAttack = attacks.None;
         #endregion
         #region Inventory
         public Item[] itemsInInv = new Item[20];
@@ -276,6 +278,7 @@
                 attackDamage += rand;
             }
             #endregion
+            int totalDamage = 0;
             switch (currentAttack)
             {
                 //The actual attacks
@@ -372,7 +375,16 @@
                             extraDamage = extraDamage + (attackDamage * 1.2f);
                         }
                     }
-                    return (int)((attackDamage + extraDamage) * damageMultiplier);
+                    totalDamage = (int)((attackDamage + extraDamage) * damageMultiplier);
+                    if(prevAttack == attacks.Light_Hit)
+                    {
+                        totalDamage = (int)(totalDamage * (1 - attackSpamNerf));
+                    }
+                    if (!visual)
+                    {
+                        prevAttack = attacks.Light_Hit;
+                    }
+                    return totalDamage;
                 #endregion
                     #region Heavy Hit
                 case attacks.Heavy_Hit:
@@ -389,7 +401,16 @@
                     {
                         roundsUntilAbilityRecharge -= 1;
                     }
-                    return (int)(((attackDamage * 1.5f) + extraDamage) * damageMultiplier);
+                    totalDamage = (int)(((attackDamage * 1.5f) + extraDamage) * damageMultiplier);
+                    if (prevAttack == attacks.Heavy_Hit)
+                    {
+                        totalDamage = (int)(totalDamage * (1 - attackSpamNerf));
+                    }
+                    if (!visual)
+                    {
+                        prevAttack = attacks.Heavy_Hit;
+                    }
+                    return totalDamage;
                 #endregion
                 #endregion
 
@@ -407,9 +428,18 @@
                         roundsUntilAbilityRecharge -= 2;
                     }
                     int dmg = (int)((attackDamage) * damageMultiplier);
-                    healing = (int)(dmg / 1.5f);
-                    HealCreature((dmg / 1.5f),visual);
-                    return (int)(dmg / 1.5f);
+                    totalDamage = (int)(dmg / 1.5f);
+                    if (prevAttack == attacks.HL_LifeSteal)
+                    {
+                        totalDamage = (int)(totalDamage * (1 - attackSpamNerf));
+                    }
+                    if (!visual)
+                    {
+                        prevAttack = attacks.HL_LifeSteal;
+                    }
+                    HealCreature(totalDamage, visual);
+                    healing = totalDamage;
+                    return totalDamage;
                 #endregion
                 #endregion
                 #region RNG
@@ -420,7 +450,16 @@
                     {
                         dodge = 12;
                         healing = 2 + rng_ExtraLuck;
-                        return (int)(((12 + rng_ExtraLuck) * nerf) * damage);
+                        if (prevAttack == attacks.RG_Stats)
+                        {
+                            healing = (int)(totalDamage * (1 - attackSpamNerf));
+                        }
+                        totalDamage = (int)(((12 + rng_ExtraLuck) * nerf) * damage);
+                        if (prevAttack == attacks.RG_Stats)
+                        {
+                            totalDamage = (int)(totalDamage * (1 - attackSpamNerf));
+                        }
+                        return totalDamage;
                     }
                     else
                     {
@@ -428,14 +467,28 @@
                         int rand = rnd.Next(5, 15);
                         dodge = rand;
                         rand = rnd.Next(-5 + rng_ExtraLuck, 10 + rng_ExtraLuck);
-                        healing = rand;
-                        HealCreature(rand,visual);
+                        totalDamage = rand;
+                        if (prevAttack == attacks.RG_Stats)
+                        {
+                            totalDamage = (int)(totalDamage * (1 - attackSpamNerf));
+                        }
+                        healing = totalDamage;
+                        HealCreature(totalDamage,visual);
                         rand = rnd.Next((int)(((5 + rng_ExtraLuck) * nerf) * damage), (int)(((20 + rng_ExtraLuck) * nerf) * damage));
                         if (rand >= (int)(((18 + rng_ExtraLuck) * nerf) * damage))
                         {
                             rand = rnd.Next((int)(((18 + rng_ExtraLuck) * nerf) * damage), (int)(((30 + rng_ExtraLuck) * nerf) * damage));
                         }
-                        return rand;
+                        totalDamage = rand;
+                        if (prevAttack == attacks.RG_Stats)
+                        {
+                            totalDamage = (int)(totalDamage * (1 - attackSpamNerf));
+                        }
+                        if (!visual)
+                        {
+                            prevAttack = attacks.RG_Stats;
+                        }
+                        return totalDamage;
                     }
                 #endregion
                 #endregion
