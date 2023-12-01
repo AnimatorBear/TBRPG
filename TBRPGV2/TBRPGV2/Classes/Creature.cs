@@ -1,4 +1,6 @@
-﻿namespace TBRPGV2
+﻿using System.Text.Json.Serialization;
+
+namespace TBRPGV2
 {
     class Creature
     {
@@ -6,21 +8,21 @@
         #region Stats
         //  All stats
         //Health-Type stats
-        public int maxHealth = 100;
-        public int health = 100;
+        public int maxHealth { get; set; }
+        public int health { get; set; }
         //Damage-Type stats
-        public float damage = 10;
-        public float damageMultiplier = 1;
+        public float damage  { get; set; }
+        public float damageMultiplier { get; set; } = 1;
         //Misc Stats
-        public int currentLevel = 0;
-        public int currentXP = 0;
-        public int speed = 0;
-        public int rng_ExtraLuck = 0;
+        public int currentLevel { get; set; }
+        public int currentXP { get; set; }
+        public int speed;
+        public int rng_ExtraLuck { get; set; }
         #endregion
         #region Class
         //Al Classes and Current Class
         public enum allClasses { Class_None, DamageDealer, Tank, Healer, RNG, Charger,Bag }
-        public allClasses currentClass = allClasses.Class_None;
+        public allClasses currentClass { get; set; }
 
         //Stats for each seperate class
         public int[,] classStats = { 
@@ -47,7 +49,7 @@
         #region Skills
         //Skills are small changes , you start with 3 and can unlock 1 at level 20
         public enum allSkills { None, Healthy, Fast, Violent, Heavy_Hitter, Light_Hitter, Fast_Learner,Accurate,Glass_Cannon, Stone_Wall,NotBag, rngLucky};
-        public allSkills[] skills = new allSkills[Program.amountStartSkills + 1];
+        public allSkills[] skills { get; set; } = new allSkills[Program.amountStartSkills + 1];
 
         //Not class specific skills
         allSkills[] allClassSkills = { allSkills.Healthy, allSkills.Fast, allSkills.Violent, allSkills.Heavy_Hitter, allSkills.Light_Hitter, allSkills.Fast_Learner, allSkills.Accurate};
@@ -77,13 +79,19 @@
         //BG = Bag
         public enum attacks { None,Class_Ability,Heavy_Hit,Light_Hit,BG_NO, RG_Stats,HL_LifeSteal };
         public int[] attackLevels = { -1, -1, -1, -1, -1,5,5};
-        public attacks[] characterAttacks = { attacks.Light_Hit,attacks.Heavy_Hit,attacks.None,attacks.None};
-        public attacks prevAttack = attacks.None;
+        public attacks[] characterAttacks { get; set; } = { attacks.Light_Hit,attacks.Heavy_Hit,attacks.None,attacks.None};
+        public attacks prevAttack { get; set; }
         #endregion
         #region Inventory
         public Item[] itemsInInv = new Item[20];
         #endregion
-        public Creature(allClasses newClass, int startingLevel = 0)
+
+        [JsonConstructor]
+        public Creature()
+        {
+
+        }
+        public Creature(allClasses newClass = allClasses.DamageDealer, int startingLevel = 0)
         {
             //Adds starting stats and stuff
             currentClass = newClass;
@@ -410,6 +418,7 @@
                     {
                         prevAttack = attacks.Heavy_Hit;
                     }
+                    characterAttacks[3] = attacks.BG_NO;
                     return totalDamage;
                 #endregion
                 #endregion

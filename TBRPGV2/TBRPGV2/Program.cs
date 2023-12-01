@@ -1,4 +1,6 @@
 ﻿using System.Text;
+using System.Text.Json.Serialization;
+using System.Text.Json;
 using static TBRPGV2.Creature;
 
 namespace TBRPGV2
@@ -37,12 +39,18 @@ namespace TBRPGV2
 
         //Few stats, Put amountOfClasses to 6 for Bag class
         public static int amountOfClasses = 6;
+
+        //File stuff
+        private static JsonSerializerOptions _options =
+        new() { DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull, WriteIndented = true };
+        static string playerFileName = "Saves/PlayerSave.json";
         static void Main(string[] args)
         {
             //Some Misc things
             Console.OutputEncoding = System.Text.Encoding.Unicode;
             Console.Title = "TBRPG";
-            NewCharacter();
+            LoadPlayer();
+            //NewCharacter();
             do
             {
                 {
@@ -60,9 +68,10 @@ namespace TBRPGV2
                         }
                     }
                 }
-                currentPlayer.health = currentPlayer.maxHealth;
+                //currentPlayer.health = currentPlayer.maxHealth;
                 currentPlayer.classAbilityUses = 0;
                 StartBattle(false);
+                SavePlayer();
 
             }
             while (true);
@@ -270,6 +279,7 @@ namespace TBRPGV2
                     Thread.Sleep(1000);
                     activeBattle = false;
                     currentPlayer.chargerCharge = 0;
+                    currentPlayer.health = currentPlayer.maxHealth;
                 } else if (currentPlayer.health > currentPlayer.maxHealth)
                 {
                     currentPlayer.health = currentPlayer.maxHealth;
@@ -1456,6 +1466,54 @@ namespace TBRPGV2
                 }
             }
             return -1;
+        }
+
+        static void SavePlayer()
+        {
+            string jsonString = JsonSerializer.Serialize(currentPlayer, _options);
+            File.WriteAllText(playerFileName, jsonString);
+        }
+
+        static void LoadPlayer()
+        {
+            try
+            {
+                Console.WriteLine("Save file detected! Use it? Y/N");
+                string allDices = File.ReadAllText(playerFileName);
+                Creature playerSave = JsonSerializer.Deserialize<Creature>(allDices);
+                #region Cheat Check
+                bool cheat = false;
+
+                if(playerSave.damageMultiplier >2) {cheat = true;}
+                if (playerSave.currentClass == allClasses.Bag) { cheat = true; }
+                if(playerSave.currentLevel < 20 && playerSave.skills[amountStartSkills] != allSkills.None) { cheat = true; }
+
+                if (cheat)
+                {
+                    Console.WriteLine("Please note that this save file is flagged for cheating.");
+                    Console.WriteLine("This will not have consequences.");
+                }
+                #endregion
+                bool chose = false;
+                while (!chose)
+                {
+                    ConsoleKey key = Console.ReadKey().Key;
+                    if (key == ConsoleKey.Y)
+                    {
+                        currentPlayer = playerSave;
+                        chose = true;
+                    }
+                    if (key == ConsoleKey.N)
+                    {
+                        chose = true;
+                        NewCharacter();
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                NewCharacter();
+            }
         }
     }
 }
