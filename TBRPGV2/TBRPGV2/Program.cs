@@ -43,7 +43,9 @@ namespace TBRPGV2
         //File stuff
         private static JsonSerializerOptions _options =
         new() { DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull, WriteIndented = true };
-        static string playerFileName = "Saves/PlayerSave.json";
+        //Quick save file name
+        static string playerFileName = "Saves/QuickPlayerSave.json";
+        static string[] playerManualSaveNames = { "Saves/PlayerSave1.json", "Saves/PlayerSave2.json", "Saves/PlayerSave3.json" };
         static void Main(string[] args)
         {
             //Some Misc things
@@ -71,7 +73,7 @@ namespace TBRPGV2
                 //currentPlayer.health = currentPlayer.maxHealth;
                 currentPlayer.classAbilityUses = 0;
                 StartBattle(false);
-                SavePlayer();
+                QuickSavePlayer();
 
             }
             while (true);
@@ -1456,6 +1458,9 @@ namespace TBRPGV2
                     case ConsoleKey.D0:
                         currentPlayer.health = 0;
                         return -2;
+                    case ConsoleKey.M:
+                        ManualSavePlayer(0);
+                        break;
                 }
                 if(selectedTopic > 1)
                 {
@@ -1468,12 +1473,21 @@ namespace TBRPGV2
             return -1;
         }
 
-        static void SavePlayer()
+        static void QuickSavePlayer()
         {
             string jsonString = JsonSerializer.Serialize(currentPlayer, _options);
             File.WriteAllText(playerFileName, jsonString);
         }
+        static void ManualSavePlayer(int file)
+        {
+            string jsonString = JsonSerializer.Serialize(currentPlayer, _options);
+            File.WriteAllText(playerManualSaveNames[file], jsonString);
+        }
 
+        static void ManualSaveUI()
+        {
+
+        }
         static void LoadPlayer()
         {
             try
@@ -1507,6 +1521,13 @@ namespace TBRPGV2
                     {
                         chose = true;
                         NewCharacter();
+                    }
+                    if(key == ConsoleKey.D1)
+                    {
+                        allDices = File.ReadAllText(playerFileName);
+                        playerSave = JsonSerializer.Deserialize<Creature>(allDices);
+                        currentPlayer = playerSave;
+                        chose = true;
                     }
                 }
             }
