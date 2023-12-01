@@ -1489,11 +1489,19 @@ namespace TBRPGV2
 
         static void QuickSavePlayer()
         {
+            if (!Directory.Exists("Saves"))
+            {
+                Directory.CreateDirectory("Saves");
+            }
             string jsonString = JsonSerializer.Serialize(currentPlayer, _options);
             File.WriteAllText(playerFileName, jsonString);
         }
         static void ManualSavePlayer(int file)
         {
+            if (!Directory.Exists("Saves"))
+            {
+                Directory.CreateDirectory("Saves");
+            }
             string jsonString = JsonSerializer.Serialize(currentPlayer, _options);
             File.WriteAllText(playerManualSaveNames[file], jsonString);
         }
