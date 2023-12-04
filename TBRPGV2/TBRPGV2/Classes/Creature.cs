@@ -331,24 +331,6 @@ namespace TBRPGV2
                                 HealCreature(-(maxHealth / 100) * rand3,false);
                                 Thread.Sleep(1000);
                                 return (int)((maxHealth/100) * rand2);
-                                /*if(doRandom == false)
-                                {
-                                    return 0;
-                                }
-                                bool gotRND = false;
-                                while (!gotRND)
-                                {
-                                    Random rnd2 = new Random();
-                                    int rand2 = rnd2.Next(1, 5);
-                                    if (characterAttacks[rand2 - 1] != attacks.None)
-                                    {
-                                        Program.amountOfClasses = 6;
-                                        attack = rand2;
-                                        gotRND = true;
-                                    }
-                                }
-                                goto RandomAttack;*/
-                                return 0;
 
                             case allClasses.Charger:
                                 classDamage = (int)((((attackDamage * 0.5f) + chargerCharge) * chargerCharge)*damageMultiplier);
@@ -380,7 +362,7 @@ namespace TBRPGV2
                     {
                         if (skills[i] == allSkills.Light_Hitter)
                         {
-                            extraDamage = extraDamage + (attackDamage * 1.2f);
+                            extraDamage = extraDamage + (attackDamage * 1.1f);
                         }
                     }
                     totalDamage = (int)((attackDamage + extraDamage) * damageMultiplier);
@@ -402,7 +384,7 @@ namespace TBRPGV2
                     {
                         if (skills[i] == allSkills.Heavy_Hitter)
                         {
-                            extraDamage = extraDamage + (attackDamage * 1.2f);
+                            extraDamage = extraDamage + (attackDamage * 1.1f);
                         }
                     }
                     if (!visual)
@@ -439,6 +421,7 @@ namespace TBRPGV2
                     if (!visual)
                     {
                         prevAttack = attacks.DD_HPSacrifice;
+                        Console.Beep(1000, 100);
                     }
                     HealCreature(-(maxHealth * 0.1f), visual);
                     healing = (int)-(maxHealth * 0.1f);

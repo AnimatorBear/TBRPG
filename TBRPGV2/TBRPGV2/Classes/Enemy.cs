@@ -131,6 +131,11 @@
                         healingValue[i] = 15;
                         dodgeValue[i] = 10;
                         break;
+                    case Creature.attacks.DD_HPSacrifice:
+                        attackValue[i] = 13;
+                        healingValue[i] = 0;
+                        dodgeValue[i] = 10;
+                        break;
                 }
             }
             switch (enemy.currentClass)
@@ -151,7 +156,7 @@
                     dodgeValue[4] = 0;
                     break;
                 case Creature.allClasses.RNG:
-                    attackValue[4] = 0;
+                    attackValue[4] = 20;
                     healingValue[4] = 0;
                     dodgeValue[4] = 0;
                     break;
@@ -213,12 +218,12 @@
             attackChance += (int)((enemy.maxHealth + enemy.health) * 0.1f);
             if (enemy.health > enemy.maxHealth * 0.8f)
             {
-                attackChance += 10;
-                healChance -= 10;
+                attackChance += 20;
+                healChance -= 20;
             }
             else
             {
-                healChance += (int)((enemy.maxHealth - enemy.health) * 0.2f);
+                healChance += (int)((enemy.maxHealth - enemy.health) * 0.4f);
             }
 
             if(player.health < player.maxHealth * 0.3f)
@@ -255,7 +260,7 @@
                 if (i == prevAttack)
                 {
                     Random rnd = new Random();
-                    difference += rnd.Next(0, 30);
+                    difference += rnd.Next(70, 100);
                 }
                 if (bestOption == -1 || difference < bestOptionDifference)
                 {
