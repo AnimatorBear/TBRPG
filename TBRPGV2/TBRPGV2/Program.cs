@@ -38,7 +38,7 @@ namespace TBRPGV2
         static int selectedAttack = 0;
 
         //Few stats, Put amountOfClasses to 6 for Bag class
-        public static int amountOfClasses = 6;
+        public static int amountOfClasses = 5;
 
         //File stuff
         private static JsonSerializerOptions _options =
@@ -54,7 +54,6 @@ namespace TBRPGV2
             Console.OutputEncoding = System.Text.Encoding.Unicode;
             Console.Title = "TBRPG";
             LoadPlayer();
-            //NewCharacter();
             do
             {
                 {
@@ -1713,8 +1712,8 @@ namespace TBRPGV2
         {
             try
             {
+                Console.SetCursorPosition(20,10);
                 Console.WriteLine("Save file detected! Use it? Y/N");
-                #region Cheat Check
                 bool cheat = false;
                 string allDices;
                 Creature playerSave;
@@ -1738,16 +1737,6 @@ namespace TBRPGV2
 
                 if (hasSave)
                 {
-                    /*if(playerSave.damageMultiplier >2) {cheat = true;}
-                if (playerSave.currentClass == allClasses.Bag) { cheat = true; }
-                if(playerSave.currentLevel < 20 && playerSave.skills[amountStartSkills] != allSkills.None) { cheat = true; }
-
-                if (cheat)
-                {
-                    Console.WriteLine("Please note that this save file is flagged for cheating.");
-                    Console.WriteLine("This will not have consequences.");
-                }*/
-                    #endregion
                     bool chose = false;
                     while (!chose)
                     {
@@ -1761,6 +1750,7 @@ namespace TBRPGV2
                         if (key == ConsoleKey.N)
                         {
                             chose = true;
+                            StartMenu();
                             NewCharacter();
                         }
                         if (key == ConsoleKey.D1)
@@ -1774,6 +1764,7 @@ namespace TBRPGV2
                 }
                 else
                 {
+                    StartMenu();
                     NewCharacter();
                 }
             }
@@ -1783,6 +1774,31 @@ namespace TBRPGV2
                 Thread.Sleep(5000);
                 NewCharacter();
             }
+        }
+        static void StartMenu()
+        {
+            Console.Clear();
+            int pos = 6;
+            string[] icon =
+            {
+                "             ⟋⟍",
+                "            / /‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\\_",
+                "   ⟋‾⟍     /  \\    ------ |‾\\ |‾\\ |‾\\  ⟋‾‾⟍      \\",
+                "  |   |‾‾‾//\\ /      ||   |_/ |_/ |_/ /           \\",
+                "  |   |___\\\\/ \\      ||   |‾\\ |\\  |   \\  __       /",
+                "   ⟍_⟋     \\  /      ||   |_/ | \\ |    ⟍__|      /",
+                "            \\ \\________________________________/‾",
+                "             ⟍⟋"
+            };
+            for(int i = 0; i < icon.Length; i++)
+            {
+                Console.SetCursorPosition(7, pos + i);
+                Console.WriteLine(icon[i]);
+            }
+            Console.SetCursorPosition(20, 17);
+            Console.ForegroundColor = ConsoleColor.DarkBlue;
+            Console.WriteLine("Press any button to continue");
+            Console.ReadKey(true);
         }
     }
 }

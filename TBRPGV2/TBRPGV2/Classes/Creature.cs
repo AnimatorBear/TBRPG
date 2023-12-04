@@ -329,7 +329,6 @@ namespace TBRPGV2
                                 int rand2 = rnd2.Next(30, 60);
                                 int rand3 = rnd2.Next(10, 30);
                                 HealCreature(-(maxHealth / 100) * rand3,false);
-                                Thread.Sleep(1000);
                                 return (int)((maxHealth/100) * rand2);
 
                             case allClasses.Charger:
@@ -346,7 +345,7 @@ namespace TBRPGV2
                     }
                     else
                     {
-                        Console.WriteLine("Cant use ability rn");
+                        
                     }
                     break;
                 #endregion
@@ -406,6 +405,7 @@ namespace TBRPGV2
 
                 #region ClassSpecificAttacks
                 #region Damage Dealer
+                    #region HP Sacrifice
                 case attacks.DD_HPSacrifice:
                     dodge = 10;
                     if (!visual)
@@ -421,11 +421,11 @@ namespace TBRPGV2
                     if (!visual)
                     {
                         prevAttack = attacks.DD_HPSacrifice;
-                        Console.Beep(1000, 100);
                     }
                     HealCreature(-(maxHealth * 0.1f), visual);
                     healing = (int)-(maxHealth * 0.1f);
                     return totalDamage;
+                #endregion
                 #endregion
                 #region Tank
                 #endregion
