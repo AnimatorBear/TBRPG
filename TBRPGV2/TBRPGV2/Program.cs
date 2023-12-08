@@ -47,6 +47,7 @@ namespace TBRPGV2
         static string playerFileName = "Saves/QuickPlayerSave.json";
         static string[] playerManualSaveNames = { "Saves/PlayerSave1.json", "Saves/PlayerSave2.json", "Saves/PlayerSave3.json" };
         static int selectedSave = 0;
+        static int currentPlayingSave = 0;
         static List<int> notSaveFiles = new List<int>();
 
         static void Main(string[] args)
@@ -1494,8 +1495,26 @@ namespace TBRPGV2
             {
                 Directory.CreateDirectory("Saves");
             }
-            string jsonString = JsonSerializer.Serialize(currentPlayer, _options);
-            File.WriteAllText(playerFileName, jsonString);
+            string jsonString = "";
+            switch (currentPlayingSave)
+            {
+                default:
+                    jsonString = JsonSerializer.Serialize(currentPlayer, _options);
+                    File.WriteAllText(playerFileName, jsonString);
+                    break;
+                case 1:
+                    jsonString = JsonSerializer.Serialize(currentPlayer, _options);
+                    File.WriteAllText(playerManualSaveNames[0], jsonString);
+                    break;
+                case 12:
+                    jsonString = JsonSerializer.Serialize(currentPlayer, _options);
+                    File.WriteAllText(playerManualSaveNames[1], jsonString);
+                    break;
+                case 3:
+                    jsonString = JsonSerializer.Serialize(currentPlayer, _options);
+                    File.WriteAllText(playerManualSaveNames[2], jsonString);
+                    break;
+            }
         }
         static void ManualSavePlayer(int file)
         {
@@ -1730,6 +1749,7 @@ namespace TBRPGV2
                                 if (File.Exists(playerFileName))
                                 {
                                     currentPlayer = saves[0];
+                                    currentPlayingSave = 0;
                                 }
                                 else
                                 {
@@ -1740,6 +1760,7 @@ namespace TBRPGV2
                                 if (File.Exists(playerManualSaveNames[0]))
                                 {
                                     currentPlayer = saves[1];
+                                    currentPlayingSave = 1;
                                 }
                                 else
                                 {
@@ -1750,6 +1771,7 @@ namespace TBRPGV2
                                 if (File.Exists(playerManualSaveNames[1]))
                                 {
                                     currentPlayer = saves[2];
+                                    currentPlayingSave = 2;
                                 }
                                 else
                                 {
@@ -1760,6 +1782,7 @@ namespace TBRPGV2
                                 if (File.Exists(playerManualSaveNames[2]))
                                 {
                                     currentPlayer = saves[3];
+                                    currentPlayingSave = 3;
                                 }
                                 else
                                 {
