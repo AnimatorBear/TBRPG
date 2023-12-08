@@ -47,12 +47,14 @@ namespace TBRPGV2
         static string playerFileName = "Saves/QuickPlayerSave.json";
         static string[] playerManualSaveNames = { "Saves/PlayerSave1.json", "Saves/PlayerSave2.json", "Saves/PlayerSave3.json" };
         static int selectedSave = 0;
+        static List<int> notSaveFiles = new List<int>();
 
         static void Main(string[] args)
         {
             //Some Misc things
             Console.OutputEncoding = System.Text.Encoding.Unicode;
             Console.Title = "TBRPG";
+            StartMenu();
             LoadPlayer();
             do
             {
@@ -1552,16 +1554,24 @@ namespace TBRPGV2
         }
         static void ManualLoadUI()
         {
+            Creature[] saves = new Creature[4];
+            string file;
+            Creature playerSave;
             bool[] existingFiles = {false,false,false,false};
             if (File.Exists(playerFileName))
             {
                 existingFiles[0] = true;
+                file = File.ReadAllText(playerFileName);
+                saves[0] = JsonSerializer.Deserialize<Creature>(file);
+                
             }
             for (int i = 0; i < playerManualSaveNames.Length; i++)
             {
                 if (File.Exists(playerManualSaveNames[i]))
                 {
                     existingFiles[i+1] = true;
+                    file = File.ReadAllText(playerManualSaveNames[i]);
+                    saves[1+i] = JsonSerializer.Deserialize<Creature>(file);
                 }
             }
             bool selecting = true;
@@ -1570,77 +1580,148 @@ namespace TBRPGV2
                 Console.Clear();
                 if (existingFiles[0])
                 {
-                    if(selectedSave == 0)
+                    if (selectedSave == 0)
                     {
+                        DrawBox(2, 2, saves[0]);
                         Console.BackgroundColor = ConsoleColor.White;
                         Console.ForegroundColor = ConsoleColor.Black;
-                        Console.WriteLine(">Auto Save");
+                        Console.Write(">Auto Save");
                         Console.BackgroundColor = ConsoleColor.Black;
                         Console.ForegroundColor = ConsoleColor.White;
                     }
                     else
                     {
-                        Console.WriteLine("Auto Save");
+                        DrawBox(2, 2, saves[0]);
+                        Console.Write("Auto Save");
                     }
+                }
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.DarkGray;
+                    DrawBox(2, 2, null);
+                    Console.ForegroundColor = ConsoleColor.White;
+                    notSaveFiles.Add(0);
                 }
                 if (existingFiles[1])
                 {
                     if (selectedSave == 1)
                     {
+                        DrawBox(35, 2, saves[1]);
                         Console.BackgroundColor = ConsoleColor.White;
                         Console.ForegroundColor = ConsoleColor.Black;
-                        Console.WriteLine(">Save 1");
+                        Console.Write(">Save 1");
                         Console.BackgroundColor = ConsoleColor.Black;
                         Console.ForegroundColor = ConsoleColor.White;
                     }
                     else
                     {
-                        Console.WriteLine("Save 1");
+                        DrawBox(35, 2, saves[1]);
+                        Console.Write("Save 1");
                     }
+                }
+                else
+                {
+                    notSaveFiles.Add(1);
+                    Console.ForegroundColor = ConsoleColor.DarkGray;
+                    DrawBox(35, 2, null);
+                    Console.ForegroundColor = ConsoleColor.White;
                 }
                 if (existingFiles[2])
                 {
                     if (selectedSave == 2)
                     {
+                        DrawBox(2, 17, saves[2]);
                         Console.BackgroundColor = ConsoleColor.White;
                         Console.ForegroundColor = ConsoleColor.Black;
-                        Console.WriteLine(">Save 2");
+                        Console.Write(">Save 2");
                         Console.BackgroundColor = ConsoleColor.Black;
                         Console.ForegroundColor = ConsoleColor.White;
                     }
                     else
                     {
-                        Console.WriteLine("Save 2");
+                        DrawBox(2, 17, saves[2]);
+                        Console.Write("Save 2");
                     }
+                }
+                else
+                {
+                    notSaveFiles.Add(2);
+                    Console.ForegroundColor = ConsoleColor.DarkGray;
+                    DrawBox(2, 17, null);
+                    Console.ForegroundColor = ConsoleColor.White;
                 }
                 if (existingFiles[3])
                 {
                     if (selectedSave == 3)
                     {
+                        DrawBox(35, 17, saves[3]);
                         Console.BackgroundColor = ConsoleColor.White;
                         Console.ForegroundColor = ConsoleColor.Black;
-                        Console.WriteLine(">Save 3");
+                        Console.Write(">Save 3");
                         Console.BackgroundColor = ConsoleColor.Black;
                         Console.ForegroundColor = ConsoleColor.White;
                     }
                     else
                     {
-                        Console.WriteLine("Save 3");
+                        DrawBox(35, 17, saves[3]);
+                        Console.Write("Save 3");
                     }
+                }
+                else
+                {
+                    notSaveFiles.Add(3);
+                    Console.ForegroundColor = ConsoleColor.DarkGray;
+                    DrawBox(35, 17, null);
+                    Console.ForegroundColor = ConsoleColor.White;
                 }
                 //Draw stuff
 
                 ConsoleKey key = Console.ReadKey().Key;
-
-                string file;
-                Creature playerSave;
                 switch (key)
                 {
-                    case ConsoleKey.S:
+                    case ConsoleKey.D:
                         selectedSave++;
+                        bool wrong = true;
+                        while (wrong)
+                        {
+                            if (notSaveFiles.Contains(selectedSave)) 
+                            {
+                                selectedSave++;
+                            }
+                            else
+                            {
+                                if(selectedSave >= 5)
+                                {
+                                    selectedSave = 0;
+                                }
+                                else
+                                {
+                                    wrong = false;
+                                }
+                            }
+                        }
                         break;
-                    case ConsoleKey.W:
+                    case ConsoleKey.A:
                         selectedSave--;
+                        bool wrong2 = true;
+                        while (wrong2)
+                        {
+                            if (notSaveFiles.Contains(selectedSave))
+                            {
+                                selectedSave--;
+                            }
+                            else
+                            {
+                                if (selectedSave < 0)
+                                {
+                                    selectedSave = 3;
+                                }
+                                else
+                                {
+                                    wrong2 = false;
+                                }
+                            }
+                        }
                         break;
                     case ConsoleKey.Enter:
                         switch (selectedSave)
@@ -1648,9 +1729,7 @@ namespace TBRPGV2
                             case 0:
                                 if (File.Exists(playerFileName))
                                 {
-                                    file = File.ReadAllText(playerFileName);
-                                    playerSave = JsonSerializer.Deserialize<Creature>(file);
-                                    currentPlayer = playerSave;
+                                    currentPlayer = saves[0];
                                 }
                                 else
                                 {
@@ -1660,9 +1739,7 @@ namespace TBRPGV2
                             case 1:
                                 if (File.Exists(playerManualSaveNames[0]))
                                 {
-                                    file = File.ReadAllText(playerManualSaveNames[0]);
-                                    playerSave = JsonSerializer.Deserialize<Creature>(file);
-                                    currentPlayer = playerSave;
+                                    currentPlayer = saves[1];
                                 }
                                 else
                                 {
@@ -1672,9 +1749,7 @@ namespace TBRPGV2
                             case 2:
                                 if (File.Exists(playerManualSaveNames[1]))
                                 {
-                                    file = File.ReadAllText(playerManualSaveNames[1]);
-                                    playerSave = JsonSerializer.Deserialize<Creature>(file);
-                                    currentPlayer = playerSave;
+                                    currentPlayer = saves[2];
                                 }
                                 else
                                 {
@@ -1684,9 +1759,7 @@ namespace TBRPGV2
                             case 3:
                                 if (File.Exists(playerManualSaveNames[2]))
                                 {
-                                    file = File.ReadAllText(playerManualSaveNames[2]);
-                                    playerSave = JsonSerializer.Deserialize<Creature>(file);
-                                    currentPlayer = playerSave;
+                                    currentPlayer = saves[3];
                                 }
                                 else
                                 {
@@ -1712,6 +1785,7 @@ namespace TBRPGV2
         {
             try
             {
+                Console.Clear();
                 Console.SetCursorPosition(20,10);
                 Console.WriteLine("Save file detected! Use it? Y/N");
                 bool cheat = false;
@@ -1750,7 +1824,6 @@ namespace TBRPGV2
                         if (key == ConsoleKey.N)
                         {
                             chose = true;
-                            StartMenu();
                             NewCharacter();
                         }
                         if (key == ConsoleKey.D1)
@@ -1764,7 +1837,6 @@ namespace TBRPGV2
                 }
                 else
                 {
-                    StartMenu();
                     NewCharacter();
                 }
             }
@@ -1799,6 +1871,35 @@ namespace TBRPGV2
             Console.ForegroundColor = ConsoleColor.DarkBlue;
             Console.WriteLine("Press any button to continue");
             Console.ReadKey(true);
+            Console.ForegroundColor = ConsoleColor.White;
+        }
+        static void DrawBox(int left, int top,Creature cret)
+        {
+            Console.SetCursorPosition(left, top);
+            Console.Write("/‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\\");
+            for (int i = 0; i < 9; i++)
+            {
+                Console.SetCursorPosition(left, (top+1) + i);
+                Console.Write("|                           |");
+            }
+            Console.SetCursorPosition(left, top + 10);
+            Console.Write("\\___________________________/");
+            if(cret != null)
+            {
+                string word = cret.currentClass.ToString();
+                Console.SetCursorPosition(left + 15 - (word.Length / 2), top + 1);
+                Console.Write(word);
+                Console.SetCursorPosition(left + 1, top + 2);
+                Console.Write(cret.characterAttacks[0]);
+                Console.SetCursorPosition(left + 1, top + 3);
+                Console.Write(cret.characterAttacks[1]);
+                Console.SetCursorPosition(left + 1, top + 4);
+                Console.Write(cret.characterAttacks[2]);
+                Console.SetCursorPosition(left + 1, top + 5);
+                Console.Write(cret.characterAttacks[3]);
+
+            }
+            Console.SetCursorPosition(left + 12, top + 11);
         }
     }
 }
