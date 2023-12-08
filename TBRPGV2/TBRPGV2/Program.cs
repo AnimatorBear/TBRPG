@@ -57,6 +57,7 @@ namespace TBRPGV2
             Console.Title = "TBRPG";
             StartMenu();
             LoadPlayer();
+            Console.Clear();
             do
             {
                 {
@@ -181,7 +182,7 @@ namespace TBRPGV2
                     while(selectedAttack == -1)
                     {
                         DrawText(enemy);
-                        selectedAttack = AttackMenuInput();
+                        selectedAttack = AttackMenuInput(enemy);
 
                     }
                     damage = currentPlayer.Attack(out dodge,out healing, selectedAttack);
@@ -1385,7 +1386,7 @@ namespace TBRPGV2
             }
             Console.ForegroundColor = ConsoleColor.White;
         }
-        public static int AttackMenuInput()
+        public static int AttackMenuInput(Creature enemy)
         {
             bool selected =false;
             while(selected == false)
@@ -1477,6 +1478,9 @@ namespace TBRPGV2
                         return -2;
                     case ConsoleKey.M:
                         ManualSaveUI();
+                        Console.Clear();
+                        DrawText(enemy);
+                        DrawBattle(ConsoleColor.DarkGray);
                         break;
                 }
                 if(selectedTopic > 1)
@@ -1594,7 +1598,18 @@ namespace TBRPGV2
                     Console.ForegroundColor = ConsoleColor.DarkGray;
                     DrawBox(2, 2, null);
                     Console.ForegroundColor = ConsoleColor.White;
-                    Console.Write("Auto Save");
+                    if (selectedSave == 0)
+                    {
+                        //Console.BackgroundColor = ConsoleColor.White;
+                        //Console.ForegroundColor = ConsoleColor.Black;
+                        Console.Write(">Auto Save");
+                        Console.BackgroundColor = ConsoleColor.Black;
+                        Console.ForegroundColor = ConsoleColor.White;
+                    }
+                    else
+                    {
+                        Console.Write("Auto Save");
+                    }
                     notSaveFiles.Add(0);
                 }
                 if (existingFiles[1])
@@ -1602,8 +1617,8 @@ namespace TBRPGV2
                     if (selectedSave == 1)
                     {
                         DrawBox(35, 2, saves[1]);
-                        Console.BackgroundColor = ConsoleColor.White;
-                        Console.ForegroundColor = ConsoleColor.Black;
+                        //Console.BackgroundColor = ConsoleColor.White;
+                        //Console.ForegroundColor = ConsoleColor.Black;
                         Console.Write(">Save 1");
                         Console.BackgroundColor = ConsoleColor.Black;
                         Console.ForegroundColor = ConsoleColor.White;
@@ -1620,7 +1635,18 @@ namespace TBRPGV2
                     Console.ForegroundColor = ConsoleColor.DarkGray;
                     DrawBox(35, 2, null);
                     Console.ForegroundColor = ConsoleColor.White;
-                    Console.Write("Save 1");
+                    if (selectedSave == 1)
+                    {
+                        Console.BackgroundColor = ConsoleColor.White;
+                        Console.ForegroundColor = ConsoleColor.Black;
+                        Console.Write(">Save 1");
+                        Console.BackgroundColor = ConsoleColor.Black;
+                        Console.ForegroundColor = ConsoleColor.White;
+                    }
+                    else
+                    {
+                        Console.Write("Save 1");
+                    }
                 }
                 if (existingFiles[2])
                 {
@@ -1645,7 +1671,18 @@ namespace TBRPGV2
                     Console.ForegroundColor = ConsoleColor.DarkGray;
                     DrawBox(2, 17, null);
                     Console.ForegroundColor = ConsoleColor.White;
-                    Console.Write("Save 2");
+                    if (selectedSave == 2)
+                    {
+                        Console.BackgroundColor = ConsoleColor.White;
+                        Console.ForegroundColor = ConsoleColor.Black;
+                        Console.Write(">Save 2");
+                        Console.BackgroundColor = ConsoleColor.Black;
+                        Console.ForegroundColor = ConsoleColor.White;
+                    }
+                    else
+                    {
+                        Console.Write("Save 2");
+                    }
                 }
                 if (existingFiles[3])
                 {
@@ -1670,7 +1707,31 @@ namespace TBRPGV2
                     Console.ForegroundColor = ConsoleColor.DarkGray;
                     DrawBox(35, 17, null);
                     Console.ForegroundColor = ConsoleColor.White;
-                    Console.Write("Save 3");
+                    if (selectedSave == 3)
+                    {
+                        Console.BackgroundColor = ConsoleColor.White;
+                        Console.ForegroundColor = ConsoleColor.Black;
+                        Console.Write(">Save 3");
+                        Console.BackgroundColor = ConsoleColor.Black;
+                        Console.ForegroundColor = ConsoleColor.White;
+                    }
+                    else
+                    {
+                        Console.Write("Save 3");
+                    }
+                }
+                Console.SetCursorPosition(65, 29);
+                if (selectedSave == 4)
+                {
+                    Console.BackgroundColor = ConsoleColor.White;
+                    Console.ForegroundColor = ConsoleColor.Black;
+                    Console.Write(">Back");
+                    Console.BackgroundColor = ConsoleColor.Black;
+                    Console.ForegroundColor = ConsoleColor.White;
+                }
+                else
+                {
+                    Console.Write("Back");
                 }
                 //Draw stuff
 
@@ -1685,6 +1746,11 @@ namespace TBRPGV2
                         selectedSave--; 
                         break;
                     case ConsoleKey.Enter:
+                        if(selectedSave == 4)
+                        {
+                            selecting = false;
+                            break;
+                        }
                         ManualSavePlayer(selectedSave - 1);
                         selecting = false;
                         selectedSave = 0;
@@ -1692,8 +1758,8 @@ namespace TBRPGV2
                 }
                 if(selectedSave < 0)
                 {
-                    selectedSave = playerManualSaveNames.Length;
-                }else if (selectedSave > playerManualSaveNames.Length)
+                    selectedSave = playerManualSaveNames.Length + 1;
+                }else if (selectedSave > playerManualSaveNames.Length + 1)
                 {
                     selectedSave = 0;
                 }
@@ -1930,7 +1996,7 @@ namespace TBRPGV2
                                     NewCharacter();
                                 }
                                 break;
-                            case 4: NewCharacter();
+                            case 4: LoadPlayer();
                                 break;
                         }
                         selecting = false;
@@ -1949,6 +2015,7 @@ namespace TBRPGV2
         }
         static void LoadPlayer()
         {
+            Start:
             try
             {
                 Console.Clear();
@@ -1981,7 +2048,6 @@ namespace TBRPGV2
                     while (!chose)
                     {
                         ConsoleKey key = Console.ReadKey(true).Key;
-                        Console.WriteLine(key);
                         if (key == ConsoleKey.Y)
                         {
                             ManualLoadUI();
@@ -1992,12 +2058,10 @@ namespace TBRPGV2
                             chose = true;
                             NewCharacter();
                         }
-                        if (key == ConsoleKey.D1)
+                        if(key == ConsoleKey.S)
                         {
-                            allDices = File.ReadAllText(playerFileName);
-                            playerSave = JsonSerializer.Deserialize<Creature>(allDices);
-                            currentPlayer = playerSave;
-                            chose = true;
+                            StartMenu();
+                            goto Start;
                         }
                     }
                 }
@@ -2054,26 +2118,32 @@ namespace TBRPGV2
             {
                 string word = cret.currentClass.ToString();
                 Console.SetCursorPosition(left + 15 - (word.Length / 2), top + 1);
+                Console.Write(word);
                 Console.SetCursorPosition(left + 1, top + 2);
-                Console.Write(cret.characterAttacks[0]);
+                Console.Write("Attacks:");
                 Console.SetCursorPosition(left + 1, top + 3);
-                Console.Write(cret.characterAttacks[1]);
+                Console.Write(cret.characterAttacks[0]);
                 Console.SetCursorPosition(left + 1, top + 4);
-                Console.Write(cret.characterAttacks[2]);
+                Console.Write(cret.characterAttacks[1]);
                 Console.SetCursorPosition(left + 1, top + 5);
+                Console.Write(cret.characterAttacks[2]);
+                Console.SetCursorPosition(left + 1, top + 6);
                 Console.Write(cret.characterAttacks[3]);
 
-                word = cret.skills[0].ToString();
+                word = "Skills:";
                 Console.SetCursorPosition(left + 28 - (word.Length), top + 2);
                 Console.Write(word);
-                word = cret.skills[1].ToString();
+                word = cret.skills[0].ToString();
                 Console.SetCursorPosition(left + 28 - (word.Length), top + 3);
                 Console.Write(word);
-                word = cret.skills[2].ToString();
+                word = cret.skills[1].ToString();
                 Console.SetCursorPosition(left + 28 - (word.Length), top + 4);
                 Console.Write(word);
-                word = cret.skills[3].ToString();
+                word = cret.skills[2].ToString();
                 Console.SetCursorPosition(left + 28 - (word.Length), top + 5);
+                Console.Write(word);
+                word = cret.skills[3].ToString();
+                Console.SetCursorPosition(left + 28 - (word.Length), top + 6);
                 Console.Write(word);
 
             }
