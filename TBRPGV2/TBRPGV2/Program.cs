@@ -2106,14 +2106,15 @@ namespace TBRPGV2
         static void DrawBox(int left, int top,Creature cret)
         {
             Console.SetCursorPosition(left, top);
-            Console.Write("/‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\\");
+            //⟋⟍
+            Console.Write("⟋‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾⟍");
             for (int i = 0; i < 9; i++)
             {
                 Console.SetCursorPosition(left, (top+1) + i);
                 Console.Write("|                           |");
             }
             Console.SetCursorPosition(left, top + 10);
-            Console.Write("\\___________________________/");
+            Console.Write("⟍___________________________⟋");
             if(cret != null)
             {
                 string word = cret.currentClass.ToString();
