@@ -315,6 +315,7 @@ namespace TBRPGV2
                                 return classDamage;
 
                             case allClasses.Tank:
+                                characterAttacks[2] = attacks.Class_Ability;
                                 healing = (maxHealth / 10);
                                 HealCreature((maxHealth / 10), visual);
                                 return (int)((damage * damageMultiplier) * 0.5f);
