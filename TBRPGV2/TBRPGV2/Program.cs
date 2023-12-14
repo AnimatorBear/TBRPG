@@ -9,8 +9,8 @@ namespace TBRPGV2
     {
         #region Skills
         //Skills
-        const bool chooseStartSkills = false;
-        public const int amountStartSkills = 3;
+        const bool chooseStartSkills = true;
+        public const int amountStartSkills = 8;
         #endregion
         #region Player, Classes
         //Player , Enemy test class , what class is selected
@@ -59,6 +59,8 @@ namespace TBRPGV2
         {
             //Some Misc things
             Console.OutputEncoding = System.Text.Encoding.Unicode;
+            Console.InputEncoding = System.Text.Encoding.Unicode;
+            Console.CursorVisible = false;
             Console.Title = "TBRPG";
             StartMenu();
             LoadPlayer();
@@ -82,18 +84,12 @@ namespace TBRPGV2
                     }
                 }
                 //currentPlayer.health = currentPlayer.maxHealth;
-                currentPlayer.classAbilityUses = 0;
-                StartBattle(false);
+                currentPlayer.abilityUses = 0;
+                StartBattle();
                 QuickSavePlayer();
 
             }
             while (true);
-
-            NewCharacter();
-
-            StartBattle(true);
-
-            Console.ReadKey();
         }
 
         #region Character Creation
@@ -113,6 +109,7 @@ namespace TBRPGV2
 
             //Makes the player stats
             currentPlayer.RecalculateStats();
+            currentPlayer.GiveBaseAttacks();
             currentPlayer.health = currentPlayer.maxHealth;
         }
 
@@ -386,7 +383,7 @@ namespace TBRPGV2
             {
                 if (random)
                 {
-                    crt.skills[i] = crt.randomSkill();
+                    crt.skills[i] = crt.GetRandomSkill();
                 }
                 else
                 {
@@ -452,7 +449,7 @@ namespace TBRPGV2
         #endregion
 
         #region Battle
-        static void StartBattle(bool showStatsAtStart)
+        static void StartBattle()
         {
             //Makes the enemy
             Creature enemy = new Creature(allClasses.Class_None, currentPlayer.currentLevel);
@@ -468,8 +465,8 @@ namespace TBRPGV2
             enemyBrain.ChooseExtraSkill();
 
             //Recalculate Stats
-            enemy.RecalculateStats(showStatsAtStart);
-            currentPlayer.RecalculateStats(showStatsAtStart);
+            enemy.RecalculateStats();
+            currentPlayer.RecalculateStats();
             enemy.health = enemy.maxHealth;
 
             bool activeBattle = true;
@@ -827,7 +824,7 @@ namespace TBRPGV2
                         Console.WriteLine(" " + text);
                     }
                 }
-                if (currentPlayer.roundsUntilAbilityRecharge <= 0 && currentPlayer.classAbilityUses < currentPlayer.maxClassAbilityUses)
+                if (currentPlayer.roundsUntilAbilityRecharge <= 0 && currentPlayer.abilityUses < currentPlayer.maxAbilityUses)
                 {
                     //Class ability if you can use it
                     Console.SetCursorPosition(25, 25);
@@ -1026,7 +1023,7 @@ namespace TBRPGV2
             {
                 ConsoleKey key = Console.ReadKey(true).Key;
                 int lowestAttack = 0;
-                if (currentPlayer.roundsUntilAbilityRecharge <= 0 && currentPlayer.classAbilityUses < currentPlayer.maxClassAbilityUses)
+                if (currentPlayer.roundsUntilAbilityRecharge <= 0 && currentPlayer.abilityUses < currentPlayer.maxAbilityUses)
                 {
                     lowestAttack = 4;
                 }

@@ -40,11 +40,11 @@ namespace TBRPGV2
             { 99, -6, 0, 999, 0 } };
 
         //Every class has its own class ability they can use after a few rounds
-        public int classAbilityRecharge = 100;
+        public int abilityRecharge = 100;
         public int roundsUntilAbilityRecharge = 0;
         public int chargerCharge = 1;
-        public int maxClassAbilityUses = 100;
-        public int classAbilityUses = 0;
+        public int maxAbilityUses = 100;
+        public int abilityUses = 0;
         #endregion
         #region Skills
         //Skills are small changes , you start with 3 and can unlock 1 at level 20
@@ -70,7 +70,7 @@ namespace TBRPGV2
                 new allSkills[] {allSkills.Glass_Cannon,allSkills.Stone_Wall,allSkills.NotBag,allSkills.rngLucky}
             };
         #endregion
-        #region attacks
+        #region Attacks
         //DD = DamageDealer
         //TK = Tank 
         //HL = Healer
@@ -79,7 +79,7 @@ namespace TBRPGV2
         //BG = Bag
         public enum attacks { None,Class_Ability,Heavy_Hit,Light_Hit,DD_HPSacrifice, HL_LifeSteal, RG_Stats, BG_NO };
         public int[] attackLevels = { -1, -1, -1, -1, -1,5,5};
-        public attacks[] characterAttacks { get; set; } = { attacks.Light_Hit,attacks.Heavy_Hit,attacks.None,attacks.None};
+        public attacks[] characterAttacks { get; set; } = { attacks.None,attacks.None,attacks.None,attacks.None};
         public attacks prevAttack { get; set; }
         #endregion
         #region Inventory
@@ -99,13 +99,41 @@ namespace TBRPGV2
             health = maxHealth;
             itemsInInv[0] = new Item(this,10000000,0,0);
         }
-        public void RecalculateStats(bool showCalculation = false)
+
+        public void GiveBaseAttacks()
+        {
+            switch (currentClass)
+            {
+                case allClasses.DamageDealer:
+                    characterAttacks[0] = attacks.Light_Hit;
+                    characterAttacks[1] = attacks.Heavy_Hit;
+                    characterAttacks[2] = attacks.DD_HPSacrifice;
+                    characterAttacks[3] = attacks.HL_LifeSteal;
+                    break;
+                case allClasses.Tank:
+                    characterAttacks[0] = attacks.Light_Hit;
+                    characterAttacks[1] = attacks.Heavy_Hit;
+                    break;
+                case allClasses.Healer:
+                    characterAttacks[0] = attacks.Light_Hit;
+                    characterAttacks[1] = attacks.Heavy_Hit;
+                    break;
+                case allClasses.RNG:
+                    characterAttacks[0] = attacks.Light_Hit;
+                    characterAttacks[1] = attacks.Heavy_Hit;
+                    break;
+                case allClasses.Charger:
+                    characterAttacks[0] = attacks.Light_Hit;
+                    characterAttacks[1] = attacks.Heavy_Hit;
+                    break;
+                default:
+                    break;
+            }
+        }
+        public void RecalculateStats()
         {
             //Does all the math stuff for stats again (useful for if a new skill is unlocked or if you level up)
 
-            //Testing things
-            int[] healthSources = {0,0,0};
-            float[] damageSources = { 0, 0, 0 };
             //Base Stats
             switch (currentClass)
             {
@@ -113,64 +141,56 @@ namespace TBRPGV2
 
                     maxHealth = classStats[0,0];
                     damage = (float)classStats[0,1];
-                    classAbilityRecharge = classStats[0, 2];
-                    maxClassAbilityUses = classStats[0, 3];
+                    abilityRecharge = classStats[0, 2];
+                    maxAbilityUses = classStats[0, 3];
                     speed = classStats[0, 4];
-                    characterAttacks[2] = attacks.DD_HPSacrifice;
                     break;
                 case allClasses.Tank:
                     maxHealth = classStats[1, 0];
                     damage = (float)classStats[1, 1];
-                    classAbilityRecharge = classStats[1, 2];
-                    maxClassAbilityUses = classStats[1, 3];
+                    abilityRecharge = classStats[1, 2];
+                    maxAbilityUses = classStats[1, 3];
                     speed = classStats[1, 4];
                     break;
                 case allClasses.Healer:
                     maxHealth = classStats[2, 0];
                     damage = (float)classStats[2, 1];
-                    classAbilityRecharge = classStats[2, 2];
-                    maxClassAbilityUses = classStats[2, 3];
+                    abilityRecharge = classStats[2, 2];
+                    maxAbilityUses = classStats[2, 3];
                     speed = classStats[2, 4];
-                    characterAttacks[2] = attacks.HL_LifeSteal;
                     break;
                 case allClasses.RNG:
                     maxHealth = classStats[3, 0];
                     damage = (float)classStats[3, 1];
-                    classAbilityRecharge = classStats[3, 2];
-                    maxClassAbilityUses = classStats[3, 3];
+                    abilityRecharge = classStats[3, 2];
+                    maxAbilityUses = classStats[3, 3];
                     speed = classStats[3, 4];
-                    characterAttacks[2] = attacks.RG_Stats;
                     break;
                 case allClasses.Charger:
                     maxHealth = classStats[4, 0];
                     damage = (float)classStats[4, 1];
-                    classAbilityRecharge = classStats[4, 2];
-                    maxClassAbilityUses = classStats[4, 3];
+                    abilityRecharge = classStats[4, 2];
+                    maxAbilityUses = classStats[4, 3];
                     speed = classStats[4, 4];
                     break;
                 case allClasses.Bag:
                     maxHealth = classStats[5, 0];
                     damage = (float)classStats[5, 1];
-                    classAbilityRecharge = classStats[5, 2];
-                    maxClassAbilityUses = classStats[5, 3];
+                    abilityRecharge = classStats[5, 2];
+                    maxAbilityUses = classStats[5, 3];
                     speed = classStats[5, 4];
-                    characterAttacks[2] = attacks.BG_NO;
-                    characterAttacks[2] = attacks.BG_NO;
                     break;
             }
-            healthSources[0] = maxHealth;
-            damageSources[0] = damage;
+
             int startingHealth = maxHealth;
             float startingDamage = damage;
             //Level stats
             for (int i = 0; i < currentLevel; i++)
             {
                 //If base health is 100 health , adds 5 health per level
-                maxHealth = maxHealth + (startingHealth / 20);
+                maxHealth += startingHealth / 20;
                 
-                damage = damage + (startingDamage / 20);
-                healthSources[1] = healthSources[1] + (startingHealth / 20);
-                damageSources[1] = damageSources[1] + (startingDamage / 20);
+                damage += startingDamage / 20;
             }
             //Skills stats
             bool glassCannon = false;
@@ -180,13 +200,13 @@ namespace TBRPGV2
                 switch (skills[i])
                 {
                     case allSkills.Healthy:
-                        maxHealth = maxHealth + 25;
+                        maxHealth += 25;
                         break;
                     case allSkills.Violent:
-                        damage = damage + 5;
+                        damage += 5;
                         break;
                     case allSkills.Fast:
-                        speed = speed + 3;
+                        speed += 3;
                         break;
                     case allSkills.Glass_Cannon:
                         glassCannon = true;
@@ -205,31 +225,14 @@ namespace TBRPGV2
             if (glassCannon)
             {
                 maxHealth = (int)((maxHealth) * 0.75f);
-                damage = damage * 1.5f;
+                damage *= 1.5f;
             }
             if (stoneWall)
             {
                 maxHealth = (int)(maxHealth * 1.5f);
-                damage = (damage) * 0.75f;
+                damage *= 0.75f;
             }
             damage = (float)Math.Round(damage,1);
-            //Math if I wanna see it
-            if (showCalculation)
-            {
-                Console.Write($"=====\r\nMaxHealth: {maxHealth}\r\nDamage: {damage}\r\nCurrent Level: {currentLevel}\r\nCurrent XP: {currentXP} \r\n Skills: ");
-                for (int i = 0; i < skills.Length; i++)
-                {
-                    if (i != 0 && i != skills.Length - 1)
-                    {
-                        Console.Write(", ");
-                    } else if (i != 0)
-                    {
-                        Console.Write(" and ");
-                    }
-                    Console.Write(skills[i]);
-                }
-                Console.WriteLine("\r\n=====");
-            }
         }
         public int Attack(out int dodge, out int healing, int attack = 0, bool doRandom = true,bool useEnumAttackInstead = false, attacks enumAttack = attacks.None,bool visual = false)
         {
@@ -262,21 +265,22 @@ namespace TBRPGV2
             }
             else
             {
-                //or not
+                //Makes the attack a specific attack from the attacks enum
                 currentAttack = enumAttack;
             }
             
             #endregion
             float attackDamage = damage;
-            #region Randomizer Random Attack Damage
+            #region Randomizer Random Damage
             if (currentClass == allClasses.RNG && doRandom)
             {
                 Random rnd = new Random();
-                int rand = rnd.Next(-5 + rng_ExtraLuck, 5 + rng_ExtraLuck);
-                attackDamage += rand;
+                int extraRNGDamage = rnd.Next(-5 + rng_ExtraLuck, 5 + rng_ExtraLuck);
+                attackDamage += extraRNGDamage;
             }
             #endregion
             int totalDamage = 0;
+            float extraDamage = 0;
             switch (currentAttack)
             {
                 //The actual attacks
@@ -289,20 +293,20 @@ namespace TBRPGV2
                     }
                     return 0;
                 #endregion
-                    #region Class Ability
+                    #region Ability
                 case attacks.Class_Ability:
-                    if (roundsUntilAbilityRecharge <= 0 && classAbilityUses < maxClassAbilityUses)
+                    if (roundsUntilAbilityRecharge <= 0 && abilityUses < maxAbilityUses)
                     {
                         if (!visual)
                         {
-                            roundsUntilAbilityRecharge = classAbilityRecharge;
-                            classAbilityUses++;
+                            roundsUntilAbilityRecharge = abilityRecharge;
+                            abilityUses++;
                         }
                         switch (currentClass)
                         {
                             case allClasses.DamageDealer:
-                                int classDamage = (int)((attackDamage * damageMultiplier) * 2f);
-                                return classDamage;
+                                totalDamage = (int)((attackDamage * damageMultiplier) * 2f);
+                                return totalDamage;
 
                             case allClasses.Tank:
                                 healing = (maxHealth / 10);
@@ -322,20 +326,16 @@ namespace TBRPGV2
                                 return (int)((maxHealth/100) * rand2);
 
                             case allClasses.Charger:
-                                classDamage = (int)((((attackDamage * 0.5f) + chargerCharge) * chargerCharge)*damageMultiplier);
+                                totalDamage = (int)((((attackDamage * 0.5f) + chargerCharge) * chargerCharge)*damageMultiplier);
                                 if (!visual)
                                 {
                                     chargerCharge = 0;
                                 }
-                                return classDamage;
+                                return totalDamage;
 
                             case allClasses.Bag:
                                 return 10 * (currentLevel + 1);
                         }
-                    }
-                    else
-                    {
-                        
                     }
                     break;
                 #endregion
@@ -346,7 +346,6 @@ namespace TBRPGV2
                     {
                         roundsUntilAbilityRecharge -= 1;
                     }
-                    float extraDamage = 0;
                     for (int i = 0; i < skills.Length; i++)
                     {
                         if (skills[i] == allSkills.Light_Hitter)
@@ -373,7 +372,7 @@ namespace TBRPGV2
                     {
                         if (skills[i] == allSkills.Heavy_Hitter)
                         {
-                            extraDamage = extraDamage + (attackDamage * 1.1f);
+                            extraDamage +=attackDamage * 1.1f;
                         }
                     }
                     if (!visual)
@@ -402,8 +401,8 @@ namespace TBRPGV2
                     {
                         roundsUntilAbilityRecharge -= 2;
                     }
-                    int dmg = (int)((attackDamage) * damageMultiplier);
-                    totalDamage = (int)(dmg * 2);
+                    extraDamage = (int)((attackDamage) * damageMultiplier);
+                    totalDamage = (int)(extraDamage * 2);
                     if (prevAttack == attacks.DD_HPSacrifice)
                     {
                         totalDamage = (int)(totalDamage * (1 - attackSpamNerf));
@@ -427,8 +426,8 @@ namespace TBRPGV2
                     {
                         roundsUntilAbilityRecharge -= 2;
                     }
-                    dmg = (int)((attackDamage) * damageMultiplier);
-                    totalDamage = (int)(dmg / 1.5f);
+                    extraDamage = (int)((attackDamage) * damageMultiplier);
+                    totalDamage = (int)(extraDamage / 1.5f);
                     if (prevAttack == attacks.HL_LifeSteal)
                     {
                         totalDamage = (int)(totalDamage * (1 - attackSpamNerf));
@@ -463,6 +462,7 @@ namespace TBRPGV2
                     }
                     else
                     {
+                        //Yeah.
                         Random rnd = new Random();
                         int rand = rnd.Next(5, 15);
                         dodge = rand;
@@ -502,7 +502,7 @@ namespace TBRPGV2
             }
             return 0;
         }
-        public allSkills randomSkill()
+        public allSkills GetRandomSkill()
         {
             //Chooses a random skill from the allskills enum
             Random rnd = new Random();
@@ -570,9 +570,9 @@ namespace TBRPGV2
             #endregion
             return allAvSkills;
         }
-        public void HealCreature(float healing,bool visual)
+        public void HealCreature(float healing,bool doesntHeal)
         {
-            if (!visual)
+            if (!doesntHeal)
             {
                 health += (int)healing;
             }
@@ -592,8 +592,6 @@ namespace TBRPGV2
             float totalXP = currentXP / 100;
             currentLevel = (int)(Math.Floor(totalXP));
             currentXP -= currentLevel * 100;
-            Console.WriteLine(totalXP);
-            Console.WriteLine(currentLevel);
         }
     }
 }
