@@ -7,16 +7,18 @@ namespace TBRPGV2
 {
     internal class Program
     {
+        #region Skills
         //Skills
         const bool chooseStartSkills = false;
         public const int amountStartSkills = 3;
-
+        #endregion
+        #region Player, Classes
         //Player , Enemy test class , what class is selected
         static Creature currentPlayer = new Creature(Creature.allClasses.Class_None, 0);
         static Creature.allClasses forceEnemyClass = Creature.allClasses.Class_None;
         static int classSelection = 0;
-
-
+        #endregion
+        #region GetSkillInfo Info
         //What GetSkillInfo(); changes
         static string skillName = "";
         static string[] skillDescription = { "", "", "", "", "" };
@@ -25,7 +27,8 @@ namespace TBRPGV2
                     "    / /   ",
                     "   / /    ",
                     "  / /     "};
-
+        #endregion
+        #region UI stuff
         //Needed for UI
         static bool[] creatureDodgedLastRound = new bool[2];
 
@@ -36,10 +39,11 @@ namespace TBRPGV2
         //Selected ui for battle
         static int selectedTopic = 0;
         static int selectedAttack = 0;
+        #endregion
 
         //Few stats, Put amountOfClasses to 6 for Bag class
         public static int amountOfClasses = 5;
-
+        #region Files
         //File stuff
         private static JsonSerializerOptions _options =
         new() { DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull, WriteIndented = true };
@@ -49,6 +53,7 @@ namespace TBRPGV2
         static int selectedSave = 0;
         static int currentPlayingSave = 0;
         static List<int> notSaveFiles = new List<int>();
+        #endregion
 
         static void Main(string[] args)
         {
@@ -90,16 +95,17 @@ namespace TBRPGV2
 
             Console.ReadKey();
         }
+
+        #region Character Creation
         static void NewCharacter()
         {
             currentPlayer = new Creature(Creature.allClasses.Class_None, 0);
             //Sets up the player
-            //currentPlayer.damageMultiplier = 500;
             while (currentPlayer.currentClass == Creature.allClasses.Class_None)
             {
                 SelectClass();
             }
-            CreatureSkills(currentPlayer, !chooseStartSkills, amountStartSkills);
+            DecideCreatureSkills(currentPlayer, !chooseStartSkills, amountStartSkills);
             Console.Clear();
             ShowRandomSkills();
             Console.ReadKey();
@@ -110,7 +116,271 @@ namespace TBRPGV2
             currentPlayer.health = currentPlayer.maxHealth;
         }
 
-        static void CreatureSkills(Creature crt, bool random, int amountOfSkills)
+        static void SelectClass()
+        {
+            Console.Clear();
+
+            int startingSelection = classSelection;
+            ConsoleColor selectionColor = ConsoleColor.White;
+            ConsoleColor selectionTextColor = ConsoleColor.Black;
+            //Class Icons,Names and Descriptions
+            string[] classNames = { "Damage Dealer", "Tank", "Healer", "Randomizer", "Charger", "Bag" };
+            string[][] classDescriptions = new string[6][]
+            {
+                new string[5]
+                {
+                    "The damage dealer is a class based around damage","This class lacks in defence","Class Ability:","Do an attack that does 1.5x your damage",""
+                },
+                    new string[5]
+                {
+                    "The tank is a class based around damage and health","It is a mix of healer and damage dealer","Class Ability:","Heal 10% of your max health","Still do half a light attack afterwards"
+                },
+                    new string[5]
+                {
+                    "The healer is a class based around health","This class lacks in damage","Class Ability:","Heal 50% of your health",""
+                },
+                    new string[5]
+                {
+                    "The randomizer is based around randomness","It's strength is based around your luck","Class Ability:","Use a random selected attack",""
+                },
+                    new string[5]
+                {
+                    "The charger is based around charging your attacks","Your attacks deal more damage the more you use them","Class Ability:","Every time you dont use your class ability ","your class ability will attack more times when you use it"
+                },
+                    new string[5]
+                {
+                    "Punching Bag","Testing Class","Class Ability:","Bag","Icon is a beaker"
+                }
+            };
+            string[][] iconArray = new string[6][]{
+                new string[4]{
+                    "     /\\   ",
+                    "    / /   ",
+                    "   / /    ",
+                    "  / /     "},
+                new string[4]{
+                    "  /----\\  ",
+                    "  | -- |  ",
+                    "  |    |  ",
+                    "  \\----/  " },
+                new string[4]{
+                    "    ||    ",
+                    "----╝╚----",
+                    "----╗╔----",
+                    "    ||    "},
+                new string[4]{
+                    "  ╔----╗  ",
+                    "  |  ()|  ",
+                    "  |()  |  ",
+                    "  ╚----╝  "},
+                new string[4]{
+                    " ======== ",
+                    " |████  | ",
+                    " |██    | ",
+                    " ======== "},
+                new string[4]{
+                    "   |  |   ",
+                    "   |‾-|   ",
+                    "  /    \\  ",
+                    " /______\\ "}
+
+
+            };
+
+            //Places most of the lines
+            Console.ForegroundColor = ConsoleColor.DarkGray;
+            Console.WriteLine("------------------------------------------------------------------------\r\n\r\n\r\n\r\n\r\n\r\n");
+            Console.WriteLine("------------------------------------------------------------------------\r\n\r\n\r\n\r\n\r\n\r\n");
+            Console.WriteLine("------------------------------------------------------------------------\r\n");
+            Console.ForegroundColor = ConsoleColor.White;
+            //Places all class info and icons
+            for (int i = 0; i < amountOfClasses; i++)
+            {
+                //Class info
+                #region Class Info
+                Console.CursorVisible = false;
+                int center = classNames[classSelection].Length / 2;
+                Console.SetCursorPosition(Console.CursorLeft + 35 - center, Console.CursorTop - 15);
+                Console.WriteLine(classNames[classSelection]);
+                for (int j = 0; j < 1; ++j)
+                {
+                    Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop);
+                }
+                for (int j = 0; j < 5; j++)
+                {
+                    center = classDescriptions[classSelection][j].Length / 2;
+                    Console.SetCursorPosition(Console.CursorLeft + 35 - center, Console.CursorTop);
+                    Console.WriteLine(classDescriptions[classSelection][j]);
+                }
+                Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop + 1);
+                for (int j = 0; j < 6; j++)
+                {
+                    string word = "prob";
+                    switch (j)
+                    {
+                        case 0:
+                            word = "Base max HP: " + currentPlayer.classStats[classSelection, 0];
+                            break;
+                        case 1:
+                            word = "Base damage: " + currentPlayer.classStats[classSelection, 1];
+                            break;
+                        case 2:
+                            word = "Rounds until ability recharge: " + currentPlayer.classStats[classSelection, 2];
+                            break;
+                        case 3:
+                            if (currentPlayer.classStats[classSelection, 3] != 999)
+                            {
+                                word = "Class ability uses: " + currentPlayer.classStats[classSelection, 3];
+                            }
+                            else
+                            {
+                                word = "Class ability uses: Infinite";
+                            }
+                            break;
+                        case 4:
+                            word = "Speed: " + currentPlayer.classStats[classSelection, 4];
+                            break;
+                        case 5:
+                            word = "";
+                            break;
+
+                    }
+                    center = word.Length / 2;
+                    Console.SetCursorPosition(Console.CursorLeft + 35 - center, Console.CursorTop);
+                    Console.WriteLine(word);
+                }
+                #endregion
+                //Places all class boxes and put their icons in there
+                #region PlaceBoxes
+                Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop + 2);
+                Console.SetCursorPosition(Console.CursorLeft + (15 * i), Console.CursorTop);
+                Console.WriteLine("|----------|  ");
+                Console.SetCursorPosition(Console.CursorLeft + (15 * i), Console.CursorTop);
+                Console.Write("|");
+                if (classSelection == i)
+                {
+                    Console.BackgroundColor = selectionColor;
+                    Console.ForegroundColor = selectionTextColor;
+                }
+                Console.Write(iconArray[i][0]);
+                if (classSelection == i)
+                {
+                    Console.BackgroundColor = ConsoleColor.Black;
+                    Console.ForegroundColor = ConsoleColor.White;
+                }
+                Console.WriteLine("|  ");
+                Console.SetCursorPosition(Console.CursorLeft + (15 * i), Console.CursorTop);
+                Console.Write("|");
+                if (classSelection == i)
+                {
+                    Console.BackgroundColor = selectionColor;
+                    Console.ForegroundColor = selectionTextColor;
+                }
+                Console.Write(iconArray[i][1]);
+                if (classSelection == i)
+                {
+                    Console.BackgroundColor = ConsoleColor.Black;
+                    Console.ForegroundColor = ConsoleColor.White;
+                }
+                Console.WriteLine("|  ");
+                Console.SetCursorPosition(Console.CursorLeft + (15 * i), Console.CursorTop);
+                Console.Write("|");
+                if (classSelection == i)
+                {
+                    Console.BackgroundColor = selectionColor;
+                    Console.ForegroundColor = selectionTextColor;
+                }
+                Console.Write(iconArray[i][2]);
+                if (classSelection == i)
+                {
+                    Console.BackgroundColor = ConsoleColor.Black;
+                    Console.ForegroundColor = ConsoleColor.White;
+                }
+                Console.WriteLine("|  ");
+                Console.SetCursorPosition(Console.CursorLeft + (15 * i), Console.CursorTop);
+                Console.Write("|");
+                if (classSelection == i)
+                {
+                    Console.BackgroundColor = selectionColor;
+                    Console.ForegroundColor = selectionTextColor;
+                }
+                Console.Write(iconArray[i][3]);
+                if (classSelection == i)
+                {
+                    Console.BackgroundColor = ConsoleColor.Black;
+                    Console.ForegroundColor = ConsoleColor.White;
+                }
+                Console.WriteLine("|  ");
+                Console.SetCursorPosition(Console.CursorLeft + (15 * i), Console.CursorTop);
+                Console.WriteLine("|----------|  ");
+                Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop - 6);
+                #endregion
+            }
+            //The last line
+            Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop + 7);
+            Console.ForegroundColor = ConsoleColor.DarkGray;
+            Console.WriteLine("------------------------------------------------------------------------");
+
+
+            string sentence = "Press ENTER to select a class";
+            int center2 = sentence.Length / 2;
+            Console.SetCursorPosition(Console.CursorLeft + 35 - center2, Console.CursorTop + 1);
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.WriteLine(sentence);
+            Console.ForegroundColor = ConsoleColor.White;
+
+            //Move in UI and Select Class
+            while (startingSelection == classSelection)
+            {
+                ConsoleKey key = Console.ReadKey(true).Key;
+                switch (key)
+                {
+                    case ConsoleKey.A:
+                        classSelection--;
+                        break;
+                    case ConsoleKey.D:
+                        classSelection++;
+                        break;
+                    case ConsoleKey.Enter:
+                        switch (classSelection)
+                        {
+                            case 0:
+                                currentPlayer.currentClass = Creature.allClasses.DamageDealer;
+                                break;
+                            case 1:
+                                currentPlayer.currentClass = Creature.allClasses.Tank;
+                                break;
+                            case 2:
+                                currentPlayer.currentClass = Creature.allClasses.Healer;
+                                break;
+                            case 3:
+                                currentPlayer.currentClass = Creature.allClasses.RNG;
+                                break;
+                            case 4:
+                                currentPlayer.currentClass = Creature.allClasses.Charger;
+                                break;
+                            case 5:
+                                currentPlayer.currentClass = Creature.allClasses.Bag;
+                                break;
+                        }
+                        Console.Clear();
+                        startingSelection = 100;
+                        break;
+                }
+
+                if (classSelection == amountOfClasses)
+                {
+                    classSelection = 0;
+                }
+                else if (classSelection <= -1)
+                {
+                    classSelection = amountOfClasses - 1;
+                }
+            }
+
+        }
+
+        static void DecideCreatureSkills(Creature crt, bool random, int amountOfSkills)
         {
             for (int i = 0; i < amountOfSkills; i++)
             {
@@ -129,6 +399,59 @@ namespace TBRPGV2
                 }
             }
         }
+
+        //Shows what skills you got at the start of the game
+        static void ShowRandomSkills()
+        {
+
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop + 10);
+            //Makes the box and puts the icon in it
+            for (int i = 0; i < currentPlayer.skills.Length - 1; i++)
+            {
+                int cursorMoveAmount = 0;
+                if (i == 5)
+                {
+                    Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop + 13);
+                }
+                if (i >= 5)
+                {
+                    int amount = (int)i / 5;
+                    cursorMoveAmount = 20 * (i - ((amount * 5) - 1));
+                }
+                else
+                {
+                    cursorMoveAmount = 20 * (i + 1);
+                }
+                GetSkillInfo(currentPlayer.skills[i]);
+                cursorMoveAmount = cursorMoveAmount - 10;
+                Console.CursorVisible = false;
+                int center = skillName.Length / 2;
+                Console.SetCursorPosition(Console.CursorLeft + ((cursorMoveAmount + 6) - center), Console.CursorTop - 5);
+                Console.WriteLine(skillName + "\r\n");
+                center = skillDescription[0].Length / 2;
+                Console.SetCursorPosition(Console.CursorLeft + ((cursorMoveAmount + 6) - center), Console.CursorTop);
+                Console.WriteLine(skillDescription[0]);
+                center = skillDescription[1].Length / 2;
+                Console.SetCursorPosition(Console.CursorLeft + ((cursorMoveAmount + 6) - center), Console.CursorTop);
+                Console.WriteLine(skillDescription[1] + "\r\n");
+                Console.SetCursorPosition(Console.CursorLeft + cursorMoveAmount, Console.CursorTop);
+                Console.WriteLine("|----------|  ");
+                Console.SetCursorPosition(Console.CursorLeft + cursorMoveAmount, Console.CursorTop);
+                for (int j = 0; j < 4; j++)
+                {
+                    Console.Write("|");
+                    Console.Write(activeSkillsIcon[j]);
+                    Console.WriteLine("|  ");
+                    Console.SetCursorPosition(Console.CursorLeft + cursorMoveAmount, Console.CursorTop);
+                }
+                Console.WriteLine("|----------|  ");
+                Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop - 6);
+            }
+        }
+        #endregion
+
+        #region Battle
         static void StartBattle(bool showStatsAtStart)
         {
             //Makes the enemy
@@ -294,36 +617,6 @@ namespace TBRPGV2
                 }
             }
         }
-        static int CalculateXPGain(Creature winner, Creature loser)
-        {
-            int startingXPGain = 150;
-            float xpBuff = 1;
-
-            if (winner.currentClass == allClasses.RNG)
-            {
-                Random rnd = new Random();
-                xpBuff = rnd.Next(5, 15);
-                xpBuff = xpBuff / 10;
-            }
-            //Math
-            if (winner.currentLevel < loser.currentLevel)
-            {
-                xpBuff += 0.05f * (loser.currentLevel - winner.currentLevel);
-            }
-            if (winner.health > winner.maxHealth * 0.75f)
-            {
-                xpBuff += 0.25f;
-            }
-            int xpGain = (int)(startingXPGain * xpBuff);
-            for (int i = 0; i < winner.skills.Length; i++)
-            {
-                if (winner.skills[i] == allSkills.Fast_Learner)
-                {
-                    xpGain += (int)(xpGain * 0.1f);
-                }
-            }
-            return xpGain;
-        }
         static bool CalculateDodge(Creature creature, Creature creature2, int startingDodge)
         {
             //Creature is defending , Creature2 is attacking,
@@ -368,319 +661,508 @@ namespace TBRPGV2
                 enemy.chargerCharge++;
             }
         }
-        static void SelectClass()
+        private static void DrawBattle(ConsoleColor color)
         {
-            Console.Clear();
+            //Max size: 71L , 26T
 
-            int startingSelection = classSelection;
-            ConsoleColor selectionColor = ConsoleColor.White;
-            ConsoleColor selectionTextColor = ConsoleColor.Black;
-            //Class Icons,Names and Descriptions
-            string[] classNames = { "Damage Dealer", "Tank", "Healer", "Randomizer", "Charger", "Bag" };
-            string[][] classDescriptions = new string[6][]
+            //Lines
+            Console.ForegroundColor = color;
+            Console.SetCursorPosition(70, 26);
+            Console.WriteLine("-");
+            Console.SetCursorPosition(0, 0);
+
+            Console.Write("  --------------------------------------------------------------------  ");
+            Console.SetCursorPosition(2, 1);
+            Console.Write("|");
+            Console.SetCursorPosition(69, 1);
+            Console.Write("|");
+            Console.SetCursorPosition(0, 2);
+            Console.Write("  --------------------------------------------------------------------  ");
+            Console.SetCursorPosition(2, 3);
+            Console.WriteLine("|");
+            Console.SetCursorPosition(10, 3);
+            Console.WriteLine("|");
+            Console.SetCursorPosition(2, 4);
+            Console.WriteLine("---------");
+            Console.SetCursorPosition(61, 3);
+            Console.WriteLine("|");
+            Console.SetCursorPosition(69, 3);
+            Console.WriteLine("|");
+            Console.SetCursorPosition(61, 4);
+            Console.WriteLine("---------");
+
+
+            Console.SetCursorPosition(2, 14);
+            Console.WriteLine("---------");
+            Console.SetCursorPosition(2, 15);
+            Console.WriteLine("|");
+            Console.SetCursorPosition(10, 15);
+            Console.WriteLine("|");
+            Console.SetCursorPosition(61, 15);
+            Console.WriteLine("|");
+            Console.SetCursorPosition(69, 15);
+            Console.WriteLine("|");
+            Console.SetCursorPosition(61, 14);
+            Console.WriteLine("---------");
+            Console.SetCursorPosition(0, 16);
+            Console.WriteLine("  --------------------------------------------------------------------  ");
+            Console.SetCursorPosition(2, 17);
+            Console.WriteLine("|");
+            Console.SetCursorPosition(69, 17);
+            Console.Write("|");
+            Console.SetCursorPosition(0, 18);
+            Console.WriteLine("  --------------------------------------------------------------------  ");
+            Console.SetCursorPosition(0, 26);
+            Console.WriteLine("  --------------------------------------------------------------------  ");
+
+            Console.SetCursorPosition(0, 19);
+            for (int i = 0; i < 7; i++)
             {
-                new string[5]
-                {
-                    "The damage dealer is a class based around damage","This class lacks in defence","Class Ability:","Do an attack that does 1.5x your damage",""
-                },
-                    new string[5]
-                {
-                    "The tank is a class based around damage and health","It is a mix of healer and damage dealer","Class Ability:","Heal 10% of your max health","Still do half a light attack afterwards"
-                },
-                    new string[5]
-                {
-                    "The healer is a class based around health","This class lacks in damage","Class Ability:","Heal 50% of your health",""
-                },
-                    new string[5]
-                {
-                    "The randomizer is based around randomness","It's strength is based around your luck","Class Ability:","Use a random selected attack",""
-                },
-                    new string[5]
-                {
-                    "The charger is based around charging your attacks","Your attacks deal more damage the more you use them","Class Ability:","Every time you dont use your class ability ","your class ability will attack more times when you use it"
-                },
-                    new string[5]
-                {
-                    "Punching Bag","Testing Class","Class Ability:","Bag","Icon is a beaker"
-                }
-            };
-            string[][] iconArray = new string[6][]{
-                new string[4]{
-                    "     /\\   ",
-                    "    / /   ",
-                    "   / /    ",
-                    "  / /     "},
-                new string[4]{
-                    "  /----\\  ",
-                    "  | -- |  ",
-                    "  |    |  ",
-                    "  \\----/  " },
-                new string[4]{
-                    "    ||    ",
-                    "----╝╚----",
-                    "----╗╔----",
-                    "    ||    "},
-                new string[4]{
-                    "  ╔----╗  ",
-                    "  |  ()|  ",
-                    "  |()  |  ",
-                    "  ╚----╝  "},
-                new string[4]{
-                    " ======== ",
-                    " |████  | ",
-                    " |██    | ",
-                    " ======== "},
-                new string[4]{
-                    "   |  |   ",
-                    "   |‾-|   ",
-                    "  /    \\  ",
-                    " /______\\ "}
-
-
-            };
-
-            //Places most of the lines
-            Console.ForegroundColor = ConsoleColor.DarkGray;
-            Console.WriteLine("========================================================================\r\n\r\n\r\n\r\n\r\n\r\n");
-            Console.WriteLine("========================================================================\r\n\r\n\r\n\r\n\r\n\r\n");
-            Console.WriteLine("========================================================================\r\n");
-            Console.ForegroundColor = ConsoleColor.White;
-            //Places all class info and icons
-            for (int i = 0; i < amountOfClasses; i++)
-            {
-                //Class info
-                #region Class Info
-                Console.CursorVisible = false;
-                int center = classNames[classSelection].Length / 2;
-                Console.SetCursorPosition(Console.CursorLeft + 35 - center, Console.CursorTop - 15);
-                Console.WriteLine(classNames[classSelection]);
-                for (int j = 0; j < 1; ++j)
-                {
-                    Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop);
-                }
-                for (int j = 0; j < 5; j++)
-                {
-                    center = classDescriptions[classSelection][j].Length / 2;
-                    Console.SetCursorPosition(Console.CursorLeft + 35 - center, Console.CursorTop);
-                    Console.WriteLine(classDescriptions[classSelection][j]);
-                }
-                Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop + 1);
-                for (int j = 0; j < 6; j++)
-                {
-                    string word = "prob";
-                    switch (j)
-                    {
-                        case 0:
-                            word = "Base max HP: " + currentPlayer.classStats[classSelection, 0];
-                            break;
-                        case 1:
-                            word = "Base damage: " + currentPlayer.classStats[classSelection, 1];
-                            break;
-                        case 2:
-                            word = "Rounds until ability recharge: " + currentPlayer.classStats[classSelection, 2];
-                            break;
-                        case 3:
-                            if (currentPlayer.classStats[classSelection, 3] != 999)
-                            {
-                                word = "Class ability uses: " + currentPlayer.classStats[classSelection, 3];
-                            }
-                            else
-                            {
-                                word = "Class ability uses: Infinite";
-                            }
-                            break;
-                        case 4:
-                            word = "Speed: " + currentPlayer.classStats[classSelection, 4];
-                            break;
-                        case 5:
-                            word = "";
-                            break;
-
-                    }
-                    center = word.Length / 2;
-                    Console.SetCursorPosition(Console.CursorLeft + 35 - center, Console.CursorTop);
-                    Console.WriteLine(word);
-                }
-                #endregion
-                //Places all class boxes and put their icons in there
-                #region PlaceBoxes
-                Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop + 2);
-                Console.SetCursorPosition(Console.CursorLeft + (15 * i), Console.CursorTop);
-                Console.WriteLine("|----------|  ");
-                Console.SetCursorPosition(Console.CursorLeft + (15 * i), Console.CursorTop);
-                Console.Write("|");
-                if (classSelection == i)
-                {
-                    Console.BackgroundColor = selectionColor;
-                    Console.ForegroundColor = selectionTextColor;
-                }
-                Console.Write(iconArray[i][0]);
-                if (classSelection == i)
-                {
-                    Console.BackgroundColor = ConsoleColor.Black;
-                    Console.ForegroundColor = ConsoleColor.White;
-                }
-                Console.WriteLine("|  ");
-                Console.SetCursorPosition(Console.CursorLeft + (15 * i), Console.CursorTop);
-                Console.Write("|");
-                if (classSelection == i)
-                {
-                    Console.BackgroundColor = selectionColor;
-                    Console.ForegroundColor = selectionTextColor;
-                }
-                Console.Write(iconArray[i][1]);
-                if (classSelection == i)
-                {
-                    Console.BackgroundColor = ConsoleColor.Black;
-                    Console.ForegroundColor = ConsoleColor.White;
-                }
-                Console.WriteLine("|  ");
-                Console.SetCursorPosition(Console.CursorLeft + (15 * i), Console.CursorTop);
-                Console.Write("|");
-                if (classSelection == i)
-                {
-                    Console.BackgroundColor = selectionColor;
-                    Console.ForegroundColor = selectionTextColor;
-                }
-                Console.Write(iconArray[i][2]);
-                if (classSelection == i)
-                {
-                    Console.BackgroundColor = ConsoleColor.Black;
-                    Console.ForegroundColor = ConsoleColor.White;
-                }
-                Console.WriteLine("|  ");
-                Console.SetCursorPosition(Console.CursorLeft + (15 * i), Console.CursorTop);
-                Console.Write("|");
-                if (classSelection == i)
-                {
-                    Console.BackgroundColor = selectionColor;
-                    Console.ForegroundColor = selectionTextColor;
-                }
-                Console.Write(iconArray[i][3]);
-                if (classSelection == i)
-                {
-                    Console.BackgroundColor = ConsoleColor.Black;
-                    Console.ForegroundColor = ConsoleColor.White;
-                }
-                Console.WriteLine("|  ");
-                Console.SetCursorPosition(Console.CursorLeft + (15 * i), Console.CursorTop);
-                Console.WriteLine("|----------|  ");
-                Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop - 6);
-                #endregion
+                Console.SetCursorPosition(2, i + 19);
+                Console.WriteLine("|");
+                Console.SetCursorPosition(12, i + 19);
+                Console.WriteLine("|");
+                Console.SetCursorPosition(53, i + 19);
+                Console.WriteLine("|");
+                Console.SetCursorPosition(69, i + 19);
+                Console.WriteLine("|");
             }
-            //The last line
-            Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop + 7);
-            Console.ForegroundColor = ConsoleColor.DarkGray;
-            Console.WriteLine("========================================================================");
-
-
-            string sentence = "Press ENTER to select a class";
-            int center2 = sentence.Length / 2;
-            Console.SetCursorPosition(Console.CursorLeft + 35 - center2, Console.CursorTop + 1);
-            Console.ForegroundColor = ConsoleColor.Blue;
-            Console.WriteLine(sentence);
             Console.ForegroundColor = ConsoleColor.White;
-
-            //Move in UI and Select Class
-            while (startingSelection == classSelection)
-            {
-                ConsoleKey key = Console.ReadKey(true).Key;
-                switch (key)
-                {
-                    case ConsoleKey.A:
-                        classSelection--;
-                        break;
-                    case ConsoleKey.D:
-                        classSelection++;
-                        break;
-                    case ConsoleKey.Enter:
-                        switch (classSelection)
-                        {
-                            case 0:
-                                currentPlayer.currentClass = Creature.allClasses.DamageDealer;
-                                break;
-                            case 1:
-                                currentPlayer.currentClass = Creature.allClasses.Tank;
-                                break;
-                            case 2:
-                                currentPlayer.currentClass = Creature.allClasses.Healer;
-                                break;
-                            case 3:
-                                currentPlayer.currentClass = Creature.allClasses.RNG;
-                                break;
-                            case 4:
-                                currentPlayer.currentClass = Creature.allClasses.Charger;
-                                break;
-                            case 5:
-                                currentPlayer.currentClass = Creature.allClasses.Bag;
-                                break;
-                        }
-                        Console.Clear();
-                        startingSelection = 100;
-                        break;
-                }
-                
-                if (classSelection == amountOfClasses)
-                {
-                    classSelection = 0;
-                } else if (classSelection <= -1)
-                {
-                    classSelection = amountOfClasses - 1;
-                }
-            }
 
         }
-
-        //Shows what skills you got at the start of the game
-        static void ShowRandomSkills()
+        public static void DrawText(Creature enemy, ConsoleColor color = ConsoleColor.White)
         {
 
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop + 10);
-            //Makes the box and puts the icon in it
-            for (int i = 0; i < currentPlayer.skills.Length - 1; i++)
+            Console.ForegroundColor = color;
+
+            //Health text
+            Console.SetCursorPosition(3, 15);
+            Console.WriteLine($"HP: {currentPlayer.health}");
+
+            Console.SetCursorPosition(3, 3);
+            Console.WriteLine($"HP: {enemy.health}");
+
+            //Dodge text
+            if (creatureDodgedLastRound[0] == true)
             {
-                int cursorMoveAmount = 0;
-                if (i == 5)
+                Console.SetCursorPosition(62, 15);
+                Console.WriteLine("Dodged");
+            }
+
+            if (creatureDodgedLastRound[1] == true)
+            {
+                Console.SetCursorPosition(62, 3);
+                Console.WriteLine("Dodged");
+            }
+
+            Console.SetCursorPosition(3, 20);
+
+            //Selected catogory
+            if (selectedTopic == 0 && color == ConsoleColor.White)
+            {
+                Console.BackgroundColor = ConsoleColor.White;
+                Console.ForegroundColor = ConsoleColor.Black;
+                Console.Write(">Attacks ");
+                Console.BackgroundColor = ConsoleColor.Black;
+                Console.ForegroundColor = color;
+            }
+            else
+            {
+                Console.WriteLine(" Attacks ");
+            }
+            Console.SetCursorPosition(3, 23);
+            if (selectedTopic == 1 && color == ConsoleColor.White)
+            {
+                Console.BackgroundColor = ConsoleColor.White;
+                Console.ForegroundColor = ConsoleColor.Black;
+                Console.Write("> Items  ");
+                Console.BackgroundColor = ConsoleColor.Black;
+                Console.ForegroundColor = color;
+            }
+            else
+            {
+                Console.WriteLine("  Items  ");
+            }
+
+            //Attacks menu
+            if (selectedTopic == 0)
+            {
+                int[,] locations = { { 17, 20 }, { 39, 20 }, { 17, 23 }, { 39, 23 } };
+                for (int i = 0; i < 4; i++)
                 {
-                    Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop + 13);
+                    Console.SetCursorPosition(locations[i, 0], locations[i, 1]);
+                    string text = "";
+                    //What attack and which one you have selected
+                    switch (currentPlayer.characterAttacks[i])
+                    {
+                        case attacks.Light_Hit:
+                            text = "Light attack";
+                            break;
+                        case attacks.Heavy_Hit:
+                            text = "Heavy attack";
+                            break;
+                        case attacks.HL_LifeSteal:
+                            text = "Lifesteal";
+                            break;
+                        case attacks.RG_Stats:
+                            text = "Random Stats";
+                            break;
+                        case attacks.BG_NO:
+                            text = "Bag, No.";
+                            break;
+                        case attacks.DD_HPSacrifice:
+                            text = "HP Sacrifice";
+                            break;
+                    }
+                    if (selectedAttack == i && color == ConsoleColor.White)
+                    {
+                        Console.BackgroundColor = ConsoleColor.White;
+                        Console.ForegroundColor = ConsoleColor.Black;
+                        Console.WriteLine(">" + text);
+                        Console.BackgroundColor = ConsoleColor.Black;
+                        Console.ForegroundColor = ConsoleColor.White;
+                    }
+                    else
+                    {
+                        Console.WriteLine(" " + text);
+                    }
                 }
-                if (i >= 5)
+                if (currentPlayer.roundsUntilAbilityRecharge <= 0 && currentPlayer.classAbilityUses < currentPlayer.maxClassAbilityUses)
                 {
-                    int amount = (int)i / 5;
-                    cursorMoveAmount = 20 * (i - ((amount * 5) - 1));
+                    //Class ability if you can use it
+                    Console.SetCursorPosition(25, 25);
+                    if (selectedAttack == 4 && color == ConsoleColor.White)
+                    {
+                        Console.BackgroundColor = ConsoleColor.White;
+                        Console.ForegroundColor = ConsoleColor.Black;
+                        Console.SetCursorPosition(25, 25);
+                        Console.Write(">Class ability");
+                        Console.BackgroundColor = ConsoleColor.Black;
+                        Console.ForegroundColor = ConsoleColor.White;
+                    }
+                    else
+                    {
+                        Console.Write(" Class ability");
+                    }
+                }
+
+                for (int i = 0; i < 7; i++)
+                {
+                    Console.SetCursorPosition(54, 19 + i);
+                    Console.WriteLine("               ");
+                }
+                Console.SetCursorPosition(54, 19);
+                int unusedDodge = 0;
+                int unusedHealing = 0;
+                #region Attack Descriptions
+                if (currentPlayer.currentClass != allClasses.RNG)
+                {
+                    if (selectedAttack != 4)
+                    {
+                        switch (currentPlayer.characterAttacks[selectedAttack])
+                        {
+                            case attacks.Light_Hit:
+                                Console.WriteLine("Light Attack");
+                                Console.SetCursorPosition(54, Console.CursorTop);
+                                Console.WriteLine($"Damage: {currentPlayer.Attack(out unusedDodge, out unusedHealing, 0, false, true, attacks.Light_Hit, true)}");
+                                Console.SetCursorPosition(54, Console.CursorTop);
+                                Console.WriteLine($"Dodge: {unusedDodge}");
+                                break;
+
+                            case attacks.Heavy_Hit:
+                                Console.WriteLine("Heavy Attack");
+                                Console.SetCursorPosition(54, Console.CursorTop);
+                                Console.WriteLine($"Damage: {currentPlayer.Attack(out unusedDodge, out unusedHealing, 0, false, true, attacks.Heavy_Hit, true)}");
+                                Console.SetCursorPosition(54, Console.CursorTop);
+                                Console.WriteLine($"Dodge: {unusedDodge}");
+                                break;
+
+                            case attacks.RG_Stats:
+                                Console.WriteLine("You should not be able to have this tf");
+                                break;
+                            case attacks.BG_NO:
+                                Console.WriteLine("Bag, No.");
+                                break;
+                            case attacks.HL_LifeSteal:
+                                Console.WriteLine("Lifesteal");
+                                Console.SetCursorPosition(54, Console.CursorTop);
+                                Console.WriteLine($"Damage: {currentPlayer.Attack(out unusedDodge, out unusedHealing, 0, false, true, attacks.HL_LifeSteal, true)}");
+                                Console.SetCursorPosition(54, Console.CursorTop);
+                                Console.WriteLine($"Healing: {unusedHealing}");
+                                Console.SetCursorPosition(54, Console.CursorTop);
+                                Console.WriteLine($"Dodge: {unusedDodge}");
+                                break;
+                            case attacks.DD_HPSacrifice:
+                                Console.WriteLine("HP Sacrifice");
+                                Console.SetCursorPosition(54, Console.CursorTop);
+                                Console.WriteLine($"Damage: {currentPlayer.Attack(out unusedDodge, out unusedHealing, 0, false, true, attacks.DD_HPSacrifice, true)}");
+                                Console.SetCursorPosition(54, Console.CursorTop);
+                                Console.WriteLine($"Hurt: {-unusedHealing}");
+                                Console.SetCursorPosition(54, Console.CursorTop);
+                                Console.WriteLine($"Dodge: {unusedDodge}");
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Class Ability");
+                        switch (currentPlayer.currentClass)
+                        {
+                            case allClasses.DamageDealer:
+                                Console.SetCursorPosition(54, Console.CursorTop);
+                                Console.WriteLine($"Damage: {currentPlayer.Attack(out unusedDodge, out unusedHealing, 0, false, true, attacks.Class_Ability, true)}");
+                                Console.SetCursorPosition(54, Console.CursorTop);
+                                Console.WriteLine("Cant Dodge");
+                                break;
+                            case allClasses.Tank:
+                                Console.SetCursorPosition(54, Console.CursorTop);
+                                Console.WriteLine($"Damage: {currentPlayer.Attack(out unusedDodge, out unusedHealing, 0, false, true, attacks.Class_Ability, true)}");
+                                Console.SetCursorPosition(54, Console.CursorTop);
+                                Console.WriteLine($"Healing: {unusedHealing}");
+                                Console.SetCursorPosition(54, Console.CursorTop);
+                                Console.WriteLine("Cant Dodge");
+                                break;
+                            case allClasses.Healer:
+                                Console.SetCursorPosition(54, Console.CursorTop);
+                                currentPlayer.Attack(out unusedDodge, out unusedHealing, 0, false, true, attacks.Class_Ability, true);
+                                Console.SetCursorPosition(54, Console.CursorTop);
+                                Console.WriteLine($"Healing: {unusedHealing}");
+                                break;
+                            case allClasses.Charger:
+                                Console.SetCursorPosition(54, Console.CursorTop);
+                                Console.WriteLine($"Damage: {currentPlayer.Attack(out unusedDodge, out unusedHealing, 0, false, true, attacks.Class_Ability, true)}");
+                                Console.SetCursorPosition(54, Console.CursorTop);
+                                Console.WriteLine("Cant Dodge");
+                                break;
+                        }
+                    }
                 }
                 else
                 {
-                    cursorMoveAmount = 20 * (i + 1);
+                    if (selectedAttack != 4)
+                    {
+                        switch (currentPlayer.characterAttacks[selectedAttack])
+                        {
+                            case attacks.Light_Hit:
+                                Console.WriteLine("Light Attack");
+                                Console.SetCursorPosition(54, Console.CursorTop);
+                                Console.WriteLine($"Random damage ");
+                                Console.SetCursorPosition(54, Console.CursorTop);
+                                Console.WriteLine($"around {currentPlayer.Attack(out unusedDodge, out unusedHealing, 0, false, true, attacks.Light_Hit, true)}");
+                                break;
+                            case attacks.RG_Stats:
+                                Console.WriteLine("Random Stats");
+                                Console.SetCursorPosition(54, Console.CursorTop);
+                                Console.WriteLine($"Damage: {currentPlayer.Attack(out unusedDodge, out unusedHealing, 0, false, true, attacks.RG_Stats, true)}");
+                                Console.SetCursorPosition(54, Console.CursorTop);
+                                Console.WriteLine($"Healing: {unusedHealing}");
+                                Console.SetCursorPosition(54, Console.CursorTop);
+                                Console.WriteLine($"Dodge: {unusedDodge}");
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Class Ability");
+                        Console.SetCursorPosition(54, Console.CursorTop);
+                        Console.WriteLine("Does a ");
+                        Console.SetCursorPosition(54, Console.CursorTop);
+                        Console.WriteLine("random attack");
+                    }
                 }
-                GetSkillInfo(currentPlayer.skills[i]);
-                cursorMoveAmount = cursorMoveAmount - 10;
-                Console.CursorVisible = false;
-                int center = skillName.Length / 2;
-                Console.SetCursorPosition(Console.CursorLeft + ((cursorMoveAmount + 6) - center), Console.CursorTop - 5);
-                Console.WriteLine(skillName + "\r\n");
-                center = skillDescription[0].Length / 2;
-                Console.SetCursorPosition(Console.CursorLeft + ((cursorMoveAmount + 6) - center), Console.CursorTop);
-                Console.WriteLine(skillDescription[0]);
-                center = skillDescription[1].Length / 2;
-                Console.SetCursorPosition(Console.CursorLeft + ((cursorMoveAmount + 6) - center), Console.CursorTop);
-                Console.WriteLine(skillDescription[1] + "\r\n");
-                Console.SetCursorPosition(Console.CursorLeft + cursorMoveAmount, Console.CursorTop);
-                Console.WriteLine("|----------|  ");
-                Console.SetCursorPosition(Console.CursorLeft + cursorMoveAmount, Console.CursorTop);
-                for (int j = 0; j < 4; j++)
-                {
-                    Console.Write("|");
-                    Console.Write(activeSkillsIcon[j]);
-                    Console.WriteLine("|  ");
-                    Console.SetCursorPosition(Console.CursorLeft + cursorMoveAmount, Console.CursorTop);
-                }
-                Console.WriteLine("|----------|  ");
-                Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop - 6);
+                #endregion
             }
-        }
+            else
+            {
+                for (int i = 0; i < 7; i++)
+                {
+                    Console.SetCursorPosition(13, 19 + i);
+                    Console.WriteLine("                                        ");
+                }
+            }
 
+
+            //Health bars
+            Console.SetCursorPosition(3, 1);
+            float maxHP = enemy.maxHealth;
+            float curHP = enemy.health;
+            float percent = (100 / maxHP) * curHP;
+            percent /= 1.52f;
+            if (percent > 66)
+            {
+                percent = 66;
+            }
+            if (color == ConsoleColor.White)
+            {
+                Console.ForegroundColor = ConsoleColor.DarkRed;
+            }
+            for (int i = 0; i < percent; i++)
+            {
+                Console.Write("█");
+            }
+            maxHP = currentPlayer.maxHealth;
+            curHP = currentPlayer.health;
+            percent = (100 / maxHP) * curHP;
+            percent /= 1.52f;
+            if (percent > 66)
+            {
+                percent = 66;
+            }
+            Console.SetCursorPosition(3, 17);
+            if (color == ConsoleColor.White)
+            {
+                Console.ForegroundColor = ConsoleColor.DarkGreen;
+            }
+            for (int i = 0; i < percent; i++)
+            {
+                Console.Write("█");
+            }
+            Console.ForegroundColor = ConsoleColor.White;
+        }
+        public static int AttackMenuInput(Creature enemy)
+        {
+            bool selected = false;
+            while (selected == false)
+            {
+                ConsoleKey key = Console.ReadKey(true).Key;
+                int lowestAttack = 0;
+                if (currentPlayer.roundsUntilAbilityRecharge <= 0 && currentPlayer.classAbilityUses < currentPlayer.maxClassAbilityUses)
+                {
+                    lowestAttack = 4;
+                }
+                else
+                {
+                    for (int i = 3; i > -1; i--)
+                    {
+                        if (currentPlayer.characterAttacks[i] != attacks.None)
+                        {
+                            lowestAttack = i;
+                            break;
+                        }
+                    }
+                }
+                switch (key)
+                {
+                    case ConsoleKey.S:
+                        selectedTopic--;
+                        selectedAttack = 0;
+                        selected = true;
+                        break;
+                    case ConsoleKey.W:
+                        selectedTopic++;
+                        selectedAttack = 0;
+                        selected = true;
+                        break;
+                    case ConsoleKey.A:
+                        selectedAttack--;
+                        if (selectedAttack > lowestAttack)
+                        {
+                            selectedAttack = 0;
+                        }
+                        else if (selectedAttack < 0)
+                        {
+                            selectedAttack = lowestAttack;
+                        }
+                        else if (currentPlayer.characterAttacks[selectedAttack] == attacks.None)
+                        {
+                            for (int i = 3; i > -1; i--)
+                            {
+                                if (currentPlayer.characterAttacks[i] != attacks.None)
+                                {
+                                    lowestAttack = i;
+                                    break;
+                                }
+                            }
+                            selectedAttack = lowestAttack;
+                        }
+                        selected = true;
+                        break;
+                    case ConsoleKey.D:
+                        selectedAttack++;
+                        if (selectedAttack > lowestAttack)
+                        {
+                            selectedAttack = 0;
+                        }
+                        else if (selectedAttack < 0)
+                        {
+                            selectedAttack = lowestAttack;
+                        }
+                        else if (currentPlayer.characterAttacks[selectedAttack] == attacks.None)
+                        {
+                            selectedAttack = 4;
+                        }
+                        selected = true;
+                        break;
+                    case ConsoleKey.Enter:
+                        if (selectedTopic == 0)
+                        {
+                            int number = selectedAttack + 1;
+                            if (selectedAttack == 4)
+                            {
+                                selectedAttack = 0;
+                            }
+                            return number;
+                        }
+                        else
+                        {
+
+                        }
+                        break;
+                    case ConsoleKey.D0:
+                        currentPlayer.health = 0;
+                        return -2;
+                    case ConsoleKey.M:
+                        ManualSaveUI();
+                        Console.Clear();
+                        DrawText(enemy);
+                        DrawBattle(ConsoleColor.DarkGray);
+                        break;
+                }
+                if (selectedTopic > 1)
+                {
+                    selectedTopic = 0;
+                }
+                else if (selectedTopic < 0)
+                {
+                    selectedTopic = 1;
+                }
+            }
+            return -1;
+        }
+        #endregion
+        #region After Battle
+        static int CalculateXPGain(Creature winner, Creature loser)
+        {
+            int startingXPGain = 150;
+            float xpBuff = 1;
+
+            if (winner.currentClass == allClasses.RNG)
+            {
+                Random rnd = new Random();
+                xpBuff = rnd.Next(5, 15);
+                xpBuff = xpBuff / 10;
+            }
+            //Math
+            if (winner.currentLevel < loser.currentLevel)
+            {
+                xpBuff += 0.05f * (loser.currentLevel - winner.currentLevel);
+            }
+            if (winner.health > winner.maxHealth * 0.75f)
+            {
+                xpBuff += 0.25f;
+            }
+            int xpGain = (int)(startingXPGain * xpBuff);
+            for (int i = 0; i < winner.skills.Length; i++)
+            {
+                if (winner.skills[i] == allSkills.Fast_Learner)
+                {
+                    xpGain += (int)(xpGain * 0.1f);
+                }
+            }
+            return xpGain;
+        }
+        #endregion
+        #region Selecting Skills
         static int SelectSkill()
         {
             Console.Clear();
@@ -1027,473 +1509,11 @@ namespace TBRPGV2
                     skillDescription[1] = "are 2 higher";
                     break;
             }
-        } 
-        private static void DrawBattle(ConsoleColor color)
-        {
-            //Max size: 71L , 26T
-
-            //Lines
-            Console.ForegroundColor = color;
-            Console.SetCursorPosition(70, 26);
-            Console.WriteLine("-");
-            Console.SetCursorPosition(0, 0);
-
-            Console.Write("  --------------------------------------------------------------------  ");
-            Console.SetCursorPosition(2, 1);
-            Console.Write("|");
-            Console.SetCursorPosition(69, 1);
-            Console.Write("|");
-            Console.SetCursorPosition(0, 2);
-            Console.Write("  --------------------------------------------------------------------  ");
-            Console.SetCursorPosition(2, 3);
-            Console.WriteLine("|");
-            Console.SetCursorPosition(10, 3);
-            Console.WriteLine("|");
-            Console.SetCursorPosition(2, 4);
-            Console.WriteLine("---------");
-            Console.SetCursorPosition(61, 3);
-            Console.WriteLine("|");
-            Console.SetCursorPosition(69, 3);
-            Console.WriteLine("|");
-            Console.SetCursorPosition(61, 4);
-            Console.WriteLine("---------");
-
-
-            Console.SetCursorPosition(2, 14);
-            Console.WriteLine("---------");
-            Console.SetCursorPosition(2, 15);
-            Console.WriteLine("|");
-            Console.SetCursorPosition(10, 15);
-            Console.WriteLine("|");
-            Console.SetCursorPosition(61, 15);
-            Console.WriteLine("|");
-            Console.SetCursorPosition(69, 15);
-            Console.WriteLine("|");
-            Console.SetCursorPosition(61, 14);
-            Console.WriteLine("---------");
-            Console.SetCursorPosition(0, 16);
-            Console.WriteLine("  --------------------------------------------------------------------  ");
-            Console.SetCursorPosition(2, 17);
-            Console.WriteLine("|");
-            Console.SetCursorPosition(69, 17);
-            Console.Write("|");
-            Console.SetCursorPosition(0, 18);
-            Console.WriteLine("  --------------------------------------------------------------------  ");
-            Console.SetCursorPosition(0, 26);
-            Console.WriteLine("  --------------------------------------------------------------------  ");
-
-            Console.SetCursorPosition(0, 19);
-            for (int i = 0; i < 7; i++)
-            {
-                Console.SetCursorPosition(2, i + 19);
-                Console.WriteLine("|");
-                Console.SetCursorPosition(12, i + 19);
-                Console.WriteLine("|");
-                Console.SetCursorPosition(53, i + 19);
-                Console.WriteLine("|");
-                Console.SetCursorPosition(69, i + 19);
-                Console.WriteLine("|");
-            }
-            Console.ForegroundColor = ConsoleColor.White;
-
         }
-        public static void DrawText(Creature enemy,ConsoleColor color = ConsoleColor.White)
-        {
-            
-            Console.ForegroundColor = color;
-
-            //Health text
-            Console.SetCursorPosition(3, 15);
-            Console.WriteLine($"HP: {currentPlayer.health}");
-
-            Console.SetCursorPosition(3, 3);
-            Console.WriteLine($"HP: {enemy.health}");
-
-            //Dodge text
-            if (creatureDodgedLastRound[0] == true)
-            {
-                Console.SetCursorPosition(62, 15);
-                Console.WriteLine("Dodged");
-            }
-
-            if (creatureDodgedLastRound[1] == true)
-            {
-                Console.SetCursorPosition(62, 3);
-                Console.WriteLine("Dodged");
-            }
-
-            Console.SetCursorPosition(3, 20);
-
-            //Selected catogory
-            if (selectedTopic == 0 && color == ConsoleColor.White)
-            {
-                Console.BackgroundColor = ConsoleColor.White;
-                Console.ForegroundColor = ConsoleColor.Black;
-                Console.Write(">Attacks ");
-                Console.BackgroundColor = ConsoleColor.Black;
-                Console.ForegroundColor = color;
-            }
-            else
-            {
-                Console.WriteLine(" Attacks ");
-            }
-            Console.SetCursorPosition(3, 23);
-            if (selectedTopic == 1 && color == ConsoleColor.White)
-            {
-                Console.BackgroundColor = ConsoleColor.White;
-                Console.ForegroundColor = ConsoleColor.Black;
-                Console.Write("> Items  ");
-                Console.BackgroundColor = ConsoleColor.Black;
-                Console.ForegroundColor = color;
-            }
-            else
-            {
-                Console.WriteLine("  Items  ");
-            }
-
-            //Attacks menu
-            if(selectedTopic == 0)
-            {
-                int[,] locations = { { 17, 20 }, { 39, 20 }, { 17, 23 }, { 39, 23 } };
-                for (int i = 0; i < 4; i++)
-                {
-                    Console.SetCursorPosition(locations[i, 0], locations[i, 1]);
-                    string text = "";
-                    //What attack and which one you have selected
-                    switch (currentPlayer.characterAttacks[i])
-                    {
-                        case attacks.Light_Hit:
-                            text = "Light attack";
-                            break;
-                        case attacks.Heavy_Hit:
-                            text = "Heavy attack";
-                            break;
-                        case attacks.HL_LifeSteal:
-                            text = "Lifesteal";
-                            break;
-                        case attacks.RG_Stats:
-                            text = "Random Stats";
-                            break;
-                        case attacks.BG_NO:
-                            text = "Bag, No.";
-                            break;
-                        case attacks.DD_HPSacrifice:
-                            text = "HP Sacrifice";
-                            break;
-                    }
-                    if (selectedAttack == i && color == ConsoleColor.White)
-                    {
-                        Console.BackgroundColor = ConsoleColor.White;
-                        Console.ForegroundColor = ConsoleColor.Black;
-                        Console.WriteLine(">" + text);
-                        Console.BackgroundColor = ConsoleColor.Black;
-                        Console.ForegroundColor = ConsoleColor.White;
-                    }
-                    else
-                    {
-                        Console.WriteLine(" " + text);
-                    }
-                }
-                if (currentPlayer.roundsUntilAbilityRecharge <= 0 && currentPlayer.classAbilityUses < currentPlayer.maxClassAbilityUses)
-                {
-                    //Class ability if you can use it
-                    Console.SetCursorPosition(25, 25);
-                    if (selectedAttack == 4 && color == ConsoleColor.White)
-                    {
-                        Console.BackgroundColor = ConsoleColor.White;
-                        Console.ForegroundColor = ConsoleColor.Black;
-                        Console.SetCursorPosition(25, 25);
-                        Console.Write(">Class ability");
-                        Console.BackgroundColor = ConsoleColor.Black;
-                        Console.ForegroundColor = ConsoleColor.White;
-                    }
-                    else
-                    {
-                        Console.Write(" Class ability");
-                    }
-                }
-
-                for(int i = 0; i < 7; i++)
-                {
-                    Console.SetCursorPosition(54, 19 + i);
-                    Console.WriteLine("               ");
-                }
-                Console.SetCursorPosition(54, 19);
-                int unusedDodge=0;
-                int unusedHealing=0;
-                #region Attack Descriptions
-                if (currentPlayer.currentClass != allClasses.RNG)
-                {
-                    if (selectedAttack != 4)
-                    {
-                        switch (currentPlayer.characterAttacks[selectedAttack])
-                        {
-                            case attacks.Light_Hit:
-                                Console.WriteLine("Light Attack");
-                                Console.SetCursorPosition(54, Console.CursorTop);
-                                Console.WriteLine($"Damage: {currentPlayer.Attack(out unusedDodge, out unusedHealing, 0, false, true, attacks.Light_Hit,true)}");
-                                Console.SetCursorPosition(54, Console.CursorTop);
-                                Console.WriteLine($"Dodge: {unusedDodge}");
-                                break;
-
-                            case attacks.Heavy_Hit:
-                                Console.WriteLine("Heavy Attack");
-                                Console.SetCursorPosition(54, Console.CursorTop);
-                                Console.WriteLine($"Damage: {currentPlayer.Attack(out unusedDodge, out unusedHealing, 0, false, true, attacks.Heavy_Hit,true)}");
-                                Console.SetCursorPosition(54, Console.CursorTop);
-                                Console.WriteLine($"Dodge: {unusedDodge}");
-                                break;
-
-                            case attacks.RG_Stats:
-                                Console.WriteLine("You should not be able to have this tf");
-                                break;
-                            case attacks.BG_NO:
-                                Console.WriteLine("Bag, No.");
-                                break;
-                            case attacks.HL_LifeSteal:
-                                Console.WriteLine("Lifesteal");
-                                Console.SetCursorPosition(54, Console.CursorTop);
-                                Console.WriteLine($"Damage: {currentPlayer.Attack(out unusedDodge, out unusedHealing, 0, false, true, attacks.HL_LifeSteal, true)}");
-                                Console.SetCursorPosition(54, Console.CursorTop);
-                                Console.WriteLine($"Healing: {unusedHealing}");
-                                Console.SetCursorPosition(54, Console.CursorTop);
-                                Console.WriteLine($"Dodge: {unusedDodge}");
-                                break;
-                            case attacks.DD_HPSacrifice:
-                                Console.WriteLine("HP Sacrifice");
-                                Console.SetCursorPosition(54, Console.CursorTop);
-                                Console.WriteLine($"Damage: {currentPlayer.Attack(out unusedDodge, out unusedHealing, 0, false, true, attacks.DD_HPSacrifice, true)}");
-                                Console.SetCursorPosition(54, Console.CursorTop);
-                                Console.WriteLine($"Hurt: {-unusedHealing}");
-                                Console.SetCursorPosition(54, Console.CursorTop);
-                                Console.WriteLine($"Dodge: {unusedDodge}");
-                                break;
-                        }
-                    }
-                    else
-                    {
-                        Console.WriteLine("Class Ability");
-                        switch (currentPlayer.currentClass)
-                        {
-                            case allClasses.DamageDealer:
-                                Console.SetCursorPosition(54, Console.CursorTop);
-                                Console.WriteLine($"Damage: {currentPlayer.Attack(out unusedDodge, out unusedHealing, 0, false, true, attacks.Class_Ability, true)}");
-                                Console.SetCursorPosition(54, Console.CursorTop);
-                                Console.WriteLine("Cant Dodge");
-                                break;
-                            case allClasses.Tank:
-                                Console.SetCursorPosition(54, Console.CursorTop);
-                                Console.WriteLine($"Damage: {currentPlayer.Attack(out unusedDodge, out unusedHealing, 0, false, true, attacks.Class_Ability, true)}");
-                                Console.SetCursorPosition(54, Console.CursorTop);
-                                Console.WriteLine($"Healing: {unusedHealing}");
-                                Console.SetCursorPosition(54, Console.CursorTop);
-                                Console.WriteLine("Cant Dodge");
-                                break;
-                            case allClasses.Healer:
-                                Console.SetCursorPosition(54, Console.CursorTop);
-                                currentPlayer.Attack(out unusedDodge, out unusedHealing, 0, false, true, attacks.Class_Ability, true);
-                                Console.SetCursorPosition(54, Console.CursorTop);
-                                Console.WriteLine($"Healing: {unusedHealing}");
-                                break;
-                            case allClasses.Charger:
-                                Console.SetCursorPosition(54, Console.CursorTop);
-                                Console.WriteLine($"Damage: {currentPlayer.Attack(out unusedDodge, out unusedHealing, 0, false, true, attacks.Class_Ability, true)}");
-                                Console.SetCursorPosition(54, Console.CursorTop);
-                                Console.WriteLine("Cant Dodge");
-                                break;
-                        }
-                    }
-                }
-                else
-                {
-                    if (selectedAttack != 4)
-                    {
-                        switch (currentPlayer.characterAttacks[selectedAttack])
-                        {
-                            case attacks.Light_Hit:
-                                Console.WriteLine("Light Attack");
-                                Console.SetCursorPosition(54, Console.CursorTop);
-                                Console.WriteLine($"Random damage ");
-                                Console.SetCursorPosition(54, Console.CursorTop);
-                                Console.WriteLine($"around {currentPlayer.Attack(out unusedDodge, out unusedHealing, 0, false, true, attacks.Light_Hit,true)}");
-                                break;
-                            case attacks.RG_Stats:
-                                Console.WriteLine("Random Stats");
-                                Console.SetCursorPosition(54, Console.CursorTop);
-                                Console.WriteLine($"Damage: {currentPlayer.Attack(out unusedDodge, out unusedHealing, 0, false, true, attacks.RG_Stats,true)}");
-                                Console.SetCursorPosition(54, Console.CursorTop);
-                                Console.WriteLine($"Healing: {unusedHealing}");
-                                Console.SetCursorPosition(54, Console.CursorTop);
-                                Console.WriteLine($"Dodge: {unusedDodge}");
-                                break;
-                        }
-                    }
-                    else
-                    {
-                        Console.WriteLine("Class Ability");
-                        Console.SetCursorPosition(54, Console.CursorTop);
-                        Console.WriteLine("Does a ");
-                        Console.SetCursorPosition(54, Console.CursorTop);
-                        Console.WriteLine("random attack");
-                    }
-                }
-                #endregion
-            }
-            else
-            {
-                for(int i = 0; i < 7; i++)
-                {
-                    Console.SetCursorPosition(13, 19 + i);
-                    Console.WriteLine("                                        ");
-                }
-            }
+        #endregion
 
 
-            //Health bars
-            Console.SetCursorPosition(3, 1);
-            float maxHP = enemy.maxHealth;
-            float curHP = enemy.health;
-            float percent = (100 / maxHP) * curHP;
-            percent /= 1.52f;
-            if (percent > 66)
-            {
-                percent = 66;
-            }
-            if(color == ConsoleColor.White)
-            {
-                Console.ForegroundColor = ConsoleColor.DarkRed;
-            }
-            for (int i = 0; i < percent; i++)
-            {
-                Console.Write("█");
-            }
-            maxHP = currentPlayer.maxHealth;
-            curHP = currentPlayer.health;
-            percent = (100 / maxHP) * curHP;
-            percent /= 1.52f;
-            if (percent > 66)
-            {
-                percent = 66;
-            }
-            Console.SetCursorPosition(3, 17);
-            if (color == ConsoleColor.White)
-            {
-                Console.ForegroundColor = ConsoleColor.DarkGreen;
-            }
-            for (int i = 0; i < percent; i++)
-            {
-                Console.Write("█");
-            }
-            Console.ForegroundColor = ConsoleColor.White;
-        }
-        public static int AttackMenuInput(Creature enemy)
-        {
-            bool selected =false;
-            while(selected == false)
-            {
-                ConsoleKey key = Console.ReadKey(true).Key;
-                int lowestAttack = 0;
-                if (currentPlayer.roundsUntilAbilityRecharge <= 0 && currentPlayer.classAbilityUses < currentPlayer.maxClassAbilityUses)
-                {
-                    lowestAttack = 4;
-                }
-                else
-                {
-                    for (int i = 3; i > -1; i--)
-                    {
-                        if (currentPlayer.characterAttacks[i] != attacks.None)
-                        {
-                            lowestAttack = i;
-                            break;
-                        }
-                    }
-                }
-                switch (key)
-                {
-                    case ConsoleKey.S:
-                        selectedTopic--;
-                        selectedAttack = 0;
-                        selected = true;
-                        break;
-                    case ConsoleKey.W:
-                        selectedTopic++;
-                        selectedAttack = 0;
-                        selected = true;
-                        break;
-                    case ConsoleKey.A:
-                        selectedAttack--;
-                        if (selectedAttack > lowestAttack)
-                        {
-                            selectedAttack = 0;
-                        }
-                        else if (selectedAttack < 0)
-                        {
-                            selectedAttack = lowestAttack;
-                        }else if (currentPlayer.characterAttacks[selectedAttack] == attacks.None)
-                        {
-                            for (int i = 3; i > -1; i--)
-                            {
-                                if (currentPlayer.characterAttacks[i] != attacks.None)
-                                {
-                                    lowestAttack = i;
-                                    break;
-                                }
-                            }
-                            selectedAttack = lowestAttack;
-                        }
-                        selected = true;
-                        break;
-                    case ConsoleKey.D:
-                        selectedAttack++;
-                        if (selectedAttack > lowestAttack)
-                        {
-                            selectedAttack = 0;
-                        }
-                        else if (selectedAttack < 0)
-                        {
-                            selectedAttack = lowestAttack;
-                        }else if (currentPlayer.characterAttacks[selectedAttack] == attacks.None)
-                        {
-                            selectedAttack = 4;
-                        }
-                        selected = true;
-                        break;
-                    case ConsoleKey.Enter:
-                        if(selectedTopic == 0)
-                        {
-                            int number = selectedAttack + 1;
-                            if (selectedAttack == 4)
-                            {
-                                selectedAttack = 0;
-                            }
-                            return number;
-                        }
-                        else
-                        {
-
-                        }
-                        break;
-                    case ConsoleKey.D0:
-                        currentPlayer.health = 0;
-                        return -2;
-                    case ConsoleKey.M:
-                        ManualSaveUI();
-                        Console.Clear();
-                        DrawText(enemy);
-                        DrawBattle(ConsoleColor.DarkGray);
-                        break;
-                }
-                if(selectedTopic > 1)
-                {
-                    selectedTopic = 0;
-                }else if(selectedTopic < 0)
-                {
-                    selectedTopic = 1;
-                }
-            }
-            return -1;
-        }
-
+        #region Save/Load
         static void QuickSavePlayer()
         {
             if (!Directory.Exists("Saves"))
@@ -1549,7 +1569,6 @@ namespace TBRPGV2
                     break;
             }
         }
-
         static void ManualSaveUI()
         {
             Creature[] saves = new Creature[4];
@@ -2077,45 +2096,19 @@ namespace TBRPGV2
                 NewCharacter();
             }
         }
-        static void StartMenu()
-        {
-            Console.Clear();
-            int pos = 6;
-            string[] icon =
-            {
-                "             ⟋⟍",
-                "            / /‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\\_",
-                "   ⟋‾⟍     /  \\    ------ |‾\\ |‾\\ |‾\\  ⟋‾‾⟍      \\",
-                "  |   |‾‾‾//\\ /      ||   |_/ |_/ |_/ /           \\",
-                "  |   |___\\\\/ \\      ||   |‾\\ |\\  |   \\  __       /",
-                "   ⟍_⟋     \\  /      ||   |_/ | \\ |    ⟍__|      /",
-                "            \\ \\________________________________/‾",
-                "             ⟍⟋"
-            };
-            for(int i = 0; i < icon.Length; i++)
-            {
-                Console.SetCursorPosition(7, pos + i);
-                Console.WriteLine(icon[i]);
-            }
-            Console.SetCursorPosition(20, 17);
-            Console.ForegroundColor = ConsoleColor.DarkBlue;
-            Console.WriteLine("Press any button to continue");
-            Console.ReadKey(true);
-            Console.ForegroundColor = ConsoleColor.White;
-        }
-        static void DrawBox(int left, int top,Creature cret)
+        static void DrawBox(int left, int top, Creature cret)
         {
             Console.SetCursorPosition(left, top);
             //⟋⟍
             Console.Write("⟋‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾⟍");
             for (int i = 0; i < 9; i++)
             {
-                Console.SetCursorPosition(left, (top+1) + i);
+                Console.SetCursorPosition(left, (top + 1) + i);
                 Console.Write("|                           |");
             }
             Console.SetCursorPosition(left, top + 10);
             Console.Write("⟍___________________________⟋");
-            if(cret != null)
+            if (cret != null)
             {
                 string word = cret.currentClass.ToString();
                 Console.SetCursorPosition(left + 15 - (word.Length / 2), top + 1);
@@ -2150,5 +2143,33 @@ namespace TBRPGV2
             }
             Console.SetCursorPosition(left + 12, top + 11);
         }
+        #endregion
+        static void StartMenu()
+        {
+            Console.Clear();
+            int pos = 6;
+            string[] icon =
+            {
+                "             ⟋⟍",
+                "            / /‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾\\_",
+                "   ⟋‾⟍     /  \\    ------ |‾\\ |‾\\ |‾\\  ⟋‾‾⟍      \\",
+                "  |   |‾‾‾//\\ /      ||   |_/ |_/ |_/ /           \\",
+                "  |   |___\\\\/ \\      ||   |‾\\ |\\  |   \\  __       /",
+                "   ⟍_⟋     \\  /      ||   |_/ | \\ |    ⟍__|      /",
+                "            \\ \\________________________________/‾",
+                "             ⟍⟋"
+            };
+            for(int i = 0; i < icon.Length; i++)
+            {
+                Console.SetCursorPosition(7, pos + i);
+                Console.WriteLine(icon[i]);
+            }
+            Console.SetCursorPosition(20, 17);
+            Console.ForegroundColor = ConsoleColor.DarkBlue;
+            Console.WriteLine("Press any button to continue");
+            Console.ReadKey(true);
+            Console.ForegroundColor = ConsoleColor.White;
+        }
+        
     }
 }

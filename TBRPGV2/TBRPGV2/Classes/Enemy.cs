@@ -11,12 +11,12 @@
             enemy = _enemy;
             player = _player;
         }
-
+        //Makes the enemy choose a random skill that fits its playstyle
         public void ChooseExtraSkill()
         {
-
+            //Not used yet
         }
-
+        //Makes the enemy choose a random class
         public Creature.allClasses ChooseClass()
         {
             Creature.allClasses currentClass;
@@ -98,7 +98,7 @@
             }
             return currentClass;
         }
-
+        //Chooses what attack the enemy will use next
         public int ChooseAttack()
         {
             int[] attackValue = new int[5];

@@ -4,7 +4,7 @@ namespace TBRPGV2
 {
     class Creature
     {
-        float attackSpamNerf = 0.50f;
+        readonly float attackSpamNerf = 0.50f;
         #region Stats
         //  All stats
         //Health-Type stats
@@ -230,16 +230,6 @@ namespace TBRPGV2
                 }
                 Console.WriteLine("\r\n=====");
             }
-        }
-        public bool[] Upgrades()
-        {
-            //Test
-            bool[] result = new bool[10];
-            if (health < 15)
-            {
-                result[0] = true;
-            }
-            return result;
         }
         public int Attack(out int dodge, out int healing, int attack = 0, bool doRandom = true,bool useEnumAttackInstead = false, attacks enumAttack = attacks.None,bool visual = false)
         {
@@ -520,7 +510,6 @@ namespace TBRPGV2
             allSkills skill = randomSkills[rnd.Next(0,randomSkills.Count)];
             return skill;
         }
-
         //Returns a list of all skills a player doesnt have.
         public List<allSkills> GetAllAvailableSkills()
         {
@@ -588,7 +577,6 @@ namespace TBRPGV2
                 health += (int)healing;
             }
         }
-
         public void AddXP(int xp,bool levels = false)
         {
             currentXP += currentLevel * 100;
