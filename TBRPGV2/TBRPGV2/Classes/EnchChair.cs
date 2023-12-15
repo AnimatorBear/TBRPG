@@ -14,6 +14,22 @@
             uses = 1000;
         }
 
+        /*
+        
+        Original story written by ChatGPT, Summary of the first part written by Bear.
+
+        Enchanted Chair of Binary Harmony
+
+        The chair of Binary Harmony is a enchanted chair sold 
+        at Mystic Relics, A store which is run by Professor Smith.
+
+        The chair brings peace to all computers and "the digital world" around you.
+        It was first eaten by Mike, The chair god, to restore peace between
+        him and the digital world. This was needed after he 
+        ate the Chair of Techno-Mystical Wonders  which allowed him to 
+        talk with computers, but made the digital world hate him.
+
+        */
         public override void UseItem()
         {
             owner.HealCreature(healing,false);
@@ -22,6 +38,7 @@
             for(int i = 0; i < 500; i++) 
             {
                 Random rnd = new Random();
+                Console.ForegroundColor = ConsoleColor.Green;   
                 int le = rnd.Next(2, 69);
                 int to = rnd.Next(3, 16);
                 int nu = rnd.Next(0,2);
@@ -50,6 +67,7 @@
                     i--;
                 }
             }
+            Console.ForegroundColor = ConsoleColor.White;
         }
     }
 }
