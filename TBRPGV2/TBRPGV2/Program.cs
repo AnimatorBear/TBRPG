@@ -9,8 +9,8 @@ namespace TBRPGV2
     {
         #region Skills
         //Skills
-        const bool chooseStartSkills = true;
-        public const int amountStartSkills = 8;
+        const bool chooseStartSkills = false;
+        public const int amountStartSkills = 3;
         #endregion
         #region Player, Classes
         //Player , Enemy test class , what class is selected
@@ -784,6 +784,11 @@ namespace TBRPGV2
             //Attacks menu
             if (selectedTopic == 0)
             {
+                for (int i = 0; i < 7; i++)
+                {
+                    Console.SetCursorPosition(13, 19 + i);
+                    Console.WriteLine("                                        ");
+                }
                 int[,] locations = { { 17, 20 }, { 39, 20 }, { 17, 23 }, { 39, 23 } };
                 for (int i = 0; i < 4; i++)
                 {
@@ -976,6 +981,43 @@ namespace TBRPGV2
                     Console.SetCursorPosition(13, 19 + i);
                     Console.WriteLine("                                        ");
                 }
+                int[,] locations = { { 17, 20 }, { 35, 20 }, { 17, 22 }, { 35, 22 }, { 17, 24 }, { 35, 24 } };
+                Console.SetCursorPosition(10, 25);
+                for(int i = 0;i < 6; i++)
+                {
+                    if (currentPlayer.itemsInInv[i] != null)
+                    {
+                        Item it = currentPlayer.itemsInInv[i];
+                        if (selectedAttack == i && color == ConsoleColor.White)
+                        {
+                            for (int j = 0; j < 7; j++)
+                            {
+                                Console.SetCursorPosition(54, 19 + j);
+                                Console.WriteLine("               ");
+                            }
+                            Console.SetCursorPosition(locations[i, 0], locations[i, 1]);
+                            Console.BackgroundColor = ConsoleColor.White;
+                            Console.ForegroundColor = ConsoleColor.Black;
+                            Console.Write($">{it.itemName}");
+                            Console.BackgroundColor = ConsoleColor.Black;
+                            Console.ForegroundColor = ConsoleColor.White;
+                            Console.SetCursorPosition(54, 19);
+                            Console.Write($"{it.itemName}");
+                            for (int j = 0; j < it.description.Length; j++)
+                            {
+                                Console.SetCursorPosition(54, 21 + j);
+                                Console.WriteLine(it.description[j]);
+                            }
+                        }
+                        else
+                        {
+                            Console.SetCursorPosition(locations[i, 0], locations[i, 1]);
+                            Console.Write($" {it.itemName}");
+                        }
+                    }
+
+                }
+
             }
 
 
@@ -1052,41 +1094,118 @@ namespace TBRPGV2
                         break;
                     case ConsoleKey.A:
                         selectedAttack--;
-                        if (selectedAttack > lowestAttack)
+                        if(selectedTopic == 0)
                         {
-                            selectedAttack = 0;
-                        }
-                        else if (selectedAttack < 0)
-                        {
-                            selectedAttack = lowestAttack;
-                        }
-                        else if (currentPlayer.characterAttacks[selectedAttack] == attacks.None)
-                        {
-                            for (int i = 3; i > -1; i--)
+                            if (selectedAttack > lowestAttack)
                             {
-                                if (currentPlayer.characterAttacks[i] != attacks.None)
+                                selectedAttack = 0;
+                            }
+                            else if (selectedAttack < 0)
+                            {
+                                selectedAttack = lowestAttack;
+                            }
+                            else if (currentPlayer.characterAttacks[selectedAttack] == attacks.None)
+                            {
+                                for (int i = 3; i > -1; i--)
                                 {
-                                    lowestAttack = i;
-                                    break;
+                                    if (currentPlayer.characterAttacks[i] != attacks.None)
+                                    {
+                                        lowestAttack = i;
+                                        break;
+                                    }
+                                }
+                                selectedAttack = lowestAttack;
+                            }
+                        }
+                        else
+                        {
+                            bool hasSpot = true;
+                            for(int i = 0; i < 6; i++)
+                            {
+                                if (currentPlayer.itemsInInv[i] != null)
+                                {
+                                    hasSpot = false;
                                 }
                             }
-                            selectedAttack = lowestAttack;
+                            bool firstTime = true;
+                            while (!hasSpot)
+                            {
+                                if (!firstTime)
+                                {
+                                    selectedAttack--;
+                                }
+                                else
+                                {
+                                    firstTime = false;
+                                }
+                                if (selectedAttack > 5)
+                                {
+                                    selectedAttack = 0;
+                                }
+                                else if (selectedAttack < 0)
+                                {
+                                    selectedAttack = 5;
+                                }
+                                if (currentPlayer.itemsInInv[selectedAttack] != null)
+                                {
+                                    hasSpot = true;
+                                }
+                            }
                         }
+                        
                         selected = true;
                         break;
                     case ConsoleKey.D:
                         selectedAttack++;
-                        if (selectedAttack > lowestAttack)
+                        if(selectedTopic == 0)
                         {
-                            selectedAttack = 0;
+                            if (selectedAttack > lowestAttack)
+                            {
+                                selectedAttack = 0;
+                            }
+                            else if (selectedAttack < 0)
+                            {
+                                selectedAttack = lowestAttack;
+                            }
+                            else if (currentPlayer.characterAttacks[selectedAttack] == attacks.None)
+                            {
+                                selectedAttack = 4;
+                            }
                         }
-                        else if (selectedAttack < 0)
+                        else
                         {
-                            selectedAttack = lowestAttack;
-                        }
-                        else if (currentPlayer.characterAttacks[selectedAttack] == attacks.None)
-                        {
-                            selectedAttack = 4;
+                            bool hasSpot = true;
+                            for (int i = 0; i < 6; i++)
+                            {
+                                if (currentPlayer.itemsInInv[i] != null)
+                                {
+                                    hasSpot = false;
+                                }
+                            }
+                            bool firstTime = true;
+                            while (!hasSpot)
+                            {
+                                if (!firstTime)
+                                {
+                                    selectedAttack++;
+                                }
+                                else
+                                {
+                                    firstTime = false;
+                                }
+                                if (selectedAttack > 5)
+                                {
+                                    selectedAttack = 0;
+                                }
+                                else if (selectedAttack < 0)
+                                {
+                                    selectedAttack = 5;
+                                }
+                                if (currentPlayer.itemsInInv[selectedAttack] != null)
+                                {
+                                    hasSpot = true;
+                                }
+                            }
                         }
                         selected = true;
                         break;
@@ -1102,7 +1221,54 @@ namespace TBRPGV2
                         }
                         else
                         {
+                            if(selectedAttack <= 5 && selectedAttack >= 0)
+                            {
+                                if (currentPlayer.itemsInInv[selectedAttack] != null)
+                                {
+                                    currentPlayer.itemsInInv[selectedAttack].UseItem();
 
+                                    currentPlayer.itemsInInv[selectedAttack].uses -= 1;
+                                    if (currentPlayer.itemsInInv[selectedAttack].uses <= 0)
+                                    {
+                                        currentPlayer.itemsInInv[selectedAttack] = null;
+                                        bool hasSpot = true;
+                                        for (int i = 0; i < 6; i++)
+                                        {
+                                            if (currentPlayer.itemsInInv[i] != null)
+                                            {
+                                                hasSpot = false;
+                                            }
+                                        }
+                                        bool firstTime = true;
+                                        while (!hasSpot)
+                                        {
+                                            if (!firstTime)
+                                            {
+                                                selectedAttack++;
+                                            }
+                                            else
+                                            {
+                                                firstTime = false;
+                                            }
+                                            if (selectedAttack > 5)
+                                            {
+                                                selectedAttack = 0;
+                                            }
+                                            else if (selectedAttack < 0)
+                                            {
+                                                selectedAttack = 5;
+                                            }
+                                            if (currentPlayer.itemsInInv[selectedAttack] != null)
+                                            {
+                                                hasSpot = true;
+                                            }
+                                        }
+                                    }
+                                }
+                            
+
+                            }
+                            return -1;
                         }
                         break;
                     case ConsoleKey.D0:
