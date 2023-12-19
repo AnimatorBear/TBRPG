@@ -120,6 +120,7 @@ namespace TBRPGV2
             int startingSelection = classSelection;
             ConsoleColor selectionColor = ConsoleColor.White;
             ConsoleColor selectionTextColor = ConsoleColor.Black;
+
             //Class Icons,Names and Descriptions
             string[] classNames = { "Damage Dealer", "Tank", "Healer", "Randomizer", "Charger", "Bag" };
             string[][] classDescriptions = new string[6][]
@@ -180,8 +181,6 @@ namespace TBRPGV2
                     "   |‾-|   ",
                     "  /    \\  ",
                     " /______\\ "}
-
-
             };
 
             //Places most of the lines
@@ -190,6 +189,7 @@ namespace TBRPGV2
             Console.WriteLine("------------------------------------------------------------------------\r\n\r\n\r\n\r\n\r\n\r\n");
             Console.WriteLine("------------------------------------------------------------------------\r\n");
             Console.ForegroundColor = ConsoleColor.White;
+
             //Places all class info and icons
             for (int i = 0; i < amountOfClasses; i++)
             {
@@ -313,12 +313,13 @@ namespace TBRPGV2
                 Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop - 6);
                 #endregion
             }
+
             //The last line
             Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop + 7);
             Console.ForegroundColor = ConsoleColor.DarkGray;
             Console.WriteLine("------------------------------------------------------------------------");
 
-
+            //Writes the ENTER
             string sentence = "Press ENTER to select a class";
             int center2 = sentence.Length / 2;
             Console.SetCursorPosition(Console.CursorLeft + 35 - center2, Console.CursorTop + 1);
@@ -365,6 +366,7 @@ namespace TBRPGV2
                         break;
                 }
 
+                //Makes it go loop
                 if (classSelection == amountOfClasses)
                 {
                     classSelection = 0;
