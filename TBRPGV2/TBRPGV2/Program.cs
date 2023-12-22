@@ -1766,8 +1766,8 @@ namespace TBRPGV2
                     Console.ForegroundColor = ConsoleColor.White;
                     if (selectedSave == 0)
                     {
-                        //Console.BackgroundColor = ConsoleColor.White;
-                        //Console.ForegroundColor = ConsoleColor.Black;
+                        Console.BackgroundColor = ConsoleColor.White;
+                        Console.ForegroundColor = ConsoleColor.Black;
                         Console.Write(">Auto Save");
                         Console.BackgroundColor = ConsoleColor.Black;
                         Console.ForegroundColor = ConsoleColor.White;
