@@ -1,17 +1,24 @@
-﻿namespace TBRPGV2
+﻿using System.Text.Json.Serialization;
+
+namespace TBRPGV2
 {
+
     class Item
     {
-        protected Creature owner;
-        protected float healing;
-        protected float tempDodge;
-        protected float tempDamage;
-        public string itemName;
-        public string[] description = new string[2];
-        public int uses = 1;
-        public Item(Creature creature,float heals, float dodge,float dmg,string name)
+        protected float healing { get; set; }
+        protected float tempDodge { get; set; }
+        protected float tempDamage { get; set; }
+        public string itemName { get; set; }
+        public string[] description { get; set; } = new string[2];
+        public int uses { get; set; } = 1;
+
+        [JsonConstructor]
+        public Item()
         {
-            owner = creature;
+
+        }
+        public Item(float heals, float dodge,float dmg,string name)
+        {
             healing = heals;
             tempDodge = dodge;
             tempDamage = dmg;
@@ -20,7 +27,7 @@
             description[1] = "Heals too much";
         }
 
-        public virtual void UseItem()
+        public virtual void UseItem(Creature owner)
         {
             owner.HealCreature(healing,false);
         }

@@ -83,7 +83,7 @@ namespace TBRPGV2
         public attacks prevAttack { get; set; }
         #endregion
         #region Inventory
-        public Item[] itemsInInv = new Item[6];
+        public Item[] itemsInInv { get; set; } = new Item[6];
         #endregion
 
         [JsonConstructor]
@@ -97,13 +97,13 @@ namespace TBRPGV2
             currentClass = newClass;
             currentLevel = startingLevel;
             health = maxHealth;
-            itemsInInv[0] = new Item(this,10000000,0,0,"Health Pot");
+            itemsInInv[0] = new Item(10000000,0,0,"Health Pot");
             itemsInInv[0].description = new string[4] { "Heals you","For like","a billion ","health" };
-            itemsInInv[1] = new Item(this, 10000000, 0, 0, "God Pot");
-            itemsInInv[2] = new Item(this, 10000000, 0, 0, "Potion of life");
-            itemsInInv[3] = new EnchChair(this, 0, 0, 0, "Enchanted Chair");
-            itemsInInv[4] = new Item(this, 10000000, 0, 0, "Bandage");
-            itemsInInv[5] = new Item(this, 10000000, 0, 0, "Med kit");
+            itemsInInv[1] = new Item(10000000, 0, 0, "God Pot");
+            itemsInInv[2] = new Item( 10000000, 0, 0, "Potion of life");
+            itemsInInv[3] = new EnchChair( 0, 0, 0, "Enchanted Chair");
+            itemsInInv[4] = new Item(10000000, 0, 0, "Bandage");
+            itemsInInv[5] = new Item(10000000, 0, 0, "Med kit");
         }
 
         public void GiveBaseAttacks()

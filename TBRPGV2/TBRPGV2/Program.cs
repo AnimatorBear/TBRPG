@@ -1227,7 +1227,7 @@ namespace TBRPGV2
                             {
                                 if (currentPlayer.itemsInInv[selectedAttack] != null)
                                 {
-                                    currentPlayer.itemsInInv[selectedAttack].UseItem();
+                                    currentPlayer.itemsInInv[selectedAttack].UseItem(currentPlayer);
 
                                     currentPlayer.itemsInInv[selectedAttack].uses -= 1;
                                     if (currentPlayer.itemsInInv[selectedAttack].uses <= 0)
@@ -1686,24 +1686,15 @@ namespace TBRPGV2
                 Directory.CreateDirectory("Saves");
             }
             string jsonString = "";
-            switch (currentPlayingSave)
+            if(currentPlayingSave >= 1)
             {
-                default:
-                    jsonString = JsonSerializer.Serialize(currentPlayer, _options);
-                    File.WriteAllText(playerFileName, jsonString);
-                    break;
-                case 1:
-                    jsonString = JsonSerializer.Serialize(currentPlayer, _options);
-                    File.WriteAllText(playerManualSaveNames[0], jsonString);
-                    break;
-                case 2:
-                    jsonString = JsonSerializer.Serialize(currentPlayer, _options);
-                    File.WriteAllText(playerManualSaveNames[1], jsonString);
-                    break;
-                case 3:
-                    jsonString = JsonSerializer.Serialize(currentPlayer, _options);
-                    File.WriteAllText(playerManualSaveNames[2], jsonString);
-                    break;
+                jsonString = JsonSerializer.Serialize(currentPlayer, _options);
+                File.WriteAllText(playerManualSaveNames[currentPlayingSave-1], jsonString);
+            }
+            else
+            {
+                jsonString = JsonSerializer.Serialize(currentPlayer, _options);
+                File.WriteAllText(playerFileName, jsonString);
             }
         }
         static void ManualSavePlayer(int file)
@@ -1714,24 +1705,15 @@ namespace TBRPGV2
             }
             currentPlayingSave = file + 1;
             string jsonString = "";
-            switch (currentPlayingSave)
+            if (currentPlayingSave >= 1)
             {
-                default:
-                    jsonString = JsonSerializer.Serialize(currentPlayer, _options);
-                    File.WriteAllText(playerFileName, jsonString);
-                    break;
-                case 1:
-                    jsonString = JsonSerializer.Serialize(currentPlayer, _options);
-                    File.WriteAllText(playerManualSaveNames[0], jsonString);
-                    break;
-                case 2:
-                    jsonString = JsonSerializer.Serialize(currentPlayer, _options);
-                    File.WriteAllText(playerManualSaveNames[1], jsonString);
-                    break;
-                case 3:
-                    jsonString = JsonSerializer.Serialize(currentPlayer, _options);
-                    File.WriteAllText(playerManualSaveNames[2], jsonString);
-                    break;
+                jsonString = JsonSerializer.Serialize(currentPlayer, _options);
+                File.WriteAllText(playerManualSaveNames[currentPlayingSave - 1], jsonString);
+            }
+            else
+            {
+                jsonString = JsonSerializer.Serialize(currentPlayer, _options);
+                File.WriteAllText(playerFileName, jsonString);
             }
         }
         static void ManualSaveUI()
@@ -1801,8 +1783,8 @@ namespace TBRPGV2
                     if (selectedSave == 1)
                     {
                         DrawBox(35, 2, saves[1]);
-                        //Console.BackgroundColor = ConsoleColor.White;
-                        //Console.ForegroundColor = ConsoleColor.Black;
+                        Console.BackgroundColor = ConsoleColor.White;
+                        Console.ForegroundColor = ConsoleColor.Black;
                         Console.Write(">Save 1");
                         Console.BackgroundColor = ConsoleColor.Black;
                         Console.ForegroundColor = ConsoleColor.White;
@@ -1953,7 +1935,6 @@ namespace TBRPGV2
         {
             Creature[] saves = new Creature[4];
             string file;
-            Creature playerSave;
             bool[] existingFiles = {false,false,false,false};
             if (File.Exists(playerFileName))
             {
@@ -2134,6 +2115,18 @@ namespace TBRPGV2
                         }
                         break;
                     case ConsoleKey.Enter:
+                        for (int i = 0; i < saves[selectedSave].itemsInInv.Length; i++)
+                        {
+                            if (saves[selectedSave].itemsInInv[i] != null)
+                            {
+                                if (saves[selectedSave].itemsInInv[i].itemName == "Enchanted Chair")
+                                {
+                                    var serializedParent = JsonSerializer.Serialize(saves[selectedSave].itemsInInv[i]);
+                                    EnchChair en = JsonSerializer.Deserialize<EnchChair>(serializedParent);
+                                    saves[selectedSave].itemsInInv[i] = en;
+                                }
+                            }
+                        }
                         switch (selectedSave)
                         {
                             case 0:

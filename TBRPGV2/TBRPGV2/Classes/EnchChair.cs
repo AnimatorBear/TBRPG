@@ -1,11 +1,17 @@
-﻿namespace TBRPGV2
+﻿using System.Text.Json.Serialization;
+
+namespace TBRPGV2
 {
     class EnchChair : Item
     {
 
-        public EnchChair(Creature creature, float heals, float dodge, float dmg, string name) : base(creature, heals, dodge, dmg, name)
+        [JsonConstructor]
+        public EnchChair()
         {
-            owner = creature;
+
+        }
+        public EnchChair(float heals, float dodge, float dmg, string name) : base( heals, dodge, dmg, name)
+        {
             healing = heals;
             tempDodge = dodge;
             tempDamage = dmg;
@@ -30,7 +36,7 @@
         talk with computers, but made the digital world hate him.
 
         */
-        public override void UseItem()
+        public override void UseItem(Creature owner)
         {
             owner.HealCreature(healing,false);
 
