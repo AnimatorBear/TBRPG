@@ -1585,7 +1585,12 @@ namespace TBRPGV2
                     "   /‾‾\\   ",
                     "   \\__/   ",
                     "    /     ",
-                    "    \\     "} };
+                    "    \\     "},
+                new string[4]{
+                    "‾-_   |‾‾|",
+                    "   ‾-_|‾|‾",
+                    "   _-‾|‾‾|",
+                    "_-‾   |‾|‾"} };
             switch (skill)
             {
                 //Change icon,name and description based on skill
@@ -1691,7 +1696,7 @@ namespace TBRPGV2
                 case Creature.allSkills.Right_Back:
                     for (int j = 0; j < 4; j++)
                     {
-                        activeSkillsIcon[j] = iconArray[0][j];
+                        activeSkillsIcon[j] = iconArray[12][j];
                     }
                     skillName = "Right Back At You";
                     skillDescription[0] = "Dont block, Parry";
