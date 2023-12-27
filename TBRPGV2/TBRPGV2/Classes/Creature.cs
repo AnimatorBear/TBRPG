@@ -48,11 +48,11 @@ namespace TBRPGV2
         #endregion
         #region Skills
         //Skills are small changes , you start with 3 and can unlock 1 at level 20
-        public enum allSkills { None, Healthy, Fast, Violent, Heavy_Hitter, Light_Hitter, Fast_Learner,Accurate,Glass_Cannon, Stone_Wall,NotBag, rngLucky};
+        public enum allSkills { None, Healthy, Fast, Violent, Heavy_Hitter, Light_Hitter, Fast_Learner,Accurate,Glass_Cannon, Stone_Wall,NotBag, RngLucky, Right_Back};
         public allSkills[] skills { get; set; } = new allSkills[Program.amountStartSkills + 1];
 
         //Not class specific skills
-        allSkills[] allClassSkills = { allSkills.Healthy, allSkills.Fast, allSkills.Violent, allSkills.Heavy_Hitter, allSkills.Light_Hitter, allSkills.Fast_Learner, allSkills.Accurate};
+        allSkills[] allClassSkills = { allSkills.Healthy, allSkills.Fast, allSkills.Violent, allSkills.Heavy_Hitter, allSkills.Light_Hitter, allSkills.Fast_Learner, allSkills.Accurate, allSkills.Right_Back};
 
         //Class specific skills
         allSkills[][] classSkills = { 
@@ -63,11 +63,11 @@ namespace TBRPGV2
                 //Healer
                 new allSkills[] {allSkills.Stone_Wall},
                 //RNG
-                new allSkills[] {allSkills.rngLucky},
+                new allSkills[] {allSkills.RngLucky},
                 //Charger
                 new allSkills[] {allSkills.Glass_Cannon},
                 //Bag
-                new allSkills[] {allSkills.Glass_Cannon,allSkills.Stone_Wall,allSkills.NotBag,allSkills.rngLucky}
+                new allSkills[] {allSkills.Glass_Cannon,allSkills.Stone_Wall,allSkills.NotBag,allSkills.RngLucky }
             };
         #endregion
         #region Attacks
@@ -114,7 +114,6 @@ namespace TBRPGV2
                     characterAttacks[0] = attacks.Light_Hit;
                     characterAttacks[1] = attacks.Heavy_Hit;
                     characterAttacks[2] = attacks.DD_HPSacrifice;
-                    characterAttacks[3] = attacks.HL_LifeSteal;
                     break;
                 case allClasses.Tank:
                     characterAttacks[0] = attacks.Light_Hit;
@@ -223,7 +222,7 @@ namespace TBRPGV2
                     case allSkills.NotBag:
                         damage = 0;
                         break;
-                    case allSkills.rngLucky:
+                    case allSkills.RngLucky:
                         rng_ExtraLuck = 2;
                         break;
                 }

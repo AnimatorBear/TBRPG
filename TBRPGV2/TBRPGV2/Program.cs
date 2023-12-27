@@ -545,6 +545,14 @@ namespace TBRPGV2
                 }
                 else
                 {
+                    foreach(allSkills skill in enemy.skills)
+                    {
+                        if(skill == allSkills.Right_Back)
+                        {
+                            enemy.health -= damage / 3;
+                            currentPlayer.health -= damage / 3;
+                        }
+                    }
                     creatureDodgedLastRound[1] = true;
                 }
                 #endregion
@@ -593,6 +601,14 @@ namespace TBRPGV2
                 }
                 else
                 {
+                    foreach (allSkills skill in enemy.skills)
+                    {
+                        if (skill == allSkills.Right_Back)
+                        {
+                            enemy.health -= damage / 3;
+                            currentPlayer.health -= damage / 3;
+                        }
+                    }
                     creatureDodgedLastRound[0] = true;
                 }
                 #endregion
@@ -1272,7 +1288,6 @@ namespace TBRPGV2
                             }
                             return -1;
                         }
-                        break;
                     case ConsoleKey.D0:
                         currentPlayer.health = 0;
                         return -2;
@@ -1664,7 +1679,7 @@ namespace TBRPGV2
                     skillDescription[0] = "Bag deals damage!!";
                     skillDescription[1] = "0 damage!!";
                     break;
-                case Creature.allSkills.rngLucky:
+                case Creature.allSkills.RngLucky:
                     for (int j = 0; j < 4; j++)
                     {
                         activeSkillsIcon[j] = iconArray[8][j];
@@ -1672,6 +1687,15 @@ namespace TBRPGV2
                     skillName = "Lucky";
                     skillDescription[0] = "All rng stats";
                     skillDescription[1] = "are 2 higher";
+                    break;
+                case Creature.allSkills.Right_Back:
+                    for (int j = 0; j < 4; j++)
+                    {
+                        activeSkillsIcon[j] = iconArray[0][j];
+                    }
+                    skillName = "Right Back At You";
+                    skillDescription[0] = "Dont block, Parry";
+                    skillDescription[1] = "Both combatants take 33% damage";
                     break;
             }
         }
@@ -1720,7 +1744,6 @@ namespace TBRPGV2
         {
             Creature[] saves = new Creature[4];
             string file;
-            Creature playerSave;
             bool[] existingFiles = { false, false, false, false };
             if (File.Exists(playerFileName))
             {
@@ -2198,7 +2221,6 @@ namespace TBRPGV2
                 Console.Clear();
                 Console.SetCursorPosition(20,10);
                 Console.WriteLine("Save file detected! Use it? Y/N");
-                bool cheat = false;
                 string allDices;
                 Creature playerSave;
                 bool hasSave = false;
