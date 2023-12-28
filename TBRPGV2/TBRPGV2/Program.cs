@@ -1343,7 +1343,7 @@ namespace TBRPGV2
         }
         #endregion
         #region Selecting Skills
-        static int SelectSkill()
+        static public int SelectSkill()
         {
             Console.Clear();
 
