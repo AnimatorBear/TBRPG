@@ -75,7 +75,7 @@ namespace TBRPGV2
                         {
                             //Select a 4rth skill at level 20
                             int amount = SelectSkill();
-                            MoveSelectedSkill(amount, amountStartSkills);
+                            currentPlayer.skills[3] = MoveSelectedSkill(amount, amountStartSkills);
                             QuickSavePlayer();
                         }
                         catch (Exception)
@@ -1458,7 +1458,7 @@ namespace TBRPGV2
             return allAvSkills.Count;
 
         }
-        public static void MoveSelectedSkill(int totalSkills, int skillNumber)
+        public static allSkills MoveSelectedSkill(int totalSkills, int skillNumber)
         {
             //If you press WASD it moves the selected skill, If you press ENTER it sets your skill
             ConsoleKey key = Console.ReadKey(true).Key;
@@ -1489,7 +1489,7 @@ namespace TBRPGV2
             {
                 List<allSkills> allAvSkills = currentPlayer.GetAllAvailableSkills();
                 currentPlayer.skills[skillNumber] = allAvSkills[selectedSkill];
-                selectedSkill = 0;
+                return allAvSkills[selectedSkill];
             }
 
             if (selectedSkill >= totalSkills)
@@ -1508,7 +1508,7 @@ namespace TBRPGV2
             {
                 pagesDown++;
             }
-
+            return allSkills.None;
         }
         //Puts the skills Icon, Name and Description into activeSkillsIcon, skillName and skillDescription
         static void GetSkillInfo(allSkills skill)

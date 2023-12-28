@@ -22,12 +22,13 @@ namespace TBRPGV2
         }
         public override void UseItem(Creature owner)
         {
-            owner.skills[0] = Creature.allSkills.None;
-            while (owner.skills[0] == Creature.allSkills.None)
+            Creature.allSkills skill = Creature.allSkills.None;
+            while (skill == Creature.allSkills.None)
             {
                 int amount = Program.SelectSkill();
-                Program.MoveSelectedSkill(amount, 0);
+                skill = Program.MoveSelectedSkill(amount, 0);
             }
+            owner.skills[0] = skill;
             Console.Clear();
             Program.DrawText(Program.currentEnemy, ConsoleColor.DarkGray);
             Program.DrawBattle(ConsoleColor.DarkGray);
