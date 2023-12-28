@@ -1246,7 +1246,6 @@ namespace TBRPGV2
                                 if (currentPlayer.itemsInInv[selectedAttack] != null)
                                 {
                                     currentPlayer.itemsInInv[selectedAttack].UseItem(currentPlayer);
-
                                     currentPlayer.itemsInInv[selectedAttack].uses -= 1;
                                     if (currentPlayer.itemsInInv[selectedAttack].uses <= 0)
                                     {
