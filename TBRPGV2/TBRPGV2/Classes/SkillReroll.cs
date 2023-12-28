@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using System;
+using System.Text.Json.Serialization;
 
 namespace TBRPGV2
 {
@@ -27,6 +28,9 @@ namespace TBRPGV2
                 int amount = Program.SelectSkill();
                 Program.MoveSelectedSkill(amount, 0);
             }
+            Console.Clear();
+            Program.DrawText(Program.currentEnemy, ConsoleColor.DarkGray);
+            Program.DrawBattle(ConsoleColor.DarkGray);
 
         }
     }

@@ -16,6 +16,7 @@ namespace TBRPGV2
         //Player , Enemy test class , what class is selected
         static Creature currentPlayer = new Creature(Creature.allClasses.Class_None, 0);
         static Creature.allClasses forceEnemyClass = Creature.allClasses.Class_None;
+        static public Creature currentEnemy;
         static int classSelection = 0;
         #endregion
         #region GetSkillInfo Info
@@ -456,6 +457,7 @@ namespace TBRPGV2
             //Makes the enemy
             Creature enemy = new Creature(allClasses.Class_None, currentPlayer.currentLevel);
             Enemy enemyBrain = new Enemy(enemy, currentPlayer);
+            currentEnemy = enemy;
             if(forceEnemyClass != allClasses.Class_None)
             {
                 enemy.currentClass = forceEnemyClass;
@@ -676,7 +678,7 @@ namespace TBRPGV2
                 enemy.chargerCharge++;
             }
         }
-        private static void DrawBattle(ConsoleColor color)
+        public static void DrawBattle(ConsoleColor color)
         {
             //Max size: 71L , 26T
 
@@ -1284,7 +1286,7 @@ namespace TBRPGV2
                                     }
                                 }
                             
-
+                            
                             }
                             return -1;
                         }
@@ -2147,12 +2149,20 @@ namespace TBRPGV2
                         {
                             if (saves[selectedSave].itemsInInv[i] != null)
                             {
-                                if (saves[selectedSave].itemsInInv[i].itemName == "Enchanted Chair")
+                                var serializedParent = JsonSerializer.Serialize(saves[selectedSave].itemsInInv[i]);
+                                var it = new Item();
+                                switch (saves[selectedSave].itemsInInv[i].itemName)
                                 {
-                                    var serializedParent = JsonSerializer.Serialize(saves[selectedSave].itemsInInv[i]);
-                                    EnchChair en = JsonSerializer.Deserialize<EnchChair>(serializedParent);
-                                    saves[selectedSave].itemsInInv[i] = en;
+                                    case "Enchanted Chair":
+                                        it = JsonSerializer.Deserialize<EnchChair>(serializedParent);
+                                        saves[selectedSave].itemsInInv[i] = it;
+                                        break;
+                                    case "Reroll":
+                                        it = JsonSerializer.Deserialize<SkillReroll>(serializedParent);
+                                        saves[selectedSave].itemsInInv[i] = it;
+                                        break;
                                 }
+
                             }
                         }
                         switch (selectedSave)
