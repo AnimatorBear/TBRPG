@@ -9,13 +9,13 @@ namespace TBRPGV2
     {
         #region Skills
         //Skills
-        const bool chooseStartSkills = false;
+        const bool chooseStartSkills = true;
         public const int amountStartSkills = 3;
         #endregion
         #region Player, Classes
         //Player , Enemy test class , what class is selected
         static Creature currentPlayer = new Creature(Creature.allClasses.Class_None, 0);
-        static Creature.allClasses forceEnemyClass = Creature.allClasses.Class_None;
+        const Creature.allClasses forceEnemyClass = Creature.allClasses.Class_None;
         static public Creature currentEnemy;
         static int classSelection = 0;
         #endregion
@@ -46,11 +46,11 @@ namespace TBRPGV2
         public static int amountOfClasses = 5;
         #region Files
         //File stuff
-        private static JsonSerializerOptions _options =
+        private readonly static JsonSerializerOptions fileOptions =
         new() { DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull, WriteIndented = true };
         //Quick save file name
-        static string playerFileName = "Saves/QuickPlayerSave.json";
-        static string[] playerManualSaveNames = { "Saves/PlayerSave1.json", "Saves/PlayerSave2.json", "Saves/PlayerSave3.json" };
+        const string playerFileName = "Saves/QuickPlayerSave.json";
+        static readonly string[] playerManualSaveNames = { "Saves/PlayerSave1.json", "Saves/PlayerSave2.json", "Saves/PlayerSave3.json" };
         static int selectedSave = 0;
         static int currentPlayingSave = 0;
         static List<int> notSaveFiles = new List<int>();
@@ -69,11 +69,11 @@ namespace TBRPGV2
             do
             {
                 {
-                    while (currentPlayer.skills[amountStartSkills] == allSkills.None && currentPlayer.currentLevel >= 10)
+                    while (currentPlayer.skills[amountStartSkills] == allSkills.None && currentPlayer.currentLevel[0] >= 10)
                     {
                         try
                         {
-                            //Select a 4rth skill at level 20
+                            //Select a 4rth skill at combat level 20
                             int amount = SelectSkill();
                             currentPlayer.skills[3] = MoveSelectedSkill(amount, amountStartSkills);
                             QuickSavePlayer();
@@ -455,7 +455,7 @@ namespace TBRPGV2
         static void StartBattle()
         {
             //Makes the enemy
-            Creature enemy = new Creature(allClasses.Class_None, currentPlayer.currentLevel);
+            Creature enemy = new Creature(allClasses.Class_None, currentPlayer.currentLevel[0]);
             Enemy enemyBrain = new Enemy(enemy, currentPlayer);
             currentEnemy = enemy;
             if(forceEnemyClass != allClasses.Class_None)
@@ -577,7 +577,7 @@ namespace TBRPGV2
                     Thread.Sleep(1000);
 
                     //Add xp, make sure you cant charger charge over multiple battles (rip mike strats)
-                    currentPlayer.AddXP(CalculateXPGain(currentPlayer, enemy));
+                    currentPlayer.AddXP(CalculateXPGainCombat(currentPlayer, enemy));
                     currentPlayer.chargerCharge = 0;
 
                     //Makes sure your health gets set to your new max health later
@@ -1312,7 +1312,7 @@ namespace TBRPGV2
         }
         #endregion
         #region After Battle
-        static int CalculateXPGain(Creature winner, Creature loser)
+        static int CalculateXPGainCombat(Creature winner, Creature loser)
         {
             int startingXPGain = 150;
             float xpBuff = 1;
@@ -1324,9 +1324,9 @@ namespace TBRPGV2
                 xpBuff = xpBuff / 10;
             }
             //Math
-            if (winner.currentLevel < loser.currentLevel)
+            if (winner.currentLevel[0] < loser.currentLevel[0])
             {
-                xpBuff += 0.05f * (loser.currentLevel - winner.currentLevel);
+                xpBuff += 0.05f * (loser.currentLevel[0] - winner.currentLevel[0]);
             }
             if (winner.health > winner.maxHealth * 0.75f)
             {
@@ -1335,7 +1335,7 @@ namespace TBRPGV2
             int xpGain = (int)(startingXPGain * xpBuff);
             for (int i = 0; i < winner.skills.Length; i++)
             {
-                if (winner.skills[i] == allSkills.Fast_Learner)
+                if (winner.skills[i] == allSkills.Combat_Learner)
                 {
                     xpGain += (int)(xpGain * 0.1f);
                 }
@@ -1631,14 +1631,14 @@ namespace TBRPGV2
                     skillDescription[0] = "+3 Speed";
                     skillDescription[1] = "";
                     break;
-                case Creature.allSkills.Fast_Learner:
+                case Creature.allSkills.Combat_Learner:
                     for (int j = 0; j < 4; j++)
                     {
                         activeSkillsIcon[j] = iconArray[7][j];
                     }
-                    skillName = "Fast Learner";
-                    skillDescription[0] = "5% more XP";
-                    skillDescription[1] = "";
+                    skillName = "Combat Learner";
+                    skillDescription[0] = "5% more";
+                    skillDescription[1] = "Combat XP";
                     break;
                 case Creature.allSkills.Light_Hitter:
                     for (int j = 0; j < 4; j++)
@@ -1718,12 +1718,12 @@ namespace TBRPGV2
             string jsonString = "";
             if(currentPlayingSave >= 1)
             {
-                jsonString = JsonSerializer.Serialize(currentPlayer, _options);
+                jsonString = JsonSerializer.Serialize(currentPlayer, fileOptions);
                 File.WriteAllText(playerManualSaveNames[currentPlayingSave-1], jsonString);
             }
             else
             {
-                jsonString = JsonSerializer.Serialize(currentPlayer, _options);
+                jsonString = JsonSerializer.Serialize(currentPlayer, fileOptions);
                 File.WriteAllText(playerFileName, jsonString);
             }
         }
@@ -1737,12 +1737,12 @@ namespace TBRPGV2
             string jsonString = "";
             if (currentPlayingSave >= 1)
             {
-                jsonString = JsonSerializer.Serialize(currentPlayer, _options);
+                jsonString = JsonSerializer.Serialize(currentPlayer, fileOptions);
                 File.WriteAllText(playerManualSaveNames[currentPlayingSave - 1], jsonString);
             }
             else
             {
-                jsonString = JsonSerializer.Serialize(currentPlayer, _options);
+                jsonString = JsonSerializer.Serialize(currentPlayer, fileOptions);
                 File.WriteAllText(playerFileName, jsonString);
             }
         }

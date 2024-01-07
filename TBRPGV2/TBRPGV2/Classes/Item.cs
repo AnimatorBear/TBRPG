@@ -12,11 +12,13 @@ namespace TBRPGV2
         public string[] description { get; set; } = new string[2];
         public int uses { get; set; } = 1;
 
+        #region jsonConstructor
         [JsonConstructor]
         public Item()
         {
 
         }
+        #endregion
         public Item(float heals, float dodge,float dmg,string name)
         {
             healing = heals;

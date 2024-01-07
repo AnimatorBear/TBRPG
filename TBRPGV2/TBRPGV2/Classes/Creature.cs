@@ -4,7 +4,7 @@ namespace TBRPGV2
 {
     class Creature
     {
-        readonly float attackSpamNerf = 0.50f;
+        const float attackSpamNerf = 0.50f;
         #region Stats
         //  All stats
         //Health-Type stats
@@ -14,7 +14,8 @@ namespace TBRPGV2
         public float damage  { get; set; }
         public float damageMultiplier { get; set; } = 1;
         //Misc Stats
-        public int currentLevel { get; set; }
+        //Combat, ??
+        public int[] currentLevel { get; set; } = new int[1];
         public int currentXP { get; set; }
         public int speed;
         public int rng_ExtraLuck { get; set; }
@@ -48,11 +49,11 @@ namespace TBRPGV2
         #endregion
         #region Skills
         //Skills are small changes , you start with 3 and can unlock 1 at level 20
-        public enum allSkills { None, Healthy, Fast, Violent, Heavy_Hitter, Light_Hitter, Fast_Learner,Accurate,Glass_Cannon, Stone_Wall,NotBag, RngLucky, Right_Back};
+        public enum allSkills { None, Healthy, Fast, Violent, Heavy_Hitter, Light_Hitter, Combat_Learner,Accurate,Glass_Cannon, Stone_Wall,NotBag, RngLucky, Right_Back};
         public allSkills[] skills { get; set; } = new allSkills[Program.amountStartSkills + 1];
 
         //Not class specific skills
-        allSkills[] allClassSkills = { allSkills.Healthy, allSkills.Fast, allSkills.Violent, allSkills.Heavy_Hitter, allSkills.Light_Hitter, allSkills.Fast_Learner, allSkills.Accurate, allSkills.Right_Back};
+        allSkills[] allClassSkills = { allSkills.Healthy, allSkills.Fast, allSkills.Violent, allSkills.Heavy_Hitter, allSkills.Light_Hitter, allSkills.Combat_Learner, allSkills.Accurate, allSkills.Right_Back};
 
         //Class specific skills
         allSkills[][] classSkills = { 
@@ -78,6 +79,7 @@ namespace TBRPGV2
         //CH = Charger
         //BG = Bag
         public enum attacks { None,Class_Ability,Heavy_Hit,Light_Hit,DD_HPSacrifice, HL_LifeSteal, RG_Stats, BG_NO };
+        //Unused
         public int[] attackLevels = { -1, -1, -1, -1, -1,5,5};
         public attacks[] characterAttacks { get; set; } = { attacks.None,attacks.None,attacks.None,attacks.None};
         public attacks prevAttack { get; set; }
@@ -86,20 +88,22 @@ namespace TBRPGV2
         public Item[] itemsInInv { get; set; } = new Item[6];
         #endregion
 
+        #region jsonConstructor
         [JsonConstructor]
         public Creature()
         {
 
         }
+        #endregion
         public Creature(allClasses newClass = allClasses.DamageDealer, int startingLevel = 0)
         {
             //Adds starting stats and stuff
             currentClass = newClass;
-            currentLevel = startingLevel;
+            currentLevel[0] = startingLevel;
             health = maxHealth;
             itemsInInv[0] = new Item(10000000,0,0,"Health Pot");
             itemsInInv[0].description = new string[4] { "Heals you","For like","a billion ","health" };
-            itemsInInv[1] = new SkillReroll(10000000, 0, 0, "Reroll");
+            itemsInInv[1] = new SkillReroll(10000000, 0, 0, "Reroll Potion");
             itemsInInv[2] = new Item( 10000000, 0, 0, "Potion of life");
             itemsInInv[3] = new EnchChair( 0, 0, 0, "Enchanted Chair");
             itemsInInv[4] = new Item(10000000, 0, 0, "Bandage");
@@ -190,13 +194,14 @@ namespace TBRPGV2
             int startingHealth = maxHealth;
             float startingDamage = damage;
             //Level stats
-            for (int i = 0; i < currentLevel; i++)
+            #region Combat
+            for (int i = 0; i < currentLevel[0]; i++)
             {
                 //If base health is 100 health , adds 5 health per level
                 maxHealth += startingHealth / 20;
-                
                 damage += startingDamage / 20;
             }
+            #endregion
             //Skills stats
             bool glassCannon = false;
             bool stoneWall = false;
@@ -339,7 +344,7 @@ namespace TBRPGV2
                                 return totalDamage;
 
                             case allClasses.Bag:
-                                return 10 * (currentLevel + 1);
+                                return 10 * (currentLevel[0] + 1);
                         }
                     }
                     break;
@@ -584,10 +589,9 @@ namespace TBRPGV2
         }
         public void AddXP(int xp,bool levels = false)
         {
-            currentXP += currentLevel * 100;
+            currentXP += currentLevel[0] * 100;
             if (!levels)
             {
-                
                 currentXP += xp;
             }
             else
@@ -595,8 +599,8 @@ namespace TBRPGV2
                 currentXP += xp * 100;
             }
             float totalXP = currentXP / 100;
-            currentLevel = (int)(Math.Floor(totalXP));
-            currentXP -= currentLevel * 100;
+            currentLevel[0] = (int)(Math.Floor(totalXP));
+            currentXP -= currentLevel[0] * 100;
         }
     }
 }

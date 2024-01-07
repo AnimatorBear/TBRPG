@@ -4,12 +4,13 @@ namespace TBRPGV2
 {
     class EnchChair : Item
     {
-
+        #region jsonConstructor
         [JsonConstructor]
         public EnchChair()
         {
 
         }
+        #endregion
         public EnchChair(float heals, float dodge, float dmg, string name) : base( heals, dodge, dmg, name)
         {
             healing = heals;
