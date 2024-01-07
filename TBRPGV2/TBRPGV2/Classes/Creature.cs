@@ -14,7 +14,10 @@ namespace TBRPGV2
         public float damage  { get; set; }
         public float damageMultiplier { get; set; } = 1;
         //Misc Stats
-        //Combat, ??
+        //Combat is the main progress in the game
+        //Mining is for armor
+        //
+        //Combat, Mining, 
         public int[] currentLevel { get; set; } = new int[1];
         public int currentXP { get; set; }
         public int speed;
