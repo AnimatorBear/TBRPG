@@ -593,6 +593,7 @@ namespace TBRPGV2
                     //Makes sure your health gets set to your new max health later
                     currentPlayer.RecalculateStats();
                     activeBattle = false;
+                    break;
                 }
                 else if (enemy.health > enemy.maxHealth)
                 {
@@ -631,9 +632,11 @@ namespace TBRPGV2
                     Console.Clear();
                     DrawText(enemy,ConsoleColor.DarkGray);
                     DrawBattle(ConsoleColor.DarkGray);
+                    enemyBrain.WriteEnemySprite(Enemy.spriteType.Idle, ConsoleColor.DarkGray);
                     Thread.Sleep(1000);
                     DrawText(enemy, ConsoleColor.Black);
                     DrawBattle(ConsoleColor.Black);
+                    enemyBrain.WriteEnemySprite(Enemy.spriteType.Idle, ConsoleColor.Black);
                     Thread.Sleep(1000);
                     activeBattle = false;
                     currentPlayer.chargerCharge = 0;

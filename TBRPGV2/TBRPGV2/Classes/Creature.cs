@@ -18,7 +18,7 @@ namespace TBRPGV2
         //Mining is for armor
         //
         //Combat, Mining, 
-        public int[] currentLevel { get; set; } = new int[1];
+        public int[] currentLevel { get; set; } = new int[2];
         public int currentXP { get; set; }
         public int speed;
         public int rng_ExtraLuck { get; set; }
@@ -200,9 +200,12 @@ namespace TBRPGV2
             #region Combat
             for (int i = 0; i < currentLevel[0]; i++)
             {
+                damage += startingDamage / 20;
+            }
+            for (int i = 0; i < currentLevel[1]; i++)
+            {
                 //If base health is 100 health , adds 5 health per level
                 maxHealth += startingHealth / 20;
-                damage += startingDamage / 20;
             }
             #endregion
             //Skills stats
