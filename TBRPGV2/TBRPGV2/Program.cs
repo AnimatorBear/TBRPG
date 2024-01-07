@@ -466,6 +466,7 @@ namespace TBRPGV2
             {
                 enemy.currentClass = enemyBrain.ChooseClass();
             }
+            enemyBrain.SelectSprite(Enemy.sprites.Tri);
             enemyBrain.ChooseExtraSkill();
 
             //Recalculate Stats
@@ -476,6 +477,7 @@ namespace TBRPGV2
             bool activeBattle = true;
             DrawText(enemy, ConsoleColor.DarkGray);
             DrawBattle(ConsoleColor.DarkGray);
+            enemyBrain.WriteEnemySprite(Enemy.spriteType.Idle, ConsoleColor.DarkGray);
             Thread.Sleep(500);
             while (activeBattle)
             {
@@ -489,6 +491,7 @@ namespace TBRPGV2
                     DrawBattle(ConsoleColor.DarkRed);
                 }
                 DrawText(enemy);
+                enemyBrain.WriteEnemySprite(Enemy.spriteType.Idle,ConsoleColor.White);
                 Console.Title = "TBRPG";
                 bool selectingAttack = true;
 
@@ -520,10 +523,13 @@ namespace TBRPGV2
                                 currentPlayer.health = currentPlayer.maxHealth;
                             }
                             DrawBattle(ConsoleColor.DarkGreen);
+                            enemyBrain.WriteEnemySprite(Enemy.spriteType.Idle, ConsoleColor.White);
                             Thread.Sleep(200);
                             DrawBattle(ConsoleColor.Green);
+                            enemyBrain.WriteEnemySprite(Enemy.spriteType.Idle, ConsoleColor.White);
                             Thread.Sleep(200);
                             DrawBattle(ConsoleColor.DarkGreen);
+                            enemyBrain.WriteEnemySprite(Enemy.spriteType.Idle, ConsoleColor.White);
                             Thread.Sleep(200);
                         }else if(healing > 0)
                         {
@@ -532,6 +538,7 @@ namespace TBRPGV2
                                 currentPlayer.health = currentPlayer.maxHealth;
                             }
                             DrawBattle(ConsoleColor.Green);
+                            enemyBrain.WriteEnemySprite(Enemy.spriteType.Idle, ConsoleColor.White);
                             Thread.Sleep(200);
                         }
                     }
@@ -567,10 +574,13 @@ namespace TBRPGV2
                     Console.Clear();
                     DrawText(enemy, ConsoleColor.DarkYellow);
                     DrawBattle(ConsoleColor.DarkYellow);
+                    enemyBrain.WriteEnemySprite(Enemy.spriteType.Dead, ConsoleColor.DarkGray);
                     Thread.Sleep(500);
                     DrawText(enemy, ConsoleColor.DarkGray);
                     DrawBattle(ConsoleColor.DarkGray);
+                    enemyBrain.WriteEnemySprite(Enemy.spriteType.Dead, ConsoleColor.DarkGray);
                     Thread.Sleep(200);
+                    Console.Clear();
                     DrawText(enemy, ConsoleColor.Black);
                     DrawBattle(ConsoleColor.Black);
                     Thread.Sleep(500);

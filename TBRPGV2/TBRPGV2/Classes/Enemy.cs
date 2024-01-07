@@ -6,15 +6,116 @@
         Creature player;
         int prevAttack = 0;
 
+        public enum sprites { None,Tri }
+        public enum spriteType {Idle,Dead}
+        string[,][] enemySprites;
+
         public Enemy(Creature _enemy,Creature _player)
         {
             enemy = _enemy;
             player = _player;
+            SelectSprite(sprites.None);
         }
         //Makes the enemy choose a random skill that fits its playstyle
         public void ChooseExtraSkill()
         {
             //Not used yet
+        }
+
+        public void SelectSprite(sprites sprite)
+        {
+            switch (sprite)
+            {
+                case sprites.None:
+                    string[,][] testSprites = { {
+                    //Idle
+                    new string[]{
+                    "                            ",
+                    "                            ",
+                    "                            ",
+                    "                            ",
+                    "                            ",
+                    "                            ",
+                    "                            ",
+                    "                            ",
+                    "                            ",
+                    "                            ",
+                    "                            ",
+                    "                            ",
+                    "                            "},
+                    //Idk
+                    new string[]{
+                    "                            ",
+                    "                            ",
+                    "                            ",
+                    "                            ",
+                    "                            ",
+                    "                            ",
+                    "                            ",
+                    "                            ",
+                    "                            ",
+                    "                            ",
+                    "                            ",
+                    "                            ",
+                    "                            "} } };
+                    enemySprites = testSprites;
+                    break;
+                case sprites.Tri:
+                    string[,][]  triSprites = { {
+                    //Idle
+                    new string[]{
+                    "                            ",
+                    "             ___            ",
+                    "            /   \\           ",
+                    "           / o o \\          ",
+                    "           \\  ^  /          ",
+                    "            \\ ‾ /           ",
+                    "             | |            ",
+                    "         /‾‾‾\\_/‾‾‾\\        ",
+                    "        /_/       \\_\\       ",
+                    "        | |       | |       ",
+                    "        | |       | |       ",
+                    "        \\_|=={=}==|_/       ",
+                    "          |   |   |         "}
+                    //Dying
+                    ,
+                    new string[]{
+                    "                            ",
+                    "             ___            ",
+                    "            /   \\           ",
+                    "           / X X \\          ",
+                    "           \\  ^  /          ",
+                    "            \\ ‾ /           ",
+                    "             | |            ",
+                    "   |‾‾‾‾‾‾‾‾‾\\_/‾‾‾‾‾‾‾‾‾|  ",
+                    "   |_______       _______|  ",
+                    "          |       |         ",
+                    "          |       |         ",
+                    "          |=={=}==|         ",
+                    "          |   |   |         "}
+                        } };
+                    enemySprites = triSprites;
+                    break;
+            }
+        }
+        public void WriteEnemySprite(spriteType sp, ConsoleColor color)
+        {
+            Console.ForegroundColor = color;
+            int[] spots = { 0, 0 };
+            switch (sp)
+            {
+                case spriteType.Idle:
+                    spots = new int[] { 0, 0 };
+                    break;
+                case spriteType.Dead:
+                    spots = new int[] { 0, 1 };
+                    break;
+            }
+            for (int i = 0; i < enemySprites[spots[0], spots[1]].Length; i++)
+            {
+                Console.SetCursorPosition(22, 3 + i);
+                Console.WriteLine(enemySprites[spots[0], spots[1]][i]);
+            }
         }
         //Makes the enemy choose a random class
         public Creature.allClasses ChooseClass()
