@@ -2427,7 +2427,7 @@ namespace TBRPGV2
 {'b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b',},
 };
         static int[] playerLocation = { 7, 10 };
-        static int[] visibleRange = {5,5};
+        static int[] visibleRange = {5,10};
 
         const char playerChar = 'p';
         static char playerStanding = ' ';
