@@ -64,7 +64,6 @@ namespace TBRPGV2
             Console.CursorVisible = false;
             Console.Title = "TBRPG";
             SetupMap();
-            Console.ReadKey();
             StartMenu();
             LoadPlayer();
             Console.Clear();
