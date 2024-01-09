@@ -116,6 +116,7 @@
                 Console.SetCursorPosition(22, 3 + i);
                 Console.WriteLine(enemySprites[spots[0], spots[1]][i]);
             }
+            Console.ForegroundColor = ConsoleColor.White;
         }
         //Makes the enemy choose a random class
         public Creature.allClasses ChooseClass()

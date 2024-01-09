@@ -265,3 +265,34 @@ Character sprites:
 |          |       |         |
 |          |=={=}==|         |
 |          |   |   |         |
+
+Map:
+
+
+______________________________
+|                            |
+|                            |
+|                            |
+|                            |
+|                            |
+|                            |
+|                            |
+|                            |
+|                            |
+|                            |
+|                            |
+‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾
+
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+b                            b
+b                            b
+b                            b
+b                            b
+b                            b
+b                            b
+b                            b
+b                            b
+b                            b
+b                            b
+b                            b
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbb

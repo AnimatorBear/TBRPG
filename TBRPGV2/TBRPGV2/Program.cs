@@ -63,9 +63,16 @@ namespace TBRPGV2
             Console.InputEncoding = System.Text.Encoding.Unicode;
             Console.CursorVisible = false;
             Console.Title = "TBRPG";
+            SetupMap();
+            Console.ReadKey();
             StartMenu();
             LoadPlayer();
             Console.Clear();
+            while (true)
+            {
+                DrawMap();
+                MovePlayer();
+            }
             do
             {
                 {
@@ -452,9 +459,10 @@ namespace TBRPGV2
         #endregion
 
         #region Battle
-        static void StartBattle()
+        static bool StartBattle()
         {
             //Makes the enemy
+            Console.Clear();
             Creature enemy = new Creature(allClasses.Class_None, currentPlayer.currentLevel[0]);
             Enemy enemyBrain = new Enemy(enemy, currentPlayer);
             currentEnemy = enemy;
@@ -593,6 +601,7 @@ namespace TBRPGV2
                     //Makes sure your health gets set to your new max health later
                     currentPlayer.RecalculateStats();
                     activeBattle = false;
+                    return false;
                     break;
                 }
                 else if (enemy.health > enemy.maxHealth)
@@ -633,19 +642,19 @@ namespace TBRPGV2
                     DrawText(enemy,ConsoleColor.DarkGray);
                     DrawBattle(ConsoleColor.DarkGray);
                     enemyBrain.WriteEnemySprite(Enemy.spriteType.Idle, ConsoleColor.DarkGray);
-                    Thread.Sleep(1000);
                     DrawText(enemy, ConsoleColor.Black);
                     DrawBattle(ConsoleColor.Black);
                     enemyBrain.WriteEnemySprite(Enemy.spriteType.Idle, ConsoleColor.Black);
-                    Thread.Sleep(1000);
-                    activeBattle = false;
                     currentPlayer.chargerCharge = 0;
                     currentPlayer.health = currentPlayer.maxHealth;
+                    activeBattle = false;
+                    return true;
                 } else if (currentPlayer.health > currentPlayer.maxHealth)
                 {
                     currentPlayer.health = currentPlayer.maxHealth;
                 }
             }
+            return false;
         }
         static bool CalculateDodge(Creature creature, Creature creature2, int startingDodge)
         {
@@ -2377,6 +2386,210 @@ namespace TBRPGV2
             Console.ReadKey(true);
             Console.ForegroundColor = ConsoleColor.White;
         }
-        
+
+        #region Map
+        static char[,] mapVisible =
+        {
+            {'_','_','_','_','_','_','_','_','_','_','_','_','_','_','_','_','_','_','_','_','_','_','_','_','_','_','_','_','_','_',},
+            {'|',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','|',},
+            {'|',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','|',},
+            {'|',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','|',},
+            {'|',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','|',},
+            {'|',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','|',},
+            {'|',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','|',},
+            {'|',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','|',},
+            {'|',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','|',},
+            {'|',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','|',},
+            {'|',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','|',},
+            {'|',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','|',},
+            {'‾','‾','‾','‾','‾','‾','‾','‾','‾','‾','‾','‾','‾','‾','‾','‾','‾','‾','‾','‾','‾','‾','‾','‾','‾','‾','‾','‾','‾','‾',},
+        };
+
+        //b = Block/Barrier (Basically a wall)
+        //e = Enemy (So battle)
+        //t = Tree (Makes a tree model)
+        //h = Player Hidden
+        //o = One Way Door (Enter from going down, cant go through from going up)
+        //u = Cant move between it and the part above it directly
+        static char[,] mapInVisible =
+{
+{'b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b',},
+{'b','e','e','e','e',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','b',},
+{'b',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','b',},
+{'b',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','b',},
+{'b',' ',' ',' ',' ',' ',' ',' ',' ','t',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','b',},
+{'b',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','b',},
+{'b',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','b',},
+{'b',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','b',},
+{'b',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','b',},
+{'b',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','b',},
+{'b',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','b',},
+{'b',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','b',},
+{'b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b',},
+};
+        static int[] playerLocation = { 7, 10 };
+        static int[] visibleRange = {5,5};
+
+        const char playerChar = 'p';
+        static char playerStanding = ' ';
+
+        static void DrawMap()
+        {
+            Console.Clear();
+            if (mapInVisible[playerLocation[0], playerLocation[1]] != 'h')
+            {
+                mapVisible[playerLocation[0], playerLocation[1]] = playerChar;
+            }
+            for (int i = -visibleRange[0]; i <= visibleRange[0]; i++)
+            {
+                for (int j = -visibleRange[1]; j <= visibleRange[1]; j++)
+                {
+                    try
+                    {
+                        Console.Write(mapVisible[playerLocation[0] + i, playerLocation[1] + j]);
+                    }
+                    catch (IndexOutOfRangeException)
+                    {
+
+                    }
+                }
+                Console.WriteLine();
+            }
+        }
+
+        static void MovePlayer()
+        {
+            bool gotkey = false;
+            while (!gotkey)
+            {
+                ConsoleKey key = Console.ReadKey(true).Key;
+                switch (key)
+                {
+                    case ConsoleKey.A:
+                        if (TryMove(0, -1))
+                        {
+                            mapVisible[playerLocation[0], playerLocation[1]] = playerStanding;
+                            playerStanding = mapVisible[playerLocation[0], playerLocation[1] - 1];
+                            playerLocation[1] -= 1;
+                            gotkey = true;
+                        }
+                        break;
+                    case ConsoleKey.D:
+                        if (TryMove(0, 1))
+                        {
+                            mapVisible[playerLocation[0], playerLocation[1]] = playerStanding;
+                            playerStanding = mapVisible[playerLocation[0], playerLocation[1] + 1];
+                            playerLocation[1] += 1;
+                            gotkey = true;
+                        }
+                        break;
+                    case ConsoleKey.S:
+                        if (TryMove(1, 0))
+                        {
+                            mapVisible[playerLocation[0], playerLocation[1]] = playerStanding;
+                            playerStanding = mapVisible[playerLocation[0] +1, playerLocation[1]];
+                            playerLocation[0] += 1;
+                            gotkey = true;
+                        }
+                        break;
+                    case ConsoleKey.W:
+                        if (TryMove(-1,0))
+                        {
+                            mapVisible[playerLocation[0], playerLocation[1]] = playerStanding;
+                            playerStanding = mapVisible[playerLocation[0] - 1, playerLocation[1]];
+                            playerLocation[0] -= 1;
+                            gotkey = true;
+                        }
+                        break;
+                }
+            }
+        }
+        static bool TryMove(int top, int left)
+        {
+            if(mapInVisible[playerLocation[0] + top, playerLocation[1] + left] == 'b')
+            {
+                return false;
+            }
+            if (mapInVisible[playerLocation[0] + top, playerLocation[1] + left] == 'e')
+            {
+                currentPlayer.abilityUses = 0;
+                if (!StartBattle())
+                {
+                    mapInVisible[playerLocation[0] + top, playerLocation[1] + left] = ' ';
+                    mapVisible[playerLocation[0] + top, playerLocation[1] + left] = ' ';
+                }
+                else
+                {
+                    mapInVisible[playerLocation[0] + top, playerLocation[1] + left] = ' ';
+                    mapVisible[playerLocation[0] + top, playerLocation[1] + left] = 'L';
+                }
+                QuickSavePlayer();
+            }
+            //Tree stump and one way gate
+            if(top == -1 && left == 0)
+            {
+                if (mapInVisible[playerLocation[0], playerLocation[1]] == 'u' || mapInVisible[playerLocation[0], playerLocation[1]] == 'o')
+                {
+                    return false;
+                }
+            }
+            if (top == 1 && left == 0)
+            {
+                if (mapInVisible[playerLocation[0] + 1, playerLocation[1]] == 'u')
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        static void SetupMap()
+        {
+            for(int i = 0; i < mapInVisible.GetLength(0); i++)
+            {
+                for (int j = 0; j < mapInVisible.GetLength(1); j++)
+                {
+                    switch (mapInVisible[i, j])
+                    {
+                        case 'e':
+                            mapVisible[i, j] = 'e';
+                            break;
+                        case 't':
+                            #region Makes a tree
+                            for (int k = 2; k > -1; k--)
+                            {
+                                mapVisible[i + k, j] = ' ';
+                                if(k != 2)
+                                {
+                                    mapInVisible[i + k, j] = 'h';
+                                }
+                            }
+                            mapVisible[i + 2, j] = '‖';
+                            mapVisible[i + 1, j] = '_';
+                            mapVisible[i + 1, j+1] = '_';
+                            mapVisible[i + 1, j - 1] = '_';
+                            mapVisible[i - 1, j] = '_';
+                            mapVisible[i + 1, j + 2] = '\\';
+                            mapVisible[i + 0, j + 1] = '\\';
+                            mapVisible[i + 1, j - 2] = '/';
+                            mapVisible[i + 0, j - 1] = '/';
+
+                            mapInVisible[i + 2, j] = 'u';
+                            mapInVisible[i + 1, j + 1] = 'h';
+                            mapInVisible[i + 1, j - 1] = 'h';
+                            mapInVisible[i - 1, j] = 'h';
+                            mapInVisible[i + 1, j + 2] = 'h';
+                            mapInVisible[i + 0, j + 1] = 'h';
+                            mapInVisible[i + 1, j - 2] = 'h';
+                            mapInVisible[i + 0, j - 1] = 'h';
+                            #endregion
+                            break;
+                    }
+                }
+            }
+        }
+
+        #endregion
+
     }
 }
