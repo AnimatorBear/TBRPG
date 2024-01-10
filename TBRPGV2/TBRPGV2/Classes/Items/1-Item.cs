@@ -29,7 +29,7 @@ namespace TBRPGV2
             description[1] = "Heals too much";
         }
 
-        public virtual void UseItem(Creature owner)
+        public virtual void UseItem(Creature owner,Creature enemy)
         {
             owner.HealCreature(healing,false);
         }

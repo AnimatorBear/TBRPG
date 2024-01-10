@@ -21,7 +21,7 @@ namespace TBRPGV2
             description = new string[5] {"Wanted a skill","but didnt get", "it? Well the", "Potion of bad ", "RNG is for you!" };
             uses = 1000;
         }
-        public override void UseItem(Creature owner)
+        public override void UseItem(Creature owner, Creature enemy)
         {
             Creature.allSkills skill = Creature.allSkills.None;
             while (skill == Creature.allSkills.None)

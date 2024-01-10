@@ -106,8 +106,8 @@ namespace TBRPGV2
             health = maxHealth;
             itemsInInv[0] = new Item(10000000,0,0,"Health Pot");
             itemsInInv[0].description = new string[4] { "Heals you","For like","a billion ","health" };
-            itemsInInv[1] = new SkillReroll(10000000, 0, 0, "Reroll Potion");
-            itemsInInv[2] = new Item( 10000000, 0, 0, "Potion of life");
+            itemsInInv[1] = new SkillReroll(0, 0, 0, "Reroll Potion");
+            itemsInInv[2] = new Dice( 0, 0, 0, "Dice");
             itemsInInv[3] = new EnchChair( 0, 0, 0, "Enchanted Chair");
             itemsInInv[4] = new Item(10000000, 0, 0, "Bandage");
             itemsInInv[5] = new Item(10000000, 0, 0, "Med kit");

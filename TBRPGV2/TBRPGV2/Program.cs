@@ -9,7 +9,7 @@ namespace TBRPGV2
     {
         #region Skills
         //Skills
-        const bool chooseStartSkills = true;
+        const bool chooseStartSkills = false;
         public const int amountStartSkills = 3;
         #endregion
         #region Player, Classes
@@ -1266,7 +1266,7 @@ namespace TBRPGV2
                             {
                                 if (currentPlayer.itemsInInv[selectedAttack] != null)
                                 {
-                                    currentPlayer.itemsInInv[selectedAttack].UseItem(currentPlayer);
+                                    currentPlayer.itemsInInv[selectedAttack].UseItem(currentPlayer,currentEnemy);
                                     currentPlayer.itemsInInv[selectedAttack].uses -= 1;
                                     if (currentPlayer.itemsInInv[selectedAttack].uses <= 0)
                                     {
@@ -2179,6 +2179,10 @@ namespace TBRPGV2
                                         break;
                                     case "Reroll":
                                         it = JsonSerializer.Deserialize<SkillReroll>(serializedParent);
+                                        saves[selectedSave].itemsInInv[i] = it;
+                                        break;
+                                    case "Dice":
+                                        it = JsonSerializer.Deserialize<Dice>(serializedParent);
                                         saves[selectedSave].itemsInInv[i] = it;
                                         break;
                                 }

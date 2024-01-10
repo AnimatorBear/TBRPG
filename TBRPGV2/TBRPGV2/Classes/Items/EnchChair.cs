@@ -37,7 +37,7 @@ namespace TBRPGV2
         talk with computers, but made the digital world hate him.
 
         */
-        public override void UseItem(Creature owner)
+        public override void UseItem(Creature owner, Creature enemy)
         {
             owner.HealCreature(healing,false);
 
