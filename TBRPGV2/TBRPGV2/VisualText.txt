@@ -130,6 +130,12 @@ Right Back At You
 |   _-‾|‾‾||
 |_-‾   |‾|‾|
 
+Healing Charge
+|          |
+||_|‾‾‾‾\__|
+||‾|____/‾‾|
+|          |
+
 Extra:
 
 |  ======  |
@@ -327,3 +333,34 @@ b                            b
 b                            b
 b                            b
 bbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+
+
+Locations:
+spawn
+??
+
+-Front
+   ___                       
+  / S \                      
+  |   |    /‾‾‾‾‾‾‾‾‾\       
+  |   |    |  _____  |       
+  |   |    |  | | |  |       
+  |   \____|__| | |__|_______
+  \                          
+   ‾‾‾‾‾‾‾‾‾‾\   \‾‾‾‾‾‾‾‾‾‾‾
+              \   \          
+               \   \         
+                \   \        
+
+-Back
+                             
+                             
+           hhhhhhhhhhh       
+           hhhuuuuuhhh       
+           hhhiiiiihhh   t   
+           bbbiiiiibbb       
+                             
+                             
+                          t  
+                             
+       t                     

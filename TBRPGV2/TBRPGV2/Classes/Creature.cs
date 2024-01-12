@@ -351,7 +351,7 @@ namespace TBRPGV2
                                 {
                                     if (skills[i] == allSkills.Ch_Heals)
                                     {
-                                        HealCreature((maxHealth / 100) * 30,visual);
+                                        HealCreature((maxHealth / 100) * (5 * chargerCharge),visual);
                                     }
                                 }
                                 return totalDamage;
