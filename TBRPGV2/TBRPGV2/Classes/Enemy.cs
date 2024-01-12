@@ -6,7 +6,7 @@
         Creature player;
         int prevAttack = 0;
 
-        public enum sprites { None,Tri,Healer }
+        public enum sprites { None,Tri,Healer,Bag }
         public enum spriteType {Idle,Dead}
         string[,][] enemySprites;
 
@@ -132,6 +132,42 @@
                         } };
                     enemySprites = hlSprites;
                     break;
+                case sprites.Bag:
+                    string[,][] bgSprites = { {
+                    //Idle
+                    new string[]{
+                    "                            ",
+                    "                            ",
+                    "                            ",
+                    "                            ",
+                    "                            ",
+                    "                            ",
+                    "                            ",
+                    "                            ",
+                    "             _--_           ",
+                    "           /‾    \\_         ",
+                    "          /        \\        ",
+                    "          \\        /        ",
+                    "           \\______/         "}
+                    //Dying
+                    ,
+                    new string[]{
+                    "                            ",
+                    "                            ",
+                    "                            ",
+                    "                            ",
+                    "                            ",
+                    "                            ",
+                    "                            ",
+                    "                            ",
+                    "             _--_           ",
+                    "           /‾    \\_         ",
+                    "          /   >:(  \\        ",
+                    "          \\        /        ",
+                    "           \\______/         "}
+                        } };
+                    enemySprites = bgSprites;
+                    break;
             }
         }
         public void WriteEnemySprite(spriteType sp, ConsoleColor color)
@@ -250,6 +286,9 @@
                     break;
                 case Creature.allClasses.Charger:
                     SelectSprite(sprites.Tri);
+                    break;
+                case Creature.allClasses.Bag:
+                    SelectSprite(sprites.Bag);
                     break;
             }
             return currentClass;
