@@ -9,7 +9,7 @@ namespace TBRPGV2
     {
         #region Skills
         //Skills
-        const bool chooseStartSkills = false;
+        const bool chooseStartSkills = true;
         public const int amountStartSkills = 3;
         #endregion
         #region Player, Classes
@@ -71,32 +71,8 @@ namespace TBRPGV2
             {
                 DrawMap();
                 MovePlayer();
-            }
-            do
-            {
-                {
-                    while (currentPlayer.skills[amountStartSkills] == allSkills.None && currentPlayer.currentLevel[0] >= 10)
-                    {
-                        try
-                        {
-                            //Select a 4rth skill at combat level 20
-                            int amount = SelectSkill();
-                            currentPlayer.skills[3] = MoveSelectedSkill(amount, amountStartSkills);
-                            QuickSavePlayer();
-                        }
-                        catch (Exception)
-                        {
-                            break;
-                        }
-                    }
-                }
-                //currentPlayer.health = currentPlayer.maxHealth;
-                currentPlayer.abilityUses = 0;
-                StartBattle();
-                QuickSavePlayer();
 
             }
-            while (true);
         }
 
         #region Character Creation
@@ -423,11 +399,11 @@ namespace TBRPGV2
                 if (i >= 5)
                 {
                     int amount = (int)i / 5;
-                    cursorMoveAmount = 20 * (i - ((amount * 5) - 1));
+                    cursorMoveAmount = 22 * (i - ((amount * 5) - 1));
                 }
                 else
                 {
-                    cursorMoveAmount = 20 * (i + 1);
+                    cursorMoveAmount = 22 * (i + 1);
                 }
                 GetSkillInfo(currentPlayer.skills[i]);
                 cursorMoveAmount = cursorMoveAmount - 10;
@@ -1721,8 +1697,17 @@ namespace TBRPGV2
                         activeSkillsIcon[j] = iconArray[12][j];
                     }
                     skillName = "Right Back At You";
-                    skillDescription[0] = "Dont block, Parry";
-                    skillDescription[1] = "Both combatants take 33% damage";
+                    skillDescription[0] = " both combatants take";
+                    skillDescription[1] = " 33% damage from a dodge";
+                    break;
+                case Creature.allSkills.Ch_Heals:
+                    for (int j = 0; j < 4; j++)
+                    {
+                        activeSkillsIcon[j] = iconArray[0][j];
+                    }
+                    skillName = "Healing Charge";
+                    skillDescription[0] = "Heal 30% health from";
+                    skillDescription[1] = "your class ability";
                     break;
             }
         }
@@ -2525,6 +2510,20 @@ namespace TBRPGV2
                     {
                         mapInVisible[playerLocation[0] + top, playerLocation[1] + left] = ' ';
                         mapVisible[playerLocation[0] + top, playerLocation[1] + left] = ' ';
+                        while (currentPlayer.skills[amountStartSkills] == allSkills.None && currentPlayer.currentLevel[0] >= 10)
+                        {
+                            try
+                            {
+                                //Select a 4rth skill at combat level 20
+                                int amount = SelectSkill();
+                                currentPlayer.skills[3] = MoveSelectedSkill(amount, amountStartSkills);
+                                QuickSavePlayer();
+                            }
+                            catch (Exception)
+                            {
+                                break;
+                            }
+                        }
                     }
                     else
                     {

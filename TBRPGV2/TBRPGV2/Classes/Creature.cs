@@ -52,7 +52,7 @@ namespace TBRPGV2
         #endregion
         #region Skills
         //Skills are small changes , you start with 3 and can unlock 1 at level 20
-        public enum allSkills { None, Healthy, Fast, Violent, Heavy_Hitter, Light_Hitter, Combat_Learner,Accurate,Glass_Cannon, Stone_Wall,NotBag, RngLucky, Right_Back};
+        public enum allSkills { None, Healthy, Fast, Violent, Heavy_Hitter, Light_Hitter, Combat_Learner,Accurate,Glass_Cannon, Stone_Wall,NotBag, RngLucky, Right_Back,Ch_Heals};
         public allSkills[] skills { get; set; } = new allSkills[Program.amountStartSkills + 1];
 
         //Not class specific skills
@@ -69,7 +69,7 @@ namespace TBRPGV2
                 //RNG
                 new allSkills[] {allSkills.RngLucky},
                 //Charger
-                new allSkills[] {allSkills.Glass_Cannon},
+                new allSkills[] {allSkills.Glass_Cannon,allSkills.Ch_Heals},
                 //Bag
                 new allSkills[] {allSkills.Glass_Cannon,allSkills.Stone_Wall,allSkills.NotBag,allSkills.RngLucky }
             };
@@ -338,14 +338,21 @@ namespace TBRPGV2
                                 Random rnd2 = new Random();
                                 int rand2 = rnd2.Next(30, 60);
                                 int rand3 = rnd2.Next(10, 30);
-                                HealCreature(-(maxHealth / 100) * rand3,false);
+                                HealCreature(-(maxHealth / 100) * rand3,visual);
                                 return (int)((maxHealth/100) * rand2);
 
                             case allClasses.Charger:
-                                totalDamage = (int)((((attackDamage * 0.5f) + chargerCharge) * chargerCharge)*damageMultiplier);
+                                totalDamage = (int)((((attackDamage * 0.3f) + chargerCharge) * chargerCharge)*damageMultiplier);
                                 if (!visual)
                                 {
                                     chargerCharge = 0;
+                                }
+                                for (int i = 0;i < skills.Length; i++)
+                                {
+                                    if (skills[i] == allSkills.Ch_Heals)
+                                    {
+                                        HealCreature((maxHealth / 100) * 30,visual);
+                                    }
                                 }
                                 return totalDamage;
 
