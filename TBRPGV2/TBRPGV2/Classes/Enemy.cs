@@ -6,7 +6,7 @@
         Creature player;
         int prevAttack = 0;
 
-        public enum sprites { None,Tri }
+        public enum sprites { None,Tri,Healer }
         public enum spriteType {Idle,Dead}
         string[,][] enemySprites;
 
@@ -95,6 +95,42 @@
                     "          |   |   |         "}
                         } };
                     enemySprites = triSprites;
+                    break;
+                case sprites.Healer:
+                    string[,][] hlSprites = { {
+                    //Idle
+                    new string[]{
+                    "                            ",
+                    "                            ",
+                    "            -----           ",
+                    "           | o o |          ",
+                    "           |  v  |          ",
+                    "            \\ ⏝ /           ",
+                    "             | |            ",
+                    "         /‾‾‾\\_/‾‾‾\\        ",
+                    "        /_/   |   \\_\\       ",
+                    "        | | --+-- | |       ",
+                    "        | |   |   | |       ",
+                    "        \\_|-------|_/       ",
+                    "          |   |   |         "}
+                    //Dying
+                    ,
+                    new string[]{
+                    "                            ",
+                    "                            ",
+                    "            -\\-/-           ",
+                    "           | X X |          ",
+                    "           |  v  |          ",
+                    "            \\ - /           ",
+                    "             | |            ",
+                    "         /‾‾‾\\_/‾‾‾\\        ",
+                    "        /_/   |   \\_\\       ",
+                    "        | | --+-- | |       ",
+                    "        | |   |   | |       ",
+                    "        \\_|-------|_/       ",
+                    "          |   |   |         "}
+                        } };
+                    enemySprites = hlSprites;
                     break;
             }
         }
@@ -196,6 +232,24 @@
                     Console.WriteLine("Error! Cant decide class! Went to default DamageDealer");
                     currentClass = Creature.allClasses.DamageDealer;
                     Thread.Sleep(10000);
+                    break;
+            }
+            switch (currentClass)
+            {
+                case Creature.allClasses.DamageDealer:
+                    SelectSprite(sprites.Tri);
+                    break;
+                case Creature.allClasses.Tank:
+                    SelectSprite(sprites.Tri);
+                    break;
+                case Creature.allClasses.Healer:
+                    SelectSprite(sprites.Healer);
+                    break;
+                case Creature.allClasses.RNG:
+                    SelectSprite(sprites.Tri);
+                    break;
+                case Creature.allClasses.Charger:
+                    SelectSprite(sprites.Tri);
                     break;
             }
             return currentClass;

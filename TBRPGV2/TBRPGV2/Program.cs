@@ -449,7 +449,6 @@ namespace TBRPGV2
             {
                 enemy.currentClass = enemyBrain.ChooseClass();
             }
-            enemyBrain.SelectSprite(Enemy.sprites.Tri);
             enemyBrain.ChooseExtraSkill();
 
             //Recalculate Stats
