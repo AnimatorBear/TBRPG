@@ -2165,28 +2165,31 @@ namespace TBRPGV2
                         }
                         break;
                     case ConsoleKey.Enter:
-                        for (int i = 0; i < saves[selectedSave].itemsInInv.Length; i++)
+                        if(selectedSave < 4)
                         {
-                            if (saves[selectedSave].itemsInInv[i] != null)
+                            for (int i = 0; i < saves[selectedSave].itemsInInv.Length; i++)
                             {
-                                var serializedParent = JsonSerializer.Serialize(saves[selectedSave].itemsInInv[i]);
-                                var it = new Item();
-                                switch (saves[selectedSave].itemsInInv[i].itemName)
+                                if (saves[selectedSave].itemsInInv[i] != null)
                                 {
-                                    case "Enchanted Chair":
-                                        it = JsonSerializer.Deserialize<EnchChair>(serializedParent);
-                                        saves[selectedSave].itemsInInv[i] = it;
-                                        break;
-                                    case "Reroll":
-                                        it = JsonSerializer.Deserialize<SkillReroll>(serializedParent);
-                                        saves[selectedSave].itemsInInv[i] = it;
-                                        break;
-                                    case "Dice":
-                                        it = JsonSerializer.Deserialize<Dice>(serializedParent);
-                                        saves[selectedSave].itemsInInv[i] = it;
-                                        break;
-                                }
+                                    var serializedParent = JsonSerializer.Serialize(saves[selectedSave].itemsInInv[i]);
+                                    var it = new Item();
+                                    switch (saves[selectedSave].itemsInInv[i].itemName)
+                                    {
+                                        case "Enchanted Chair":
+                                            it = JsonSerializer.Deserialize<EnchChair>(serializedParent);
+                                            saves[selectedSave].itemsInInv[i] = it;
+                                            break;
+                                        case "Reroll":
+                                            it = JsonSerializer.Deserialize<SkillReroll>(serializedParent);
+                                            saves[selectedSave].itemsInInv[i] = it;
+                                            break;
+                                        case "Dice":
+                                            it = JsonSerializer.Deserialize<Dice>(serializedParent);
+                                            saves[selectedSave].itemsInInv[i] = it;
+                                            break;
+                                    }
 
+                                }
                             }
                         }
                         switch (selectedSave)
@@ -2235,7 +2238,9 @@ namespace TBRPGV2
                                     NewCharacter();
                                 }
                                 break;
-                            case 4: LoadPlayer();
+                            case 4:
+                                selectedSave = 0;
+                                LoadPlayer();
                                 break;
                         }
                         selecting = false;
@@ -2414,10 +2419,11 @@ namespace TBRPGV2
         //h = Player Hidden
         //o = One Way Door (Enter from going down, cant go through from going up)
         //u = Cant move between it and the part above it directly
+        //i = Inn, for healing
         static char[,] mapInVisible =
 {
 {'b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b',},
-{'b','e','e','e','e',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','b',},
+{'b','e','e','e','e','i',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','b',},
 {'b',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','b',},
 {'b',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','b',},
 {'b',' ',' ',' ',' ',' ',' ',' ',' ','t',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','b',},
@@ -2509,24 +2515,27 @@ namespace TBRPGV2
         }
         static bool TryMove(int top, int left)
         {
-            if(mapInVisible[playerLocation[0] + top, playerLocation[1] + left] == 'b')
+            switch(mapInVisible[playerLocation[0] + top, playerLocation[1] + left])
             {
-                return false;
-            }
-            if (mapInVisible[playerLocation[0] + top, playerLocation[1] + left] == 'e')
-            {
-                currentPlayer.abilityUses = 0;
-                if (!StartBattle())
-                {
-                    mapInVisible[playerLocation[0] + top, playerLocation[1] + left] = ' ';
-                    mapVisible[playerLocation[0] + top, playerLocation[1] + left] = ' ';
-                }
-                else
-                {
-                    mapInVisible[playerLocation[0] + top, playerLocation[1] + left] = ' ';
-                    mapVisible[playerLocation[0] + top, playerLocation[1] + left] = 'L';
-                }
-                QuickSavePlayer();
+                case 'b':
+                    return false;
+                case 'e':
+                    currentPlayer.abilityUses = 0;
+                    if (!StartBattle())
+                    {
+                        mapInVisible[playerLocation[0] + top, playerLocation[1] + left] = ' ';
+                        mapVisible[playerLocation[0] + top, playerLocation[1] + left] = ' ';
+                    }
+                    else
+                    {
+                        mapInVisible[playerLocation[0] + top, playerLocation[1] + left] = ' ';
+                        mapVisible[playerLocation[0] + top, playerLocation[1] + left] = 'L';
+                    }
+                    QuickSavePlayer();
+                    break;
+                case 'i':
+                    currentPlayer.HealCreature(1000000, false);
+                    break;
             }
             //Tree stump and one way gate
             if(top == -1 && left == 0)

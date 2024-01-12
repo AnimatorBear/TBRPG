@@ -591,6 +591,10 @@ namespace TBRPGV2
             if (!doesntHeal)
             {
                 health += (int)healing;
+                if(health > maxHealth)
+                {
+                    health = maxHealth;
+                }
             }
         }
         public void AddXP(int xp,bool levels = false)
