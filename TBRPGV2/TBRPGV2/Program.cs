@@ -1002,9 +1002,9 @@ namespace TBRPGV2
                 Console.SetCursorPosition(10, 25);
                 for(int i = 0;i < 6; i++)
                 {
-                    if (currentPlayer.itemsInInv[i] != null)
+                    if (currentPlayer.itemsInBattleInv[i] != null)
                     {
-                        Item it = currentPlayer.itemsInInv[i];
+                        Item it = currentPlayer.itemsInBattleInv[i];
                         if (selectedAttack == i && color == ConsoleColor.White)
                         {
                             for (int j = 0; j < 7; j++)
@@ -1139,7 +1139,7 @@ namespace TBRPGV2
                             bool hasSpot = true;
                             for(int i = 0; i < 6; i++)
                             {
-                                if (currentPlayer.itemsInInv[i] != null)
+                                if (currentPlayer.itemsInBattleInv[i] != null)
                                 {
                                     hasSpot = false;
                                 }
@@ -1163,7 +1163,7 @@ namespace TBRPGV2
                                 {
                                     selectedAttack = 5;
                                 }
-                                if (currentPlayer.itemsInInv[selectedAttack] != null)
+                                if (currentPlayer.itemsInBattleInv[selectedAttack] != null)
                                 {
                                     hasSpot = true;
                                 }
@@ -1194,7 +1194,7 @@ namespace TBRPGV2
                             bool hasSpot = true;
                             for (int i = 0; i < 6; i++)
                             {
-                                if (currentPlayer.itemsInInv[i] != null)
+                                if (currentPlayer.itemsInBattleInv[i] != null)
                                 {
                                     hasSpot = false;
                                 }
@@ -1218,7 +1218,7 @@ namespace TBRPGV2
                                 {
                                     selectedAttack = 5;
                                 }
-                                if (currentPlayer.itemsInInv[selectedAttack] != null)
+                                if (currentPlayer.itemsInBattleInv[selectedAttack] != null)
                                 {
                                     hasSpot = true;
                                 }
@@ -1240,17 +1240,17 @@ namespace TBRPGV2
                         {
                             if(selectedAttack <= 5 && selectedAttack >= 0)
                             {
-                                if (currentPlayer.itemsInInv[selectedAttack] != null)
+                                if (currentPlayer.itemsInBattleInv[selectedAttack] != null)
                                 {
-                                    currentPlayer.itemsInInv[selectedAttack].UseItem(currentPlayer,currentEnemy);
-                                    currentPlayer.itemsInInv[selectedAttack].uses -= 1;
-                                    if (currentPlayer.itemsInInv[selectedAttack].uses <= 0)
+                                    currentPlayer.  itemsInBattleInv[selectedAttack].UseItem(currentPlayer,currentEnemy);
+                                    currentPlayer.itemsInBattleInv[selectedAttack].uses -= 1;
+                                    if (currentPlayer.itemsInBattleInv[selectedAttack].uses <= 0)
                                     {
-                                        currentPlayer.itemsInInv[selectedAttack] = null;
+                                        currentPlayer.itemsInBattleInv[selectedAttack] = null;
                                         bool hasSpot = true;
                                         for (int i = 0; i < 6; i++)
                                         {
-                                            if (currentPlayer.itemsInInv[i] != null)
+                                            if (currentPlayer.itemsInBattleInv[i] != null)
                                             {
                                                 hasSpot = false;
                                             }
@@ -1274,7 +1274,7 @@ namespace TBRPGV2
                                             {
                                                 selectedAttack = 5;
                                             }
-                                            if (currentPlayer.itemsInInv[selectedAttack] != null)
+                                            if (currentPlayer.itemsInBattleInv[selectedAttack] != null)
                                             {
                                                 hasSpot = true;
                                             }
@@ -2159,25 +2159,25 @@ namespace TBRPGV2
                     case ConsoleKey.Enter:
                         if(selectedSave < 4)
                         {
-                            for (int i = 0; i < saves[selectedSave].itemsInInv.Length; i++)
+                            for (int i = 0; i < saves[selectedSave].itemsInBattleInv.Length; i++)
                             {
-                                if (saves[selectedSave].itemsInInv[i] != null)
+                                if (saves[selectedSave].itemsInBattleInv[i] != null)
                                 {
-                                    var serializedParent = JsonSerializer.Serialize(saves[selectedSave].itemsInInv[i]);
+                                    var serializedParent = JsonSerializer.Serialize(saves[selectedSave].itemsInBattleInv[i]);
                                     var it = new Item();
-                                    switch (saves[selectedSave].itemsInInv[i].itemName)
+                                    switch (saves[selectedSave].itemsInBattleInv[i].itemName)
                                     {
                                         case "Enchanted Chair":
                                             it = JsonSerializer.Deserialize<EnchChair>(serializedParent);
-                                            saves[selectedSave].itemsInInv[i] = it;
+                                            saves[selectedSave].itemsInBattleInv[i] = it;
                                             break;
                                         case "Reroll":
                                             it = JsonSerializer.Deserialize<SkillReroll>(serializedParent);
-                                            saves[selectedSave].itemsInInv[i] = it;
+                                            saves[selectedSave].itemsInBattleInv[i] = it;
                                             break;
                                         case "Dice":
                                             it = JsonSerializer.Deserialize<Dice>(serializedParent);
-                                            saves[selectedSave].itemsInInv[i] = it;
+                                            saves[selectedSave].itemsInBattleInv[i] = it;
                                             break;
                                     }
 
@@ -2422,7 +2422,7 @@ namespace TBRPGV2
 {' ','b',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','h','h','h','h','h','h','h','h','h','h','h',' ',' ',' ',' ',' ',' ',' ',' ',},
 {'b',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','h','h','h','b','u','u','u','b','h','h','h',' ',' ',' ',' ',' ',' ',' ',' ',},
 {'b',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','t',' ',' ',' ','b','b','b','b','i','i','i','b','b','b','b',' ',' ',' ',' ',' ','e','e','e',},
-{'b',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','e','e','e',},
+{'b',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','q',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','e','e','e',},
 {'b',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','t','e','e','e',},
 {'b',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',},
 {' ','b',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',},
@@ -2533,7 +2533,6 @@ namespace TBRPGV2
                                 //Select a 4rth skill at combat level 20
                                 int amount = SelectSkill();
                                 currentPlayer.skills[3] = MoveSelectedSkill(amount, amountStartSkills);
-                                QuickSavePlayer();
                             }
                             catch (Exception)
                             {
@@ -2550,6 +2549,9 @@ namespace TBRPGV2
                     break;
                 case 'i':
                     currentPlayer.HealCreature(1000000, false);
+                    break;
+                case 'q':
+                    QuickSavePlayer();
                     break;
             }
             //Tree stump and one way gate
