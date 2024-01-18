@@ -273,7 +273,7 @@ Tri:
 |          |=={=}==|         |
 |          |   |   |         |
 
-Damage Dealer: 
+Cult: 
 |                            |
 |              ^             |
 |             / \            |
@@ -386,6 +386,11 @@ spawn
      \                 \   \       |
      |                  |   |      |
      |      e           |   |      |
+     |
+     |
+     |
+
+     
 
 -Back
      bbbbbbbbbbbbbbbbbbbbbbbbbbbbb 
