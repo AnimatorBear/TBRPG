@@ -6,9 +6,10 @@
         Creature player;
         int prevAttack = 0;
 
-        public enum sprites { None,Tri,Healer,Bag }
+        public enum sprites { None,Tri,Healer,Bag,Bandit }
         public enum spriteType {Idle,Dead}
         string[,][] enemySprites;
+        public bool isPreset = false;
 
         public Enemy(Creature _enemy,Creature _player)
         {
@@ -167,6 +168,40 @@
                     "           \\______/         "}
                         } };
                     enemySprites = bgSprites;
+                    break;
+                case sprites.Bandit:
+                    string[,][] banditSprites = { {
+                    //Idle
+                    new string[]{
+                    "            _____           ",
+                    "         __/     \\__        ",
+                    "        /  _______  \\       ",
+                    "        \\_// o o \\\\_/       ",
+                    "           \\_/‾\\_/          ",
+                    "            \\   /           ",
+                    "             |‾|            ",
+                    "         /‾‾‾\\_/‾‾‾\\        ",
+                    "        / /  | |  \\ \\       ",
+                    "        | |  | |  | |       ",
+                    "        |_|  | |  |_|       ",
+                    "        \\_|=={=}==|_/       ",
+                    "          |   |   |         "},
+                    //Idk
+                    new string[]{
+                    "            _____           ",
+                    "         __/     \\__        ",
+                    "        /  _______  \\       ",
+                    "        \\_// o o \\\\_/       ",
+                    "     |‾|   \\_/‾\\_/   |‾|    ",
+                    "      \\ \\   \\   /   / /     ",
+                    "       \\ \\   |‾|   / /      ",
+                    "        \\ ‾‾‾\\_/‾‾‾ /       ",
+                    "         ‾|  | |  |‾        ",
+                    "          |  | |  |         ",
+                    "          |  | |  |         ",
+                    "          |=={=}==|         ",
+                    "          |   |   |         "} } };
+                    enemySprites = banditSprites;
                     break;
             }
         }

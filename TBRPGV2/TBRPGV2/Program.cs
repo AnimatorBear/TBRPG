@@ -435,17 +435,28 @@ namespace TBRPGV2
         #endregion
 
         #region Battle
-        static bool StartBattle()
+        static bool StartBattle(int preset = 0)
         {
             //Makes the enemy
             Console.Clear();
             Creature enemy = new Creature(allClasses.Class_None, currentPlayer.currentLevel[0]);
             Enemy enemyBrain = new Enemy(enemy, currentPlayer);
             currentEnemy = enemy;
-            if(forceEnemyClass != allClasses.Class_None)
+            #region Presets
+            if (preset != 0)
             {
-                enemy.currentClass = forceEnemyClass;
+                switch (preset)
+                {
+                    case 1:
+                        enemy.currentClass = allClasses.DamageDealer;
+                        enemyBrain.isPreset = true;
+                        enemy.maxHealth = 90;
+                        enemy.damage -= 2;
+                        enemyBrain.SelectSprite(Enemy.sprites.Bandit);
+                        break;
+                }
             }
+            #endregion
             else
             {
                 enemy.currentClass = enemyBrain.ChooseClass();
@@ -453,7 +464,10 @@ namespace TBRPGV2
             enemyBrain.ChooseExtraSkill();
 
             //Recalculate Stats
-            enemy.RecalculateStats();
+            if (!enemyBrain.isPreset)
+            {
+                enemy.RecalculateStats();
+            }
             currentPlayer.RecalculateStats();
             enemy.health = enemy.maxHealth;
 
@@ -2406,6 +2420,7 @@ namespace TBRPGV2
 
         //b = Block/Barrier (Basically a wall)
         //e = Enemy (So battle)
+        //Number under something means it uses a preset
         //t = Tree (Makes a tree model)
         //h = Player Hidden
         //o = One Way Door (Enter from going down, cant go through from going up)
@@ -2424,7 +2439,7 @@ namespace TBRPGV2
 {'b',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','t',' ',' ',' ','b','b','b','b','i','i','i','b','b','b','b',' ',' ',' ',' ',' ','e','e','e',},
 {'b',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','q',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','e','e','e',},
 {'b',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','t','e','e','e',},
-{'b',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',},
+{'b',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','1',},
 {' ','b',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',},
 {' ',' ','b',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',},
 };
@@ -2520,9 +2535,28 @@ namespace TBRPGV2
             {
                 case 'b':
                     return false;
+                case 'B':
+                    return false;
                 case 'e':
+                    char chara = mapInVisible[playerLocation[0],playerLocation[1]];
+                    int i = 1;
+                    bool playerLost;
+                    while(chara == 'B')
+                    {
+                        chara = mapInVisible[playerLocation[0] + i, playerLocation[1]];
+                        i++;
+                    }
+                    try
+                    {
+                        int numb = Int32.Parse(chara.ToString());
+                        playerLost = StartBattle(numb);
+                    }
+                    catch (FormatException)
+                    {
+                        playerLost = StartBattle();
+                    }
                     currentPlayer.abilityUses = 0;
-                    if (!StartBattle())
+                    if (!playerLost)
                     {
                         mapInVisible[playerLocation[0] + top, playerLocation[1] + left] = ' ';
                         mapVisible[playerLocation[0] + top, playerLocation[1] + left] = ' ';

@@ -5,6 +5,7 @@ namespace TBRPGV2
 {
     class Dice : Item
     {
+        //Doesnt work!!!
         #region jsonConstructor
         [JsonConstructor]
         public Dice()

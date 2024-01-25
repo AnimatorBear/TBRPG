@@ -15,7 +15,7 @@ namespace TBRPGV2
         public float damageMultiplier { get; set; } = 1;
         //Misc Stats
         //Combat is the main progress in the game
-        //Mining is for armor
+        //Mining is for armor (Scrapped :( )
         //
         //Combat, Mining, 
         public int[] currentLevel { get; set; } = new int[2];
@@ -104,13 +104,8 @@ namespace TBRPGV2
             currentClass = newClass;
             currentLevel[0] = startingLevel;
             health = maxHealth;
-            itemsInBattleInv[0] = new Item(10000000,0,0,"Health Pot");
-            itemsInBattleInv[0].description = new string[4] { "Heals you","For like","a billion ","health" };
             itemsInBattleInv[1] = new SkillReroll(0, 0, 0, "Reroll Potion");
-            itemsInBattleInv[2] = new Dice( 0, 0, 0, "Dice");
             itemsInBattleInv[3] = new EnchChair( 0, 0, 0, "Enchanted Chair");
-            itemsInBattleInv[4] = new Item(10000000, 0, 0, "Bandage");
-            itemsInBattleInv[5] = new Item(10000000, 0, 0, "Med kit");
         }
 
         public void GiveBaseAttacks()
