@@ -68,6 +68,9 @@ namespace TBRPGV2
             LoadPlayer();
             Console.Clear();
             ChooseColor();
+            DrawTop();
+            Dialoge(1);
+            Dialoge(2);
             while (true)
             {
                 DrawMap();
@@ -453,6 +456,7 @@ namespace TBRPGV2
                         enemy.maxHealth = 90;
                         enemy.damage -= 2;
                         enemyBrain.SelectSprite(Enemy.sprites.Bandit);
+                        currentPlayer.hasKey[0] = true;
                         break;
                 }
             }
@@ -1743,6 +1747,7 @@ namespace TBRPGV2
                 Directory.CreateDirectory("Saves");
             }
             string jsonString = "";
+            currentPlayer.playerLocationInSave = playerLocation;
             if(currentPlayingSave >= 1)
             {
                 jsonString = JsonSerializer.Serialize(currentPlayer, fileOptions);
@@ -2194,6 +2199,7 @@ namespace TBRPGV2
                                             saves[selectedSave].itemsInBattleInv[i] = it;
                                             break;
                                     }
+                                    playerLocation = saves[selectedSave].playerLocationInSave;
 
                                 }
                             }
@@ -2404,18 +2410,25 @@ namespace TBRPGV2
         #region Map
         static char[,] mapVisible =
             {
-{' ',' ',' ',' ',' ','_','-','|','|','|','|','|','‾','‾','‾','‾','‾','‾','‾','‾','‾','‾','-','-','-','-','-','-','-','-','‾','‾','‾','‾',' ','|',},
-{' ',' ',' ',' ','/',' ','/','‾','‾','‾','‾','‾','\\',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','|',},
-{' ',' ',' ','|',' ',' ','\\','|',' ',' ',' ','|','/',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','|',},
-{' ',' ','/',' ',' ',' ',' ','|',' ',' ','⏣','|',' ',' ',' ',' ','/','‾','‾','‾','‾','‾','‾','‾','‾','‾','\\',' ',' ',' ',' ',' ',' ',' ',' ','|',},
-{' ','/',' ',' ',' ',' ',' ','|',' ',' ',' ','|',' ',' ',' ',' ','|',' ',' ','_','_','_','_','_',' ',' ','|',' ',' ',' ',' ',' ',' ',' ',' ','|',},
-{'|',' ',' ',' ',' ',' ',' ','|',' ',' ',' ','|',' ',' ',' ',' ','|',' ',' ','|',' ','|',' ','|',' ',' ','|',' ',' ',' ',' ',' ',' ',' ',' ','|',},
-{'|',' ',' ',' ',' ',' ',' ','|',' ',' ',' ','\\','_','_','_','_','|','_','_','|',' ','|',' ','|','_','_','|','_','_','_','_','_','_','_',' ','|',},
-{'|',' ',' ',' ',' ',' ',' ','\\',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','|',},
-{'|',' ',' ',' ',' ',' ',' ',' ','‾','‾','‾','‾','‾','‾','‾','‾','‾','‾','\\',' ',' ',' ','\\','‾','‾','‾','‾','‾','‾','‾','‾','‾','‾','‾',' ','|',},
-{'|',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','\\',' ',' ',' ','\\',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','|',},
-{' ','\\',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','\\',' ',' ',' ','\\',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','|',},
-{' ',' ','\\',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','\\',' ',' ',' ','\\',' ',' ',' ',' ',' ',' ',' ',' ',' ','|',},
+{' ',' ',' ',' ',' ','_','|',' ',' ',' ',' ',' ','|','‾','‾','‾','‾','‾','‾','‾','‾','‾','-','-','-','-','-','-','-','-','‾','‾','‾','‾','‾','|','‾','‾','‾','‾','‾','‾','‾','‾','‾','-','-','-','-','-','-','-',},
+{' ',' ',' ',' ','/',' ','/','‾','‾','‾','‾','‾','\\',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','|',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',},
+{' ',' ',' ','|',' ',' ','\\','|',' ',' ',' ','|','/',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','|',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',},
+{' ',' ','/',' ',' ',' ',' ','|',' ',' ',' ','|',' ',' ',' ',' ','/','‾','‾','‾','‾','‾','‾','‾','‾','‾','\\',' ',' ',' ',' ',' ',' ',' ',' ','|',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',},
+{' ','/',' ',' ',' ',' ',' ','|',' ',' ',' ','|',' ',' ',' ',' ','|',' ',' ','_','_','_','_','_',' ',' ','|',' ',' ',' ',' ',' ',' ',' ','|','-','|',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',},
+{'|',' ',' ',' ',' ',' ',' ','|',' ',' ',' ','|',' ',' ',' ',' ','|',' ',' ','|',' ','|',' ','|',' ',' ','|',' ',' ',' ',' ',' ',' ',' ','|','|','|',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',},
+{'|',' ',' ',' ',' ',' ',' ','|',' ',' ',' ','\\','_','_','_','_','|','_','_','|',' ','|',' ','|','_','_','|','_','_','_','_','_','_','_','|','|','|','_','_','_','_','_','_','_','_','_','_','_','_','_','_','_',},
+{'|',' ',' ',' ',' ',' ',' ','\\',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','⏣',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '},
+{'|',' ',' ',' ',' ',' ',' ',' ','‾','‾','‾','‾','‾','‾','‾','‾','‾','‾','\\',' ',' ',' ','\\','‾','‾','‾','‾','‾','‾','‾','‾','‾','‾','‾','|','|','|','‾','‾','‾','‾','‾','‾','‾','‾','‾','‾','‾','‾','‾','‾','‾',},
+{'|',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','\\',' ',' ',' ','\\',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','|','|','|',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',},
+{' ','\\',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','\\',' ',' ',' ','\\',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','|',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',},
+{' ',' ','\\',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','\\',' ',' ',' ','\\',' ',' ',' ',' ',' ',' ',' ',' ',' ','|',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',},
+{' ',' ',' ','‾','\\',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','\\',' ',' ',' ','\\',' ',' ',' ',' ',' ',' ',' ',' ','|',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',},
+{' ',' ',' ',' ',' ','\\',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','\\',' ',' ',' ','\\',' ',' ',' ',' ',' ',' ',' ','|',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',},
+{' ',' ',' ',' ',' ','|',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','|',' ',' ',' ','|',' ',' ',' ',' ',' ',' ','|',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',},
+{' ',' ',' ',' ',' ','|',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','|',' ',' ',' ','|',' ',' ',' ',' ',' ',' ','|',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',},
+{' ',' ',' ',' ',' ','|',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','|',' ',' ',' ','|',' ',' ',' ',' ',' ',' ','|',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',},
+{' ',' ',' ',' ',' ','|',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','|',' ',' ',' ','|',' ',' ',' ',' ',' ',' ','|',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',},
+{' ',' ',' ',' ',' ','|',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','|',' ',' ',' ','|',' ',' ',' ',' ',' ',' ','|',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',},
 };
 
         //b = Block/Barrier (Basically a wall)
@@ -2428,23 +2441,29 @@ namespace TBRPGV2
         //i = Inn, for healing
         //l = locked
         //Numbers stand for some info like shop 1 or key 1
-        static char[,] mapInVisible =
-{
-{' ',' ',' ',' ',' ','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b','b',' ',},
-{' ',' ',' ',' ','b',' ','b','h','h','h','h','h','b',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',},
-{' ',' ',' ','b',' ',' ','b',' ',' ',' ',' ',' ','b',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',},
-{' ',' ','b',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','h','h','h','h','h','h','h','h','h','h','h',' ',' ',' ','t',' ',' ',' ',' ',},
-{' ','b',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','h','h','h','h','h','h','h','h','h','h','h',' ',' ',' ',' ',' ',' ',' ',' ',},
-{'b',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','h','h','h','b','u','u','u','b','h','h','h',' ',' ',' ',' ',' ',' ',' ',' ',},
-{'b',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','t',' ',' ',' ','b','b','b','b','i','i','i','b','b','b','b',' ',' ',' ',' ',' ','e','e','e',},
-{'b',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','q',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','e','e','e',},
-{'b',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','t','e','e','e',},
-{'b',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','1',},
-{' ','b',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',},
-{' ',' ','b',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',},
+        static char[,] mapInVisible = {
+{' ',' ',' ',' ',' ','_','|',' ',' ',' ',' ',' ','|','‾','‾','‾','‾','‾','‾','‾','‾','‾','-','-','-','-','-','-','-','-','‾','‾','‾','‾','‾','|','‾','‾','‾','‾','‾','‾','‾','‾','‾','-','-','-','-','-','-','-',},
+{' ',' ',' ',' ','/',' ','/','‾','‾','‾','‾','‾','\\',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','|',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',},
+{' ',' ',' ','|',' ',' ','\\','|','k',' ','d','|','/',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','|',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',},
+{ ' ',' ','/',' ',' ',' ',' ','|','0',' ','2','|',' ',' ',' ',' ','/','‾','‾','‾','‾','‾','‾','‾','‾','‾','\\',' ',' ',' ',' ',' ',' ',' ',' ','|',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',},
+{ ' ','/',' ',' ',' ',' ',' ','|',' ',' ','e','|',' ',' ',' ',' ','|',' ',' ','_','_','_','_','_',' ',' ','|',' ',' ',' ',' ',' ',' ',' ','|','-','|',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',},
+{ '|',' ',' ',' ',' ',' ',' ','|','l',' ','1','|',' ',' ',' ',' ','|',' ',' ','|',' ','|',' ','|',' ',' ','|',' ',' ',' ',' ',' ',' ',' ','|','|','|',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',},
+{ '|',' ',' ',' ',' ',' ',' ','|','0',' ',' ','\\','_','_','_','_','|','_','_','|',' ','|',' ','|','_','_','|','_','_','_','_','_','_','_','|','|','|','_','_','_','_','_','_','_','_','_','_','_','_','_','_','_',},
+{ '|',' ',' ',' ',' ',' ',' ','\\',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','⏣',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '},
+{ '|',' ',' ',' ',' ',' ',' ',' ','‾','‾','‾','‾','‾','‾','‾','‾','‾','‾','\\',' ',' ',' ','\\','‾','‾','‾','‾','‾','‾','‾','‾','‾','‾','‾','|','|','|','‾','‾','‾','‾','‾','‾','‾','‾','‾','‾','‾','‾','‾','‾','‾',},
+{ '|',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','\\',' ',' ',' ','\\',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','|','|','|',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',},
+{ ' ','\\',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','\\',' ',' ',' ','\\',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','|',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',},
+{ ' ',' ','\\',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','\\',' ',' ',' ','\\',' ',' ',' ',' ',' ',' ',' ',' ',' ','|',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',},
+{ ' ',' ',' ','‾','\\',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','\\',' ',' ',' ','\\',' ',' ',' ',' ',' ',' ',' ',' ','|',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',},
+{ ' ',' ',' ',' ',' ','\\',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','\\',' ',' ',' ','\\',' ',' ',' ',' ',' ',' ',' ','|',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',},
+{ ' ',' ',' ',' ',' ','|',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','|',' ',' ',' ','|',' ',' ',' ',' ',' ',' ','|',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',},
+{ ' ',' ',' ',' ',' ','|',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','|',' ',' ',' ','|',' ',' ',' ',' ',' ',' ','|',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',},
+{ ' ',' ',' ',' ',' ','|',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','|',' ',' ',' ','|',' ',' ',' ',' ',' ',' ','|',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',},
+{ ' ',' ',' ',' ',' ','|',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','|',' ',' ',' ','|',' ',' ',' ',' ',' ',' ','|',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',},
+{ ' ',' ',' ',' ',' ','|',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','|',' ',' ',' ','|',' ',' ',' ',' ',' ',' ','|',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',},
 };
         static int[] playerLocation = { 3, 9 };
-        static int[] visibleRange = {10,20};
+        static int[] visibleRange = {10,35};
 
         static ConsoleColor playerColor = ConsoleColor.White;
         const char playerChar = 'p';
@@ -2452,7 +2471,8 @@ namespace TBRPGV2
 
         static void DrawMap()
         {
-            Console.Clear();
+            Console.SetCursorPosition(0, 5);
+            //Console.Clear();
             if (mapInVisible[playerLocation[0], playerLocation[1]] != 'h')
             {
                 mapVisible[playerLocation[0], playerLocation[1]] = playerChar;
@@ -2475,7 +2495,7 @@ namespace TBRPGV2
                     }
                     catch (IndexOutOfRangeException)
                     {
-
+                        Console.Write(" ");
                     }
                 }
                 Console.WriteLine();
@@ -2488,6 +2508,7 @@ namespace TBRPGV2
             while (!gotkey)
             {
                 ConsoleKey key = Console.ReadKey(true).Key;
+                WriteDialoge(new string[] { "", "", "" });
                 switch (key)
                 {
                     case ConsoleKey.A:
@@ -2529,57 +2550,167 @@ namespace TBRPGV2
                 }
             }
         }
-        static bool TryMove(int top, int left)
+        static bool TryMove(int top, int left,bool fromDia = false)
         {
-            switch(mapInVisible[playerLocation[0] + top, playerLocation[1] + left])
+            switch (mapInVisible[playerLocation[0] + top, playerLocation[1] + left])
             {
                 case 'b':
                     return false;
                 case 'B':
                     return false;
-                case 'e':
-                    char chara = mapInVisible[playerLocation[0],playerLocation[1]];
-                    int i = 1;
-                    bool playerLost;
-                    while(chara == 'B')
+                case 'd':
+                    char charaDia = mapInVisible[playerLocation[0] + top + 1, playerLocation[1] + left];
+                    int dia = 1;
+                    bool playerLostDia;
+                    while (charaDia == 'B')
                     {
-                        chara = mapInVisible[playerLocation[0] + i, playerLocation[1]];
-                        i++;
+                        charaDia = mapInVisible[playerLocation[0] + dia + top, playerLocation[1] + left];
+                        dia++;
                     }
                     try
                     {
-                        int numb = Int32.Parse(chara.ToString());
-                        playerLost = StartBattle(numb);
+                        int numb = Int32.Parse(charaDia.ToString());
+                        Dialoge(numb);
                     }
                     catch (FormatException)
                     {
-                        playerLost = StartBattle();
+                        Dialoge(0);
                     }
-                    currentPlayer.abilityUses = 0;
-                    if (!playerLost)
+                    dia += 1;
+                    charaDia = mapInVisible[playerLocation[0] + dia + top, playerLocation[1] + left];
+                    while (charaDia == 'B')
                     {
-                        mapInVisible[playerLocation[0] + top, playerLocation[1] + left] = ' ';
-                        mapVisible[playerLocation[0] + top, playerLocation[1] + left] = ' ';
-                        while (currentPlayer.skills[amountStartSkills] == allSkills.None && currentPlayer.currentLevel[0] >= 10)
+                        charaDia = mapInVisible[playerLocation[0] + dia + top, playerLocation[1] + left];
+                        dia++;
+                    }
+                    TryMove(top + dia, left,true);
+                    mapInVisible[playerLocation[0] + top, playerLocation[1] + left] = ' ';
+                    break;
+                case 'e':
+                    if(mapInVisible[playerLocation[0] + top - 2, playerLocation[1] + left] != 'd' || fromDia)
+                    {
+
+                        char chara = mapInVisible[playerLocation[0] + top + 1,playerLocation[1] + left];
+                        int i = 1;
+                        bool playerLost;
+                        while(chara == 'B')
                         {
-                            try
+                            chara = mapInVisible[playerLocation[0] + i + top, playerLocation[1] + left];
+                            i++;
+                        }
+                        try
+                        {
+                            int numb = Int32.Parse(chara.ToString());
+                            playerLost = StartBattle(numb);
+                        }
+                        catch (FormatException)
+                        {
+                            playerLost = StartBattle();
+                        }
+                        currentPlayer.abilityUses = 0;
+                        if (!playerLost)
+                        {
+                            mapInVisible[playerLocation[0] + top, playerLocation[1] + left] = ' ';
+                            mapVisible[playerLocation[0] + top, playerLocation[1] + left] = ' ';
+                            while (currentPlayer.skills[amountStartSkills] == allSkills.None && currentPlayer.currentLevel[0] >= 10)
                             {
-                                //Select a 4rth skill at combat level 20
-                                int amount = SelectSkill();
-                                currentPlayer.skills[3] = MoveSelectedSkill(amount, amountStartSkills);
-                            }
-                            catch (Exception)
-                            {
-                                break;
+                                try
+                                {
+                                    //Select a 4rth skill at combat level 20
+                                    int amount = SelectSkill();
+                                    currentPlayer.skills[3] = MoveSelectedSkill(amount, amountStartSkills);
+                                }
+                                catch (Exception)
+                                {
+                                    break;
+                                }
                             }
                         }
+                        else
+                        {
+                            mapInVisible[playerLocation[0] + top, playerLocation[1] + left] = ' ';
+                            mapVisible[playerLocation[0] + top, playerLocation[1] + left] = 'L';
+                        }
+                        QuickSavePlayer();
+                        DrawTop();
                     }
-                    else
+                    break;
+                case 'k':
+                    char charaKe = mapInVisible[playerLocation[0] + top + 1, playerLocation[1] + left];
+                    int iKe = 1;
+                    while (charaKe == 'B')
                     {
-                        mapInVisible[playerLocation[0] + top, playerLocation[1] + left] = ' ';
-                        mapVisible[playerLocation[0] + top, playerLocation[1] + left] = 'L';
+                        charaKe = mapInVisible[playerLocation[0] + iKe + top, playerLocation[1] + left];
+                        iKe++;
+                    }
+                    try
+                    {
+                        int numb = Int32.Parse(charaKe.ToString());
+                        currentPlayer.hasKey[numb] = true;
+                    }
+                    catch (FormatException)
+                    {
+
+                    }
+                    break;
+                case 'l':
+                    char charaLo = mapInVisible[playerLocation[0] + top + 1, playerLocation[1] + left];
+                    int iLo = 1;
+                    while (charaLo == 'B')
+                    {
+                        charaLo = mapInVisible[playerLocation[0] + iLo + top, playerLocation[1] + left];
+                        iLo++;
+                    }
+                    try
+                    {
+                        int numb = Int32.Parse(charaLo.ToString());
+                        if (currentPlayer.hasKey[numb])
+                        {
+                            return true;
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    }
+                    catch (FormatException)
+                    {
+                        return false;
+                    }
+                    break;
+                case 'E':
+                    char charaEn = mapInVisible[playerLocation[0], playerLocation[1]];
+                    int iEn = 1;
+                    while (charaEn == 'B')
+                    {
+                        charaEn = mapInVisible[playerLocation[0] + iEn, playerLocation[1]];
+                        iEn++;
+                    }
+                    try
+                    {
+                        int numb = Int32.Parse(charaEn.ToString());
+                        StartBattle(numb);
+                    }
+                    catch (FormatException)
+                    {
+                        StartBattle();
+                    }
+                    currentPlayer.abilityUses = 0;
+                    while (currentPlayer.skills[amountStartSkills] == allSkills.None && currentPlayer.currentLevel[0] >= 10)
+                    {
+                        try
+                        {
+                            //Select a 4rth skill at combat level 20
+                            int amount = SelectSkill();
+                            currentPlayer.skills[3] = MoveSelectedSkill(amount, amountStartSkills);
+                        }
+                        catch (Exception)
+                        {
+                            break;
+                        }
                     }
                     QuickSavePlayer();
+                    DrawTop();
                     break;
                 case 'i':
                     currentPlayer.HealCreature(1000000, false);
@@ -2614,9 +2745,6 @@ namespace TBRPGV2
                 {
                     switch (mapInVisible[i, j])
                     {
-                        case 'e':
-                            mapVisible[i, j] = 'e';
-                            break;
                         case 't':
                             #region Makes a tree
                             for (int k = 2; k > -1; k--)
@@ -2677,6 +2805,67 @@ namespace TBRPGV2
         }
 
         #endregion
+
+        static void DrawTop()
+        {
+            Console.SetCursorPosition(0, 0);
+            Console.WriteLine("  ---------------------------------------------------------------------  ");
+            for (int i = 0; i < 3; i++)
+            {
+                Console.WriteLine("  |                                                                   |  ");
+            }
+            Console.WriteLine("  ---------------------------------------------------------------------  ");
+        }
+
+        static void Dialoge(int dialoge)
+        {
+            string[] text = {"TEMP","TEMP","TEMP"};
+            ConsoleKey key;
+            switch (dialoge)
+            {
+                case 0:
+                    text = new string[] { "Whoops!", "Looks like something went wrong!", "Sorry!" };
+                    WriteDialoge(text);
+                    break;
+                case 1:
+                    text = new string[]{"Disclaimer:","Story was rushed and made in about an hour","Press enter to continue"};
+                    WriteDialoge(text);
+                    key = Console.ReadKey(true).Key;
+                    while(key != ConsoleKey.Enter)
+                    {
+                        key = Console.ReadKey(true).Key;
+                    }
+                    WriteDialoge(new string[] {"","",""});
+                    break;
+                case 2:
+                    text = new string[] { "\"Where am I\"", "", "Press ENTER to continue" };
+                    WriteDialoge(text);
+                    key = Console.ReadKey(true).Key;
+                    while (key != ConsoleKey.Enter)
+                    {
+                        key = Console.ReadKey(true).Key;
+                    }
+                    WriteDialoge(new string[] { "", "", "" });
+                    break;
+            }
+
+        }
+
+        static void WriteDialoge(string[] text)
+        {
+            for (int i = 1; i < 4; i++)
+            {
+                Console.SetCursorPosition(3, i);
+                if (text[i-1] != "")
+                {
+                    Console.WriteLine(text[i - 1]);
+                }
+                else
+                {
+                    Console.WriteLine("                                                                   ");
+                }
+            }
+        }
 
     }
 }

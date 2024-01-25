@@ -5,6 +5,8 @@ namespace TBRPGV2
     class Creature
     {
         const float attackSpamNerf = 0.50f;
+        public int[] playerLocationInSave {  get; set; }
+        public bool[] hasKey { get; set; } = { false, false, false, false };
         #region Stats
         //  All stats
         //Health-Type stats
