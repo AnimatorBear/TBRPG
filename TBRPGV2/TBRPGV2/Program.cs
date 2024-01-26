@@ -2231,7 +2231,7 @@ namespace TBRPGV2
                                             it = JsonSerializer.Deserialize<EnchChair>(serializedParent);
                                             saves[selectedSave].itemsInBattleInv[i] = it;
                                             break;
-                                        case "Reroll":
+                                        case "Reroll Potion":
                                             it = JsonSerializer.Deserialize<SkillReroll>(serializedParent);
                                             saves[selectedSave].itemsInBattleInv[i] = it;
                                             break;
