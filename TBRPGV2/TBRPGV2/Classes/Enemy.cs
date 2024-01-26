@@ -499,6 +499,8 @@
                 }
 
             }
+            Console.WriteLine(bestOption + 1);
+            Thread.Sleep(100);
             return bestOption + 1;
         }
     }
