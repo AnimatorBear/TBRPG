@@ -399,34 +399,35 @@ spawn
 ??
 
 -Front
-                         |
-                         |
-                         |
-                         |
-                         |
-                         |
-                         |
-                      E |||
-        ________________|||
-       /                  ⏣
-       |   /‾‾‾‾‾‾‾‾‾‾‾‾|||
-       |   |          E  |
-       |   |             |
-       |   |             |                          
-      _|___|_            |                           
-____--|     |-----_____-----____                     
-      |     |                                                                                           |
-      |     |                                                                                           |
-      |     |                                                                                           |
-      |     |                                                                                           |
-      |     |                                                                                           |
-      |     |                                                                                           |
-      |     |                                                                                           |
-      |     |                                                                                           |
-      |     |                                                                                           |
-      |     |                                                                                           |
-      |     |                                                                                           |
-     _|     |‾‾‾‾‾‾‾‾‾--------‾‾‾‾‾|‾‾‾‾‾‾‾‾‾--------________----------‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾------________|   |
+           __________------------‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾-----------------________________---------------‾‾‾‾‾‾‾‾|
+        /‾‾              |                                                                              |
+      /‾                 |                                                                              |
+     /                   |                                                                              |
+    /                    |                                                                              |
+   |                     |                                                                              |
+  /                      |                                                                              |
+ |                       |                                                                              |
+/                     E |||          E E                                                                |
+|       ________________|||________________________                                                     |
+|      /                  ⏣                                                                             |
+|      |   /‾‾‾‾‾‾‾‾‾‾‾‾|||‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾                                                     |
+ \     |   |          E  |           E E                                                                |
+ |     |   |             |                                                                              |
+ |     |   |             |                                                                              |
+  \   _|___|_            |                                                                              |
+  |_--|     |-----_____--|--____----------‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾-------------_________--------‾‾‾‾‾‾‾‾‾‾-------
+  |   |     |                                                                                           |
+  |   |     |                                                                                           |
+  |   |     |                                                                                           |
+  |   |     |                                                                                           |
+  /   |     |                                                                                           |
+ |    |     |                                                                                           |
+ |    |     |                                                                                           |
+ |    |     |                                                                                           |
+ |    |     |                                                                                           |
+  \   |     |                                                                                           |
+   \  |     |                                                                                           |
+    \_|     |‾‾‾‾‾‾‾‾‾--------‾‾‾‾‾|‾‾‾‾‾‾‾‾‾--------________----------‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾------________|   |
     / /‾‾‾‾‾\                      |                                                                 |  |
    |  \|   |/                      |      _________                                                  |  |
   /    |   |                       |     /    +    \                                                  | |
@@ -435,7 +436,7 @@ ____--|     |-----_____-----____
 |      |   \______________________|||____|__| | |__|___________________________|   \______|    |     |  |
 |      \                            ⏣                                          ⏣              E|      ||
 |       ‾‾‾‾‾‾‾‾‾‾\   \‾‾‾‾‾‾‾‾‾‾‾|||‾‾‾‾‾‾‾‾‾‾‾‾‾| | |‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾|   /‾‾‾‾‾‾|    |      | |
-|                  \   \          |||         |‾‾‾     ‾‾‾|                  E |---       |    |      | |
+|                  \   \          |||         |‾‾‾‾‾‾‾‾‾‾‾|                  E |---       |    |      | |
  \                  \   \          |          |           |                    |__________|____|     |  |
   \                  \   \         |          |           |                                         |   |
    ‾\                 \   \        |          |     E     |                                         |   |
@@ -462,15 +463,63 @@ ____--|     |-----_____-----____
      
 
 -Back
-     bbbbbbbbbbbbbbbbbbbbbbbbbbbbb 
-    b bhhhhhb                      
-   b  b     b                      
-  b             hhhhhhhhhhh   t    
- b              hhhhhhhhhhh        
-b               hhhbuuubhhh        
-b           t   bbbbiiibbbb        
-b                               e  
-b                              t   
-b                                  
- b                                 
-  b                                
+           bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+        bbb              b                                                                              b
+      bb                 b                                                                              b
+     b                   b                                                                              b
+    b                    b                                                                              b
+   b                     b                                                                              b
+  b                      b                                                                              b
+ b                       b                                                                              b
+b                       b b                                                                             b
+b                       bbb                                                                             b
+b                     d   l           d                                                                 b
+b                     7 bbB           8                                                                 b
+ b                    e  b4           e                                                                 b
+ b                    4  b            5                                                                 b
+ b                    e  b            e                                                                 b
+  b   bhhhhhb         4  b            5                                                                 b
+   bbbbhhhhhbbbbbbbbbbbbbbbbbbbbbbbbbbBbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+      bhhhhhb                         e                                                                 b
+      bhhhhhb                         5                                                                 b
+      bhhhhhb                                                                                           b
+      bhhhhhb                                                                                           b
+      bhhhhhb                                                                                           b
+      bhhhhhb                                                                                           b
+      bhhhhhb                                                                                           b
+      bhhhhhb                                                                                           b
+      bhhhhhb                                                                                           b
+      bhhhhhb                                                                                           b
+      bhhhhhb                                                                                           b
+     bbhhhhhbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb  b
+    b bhhhhhb                      b                                                                 b  b
+   b  blllllb                      b      hhhhhhhhh                     t                            b  b
+  b    33333                       b     hhhhhhhhhhh                                                  b b
+ b                t                b     hhhbbbbbhhh           t               bbbbbbbbbbbbbbbbb      b b
+b                           t      b     hhhbdddbhhh                           bbbb       b    b     b  b
+b                                 bbb    bbbbiiibbbb                           b   bbbbbbbb    b     bb b
+b                                 d l                                        d l          d   Eb       bb
+b                                 BbB             hhhhh                      5 B   bbbbbbbB   b      b  b
+b          t                      B B         bbbbhhhhhbbbb                  e Bbbb       B    b      b b
+ b                                4b1         b           b                  2 BbbbbbbbbbbBbbbbb     b  b
+  b                          t     b          b           b                  e 2          6         b   b
+   bb                              b          b     E     b         t        2            e        b    b
+     b                             b          bbbbbbbbbbbbb                               3         b   b
+     b    t                        b                                                     t           b  b
+     b                             b                                          t                     b   b
+     b                        t    b       t                                                       b    b
+     b                             b                   t                                          b     b
+     b        t                    b                                                             b      b
+     b                    d        b                                                           bb       b
+     bbbbbbbbbbbbbbbbbbbbbBbbbbbbbbb                                                        bbb         b
+     b                    3        b                                                   bbbbb            b
+     b                    e        b    t                   t             bbbbbbbbbbbbb                 b
+     b                    1        b                            bbbbbbbbbb                              b
+      b                   e         b                          b                                        b
+       b                  1          bbbbbbbbbbbbbbbbbbbbbbbbbb                                         b
+        b                                                                                               b
+         b                                                                                              b
+          b                                                                                             b
+           b                                                                                            b
+            b                                                                                           b
+             b                                                                                          b
