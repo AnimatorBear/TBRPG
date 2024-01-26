@@ -1,0 +1,15 @@
+Welcome to my Text Based RPG!
+
+.exe is under tbrpgv2/bin/debug/net6.0.tbrpgv2.exe
+
+Shortcuts dont want to work for some reason
+
+The map and encounters and stuff are very rushed. 
+I realized a bit too late that the deadline was the 26th of january.
+
+This is also why you just start with a skill reroll potion and an enchanted chair.
+I was planning to add a shop where you could buy these instead.
+
+Dying is also not really a feature, Currently it just puts an L where the enemy you died to is.
+
+Currently Charger and Tank are missing class specific attacks.
