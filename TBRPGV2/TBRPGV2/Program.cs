@@ -43,7 +43,7 @@ namespace TBRPGV2
         #endregion
 
         //Few stats, Put amountOfClasses to 6 for Bag class
-        public static int amountOfClasses = 6;
+        public static int amountOfClasses = 5;
         #region Files
         //File stuff
         private readonly static JsonSerializerOptions fileOptions =
